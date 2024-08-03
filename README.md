@@ -1,1 +1,0 @@
-# Sistema-para-la-Mejora-del-Acceso-Alimentario-en-Contextos-de-Vulnerabilidad-Socioeconomica
