@@ -1,5 +1,8 @@
 package entities.usuarios;
 
+import entities.usuarios.requisitosContrasena.Requisitos;
+import entities.usuarios.requisitosContrasena.TOP10000;
+import entities.usuarios.requisitosContrasena.Tamanio;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,8 +25,8 @@ public class Usuario {
         return false;
     }
     public  Usuario(){
-        this.requisitos = new ArrayList<Requisitos>();
-        this.requisitos.add(new TAMANIO());
+        this.requisitos = new ArrayList<>();
+        this.requisitos.add(new Tamanio());
         this.requisitos.add(new TOP10000());
     }
 }

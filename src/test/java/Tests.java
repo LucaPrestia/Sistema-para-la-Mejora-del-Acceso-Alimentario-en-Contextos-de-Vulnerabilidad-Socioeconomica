@@ -1,13 +1,12 @@
 
-import entities.usuarios.Requisitos;
-import entities.usuarios.TAMANIO;
-import entities.usuarios.TOP10000;
+import entities.usuarios.requisitosContrasena.Requisitos;
+import entities.usuarios.requisitosContrasena.Tamanio;
+import entities.usuarios.requisitosContrasena.TOP10000;
 import entities.usuarios.Usuario;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +14,7 @@ import java.util.List;
 public class Tests {
 
 
-    TAMANIO tam = new TAMANIO();
+    Tamanio tam = new Tamanio();
     TOP10000 top = new TOP10000();
     List<Requisitos> chequeos = new ArrayList<>();
 

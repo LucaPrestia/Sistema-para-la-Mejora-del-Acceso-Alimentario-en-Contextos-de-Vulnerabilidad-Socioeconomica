@@ -1,10 +1,10 @@
-package entities.usuarios;
+package entities.usuarios.requisitosContrasena;
 
 import lombok.Getter;
 import lombok.Setter;
 @Getter
 @Setter
-public class TAMANIO extends Requisitos {
+public class Tamanio extends Requisitos {
 
     public boolean evaluarContrasena(String contra){
         if(contra.length() > 7 && contra.length() < 64){

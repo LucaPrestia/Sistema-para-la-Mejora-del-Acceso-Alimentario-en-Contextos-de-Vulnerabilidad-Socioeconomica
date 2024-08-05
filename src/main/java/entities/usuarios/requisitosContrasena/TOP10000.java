@@ -1,4 +1,4 @@
-package entities.usuarios;
+package entities.usuarios.requisitosContrasena;
 
 import lombok.Getter;
 import lombok.Setter;
