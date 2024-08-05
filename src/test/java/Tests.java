@@ -29,4 +29,16 @@ public class Tests {
         boolean resp = usuarioNuevo.registrarUsuario("usuario","d2saDSAAQ&sadasd3d1as1das");
         Assert.assertTrue(resp);
     }
+    @Test
+    public void noRegistrarUsuarioTop(){
+        Usuario usuarioNuevo = new Usuario();
+        boolean resp = usuarioNuevo.registrarUsuario("usuario","123456789");
+        Assert.assertFalse(resp);
+    }
+    @Test
+    public void noRegistrarUsuarioTamanio(){
+        Usuario usuarioNuevo = new Usuario();
+        boolean resp = usuarioNuevo.registrarUsuario("usuario","155");
+        Assert.assertFalse(resp);
+    }
 }
