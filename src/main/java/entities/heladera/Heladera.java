@@ -1,30 +1,24 @@
 package entities.heladera;
 import entities.Direccion;
 import entities.PersistenciaID;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 
-@Getter
-@Setter
-@NoArgsConstructor
-@Entity
-@Table(name = "heladera")
+@Getter @Setter @NoArgsConstructor
 public class Heladera extends PersistenciaID {
     private String nombre;
     private String owner;
     private Date fechaPuestaFuncionamieto;
-    @Embedded
     private Direccion direccion;
     private Estados estado;
     private int maxViandas;
-
-    @OneToMany(mappedBy = "heladera", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}) // RELACION BIODIRECCIONAL!
-    private List<Vianda> viandas;
+    private List<Vianda> viandas = new ArrayList<Vianda>();
     private int currentCantViandas;
 
 //METODOS
