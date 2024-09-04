@@ -1,0 +1,16 @@
+<form action="/colaborador/submitAltaColaborador" method="post">
+    <input type="hidden" name="tipoColaborador" value="{{tipoColaborador}}">
+    {{#each formularioColaborador.campos}}
+        <div class="form-group">
+            <label for="{{nombreCampo}}">{{etiqueta}}</label>
+            {{#if (ifCond (toString tipo) "==" "TEXTO")}}
+                <input type="text" class="form-control" id="{{nombreCampo}}" name="{{nombreCampo}}" {{#if obligatorio}}required{{/if}}>
+            {{/if}}
+            {{#if (ifCond (toString tipo) "==" "FECHA")}}
+                <input type="date" class="form-control" id="{{nombreCampo}}" name="{{nombreCampo}}" {{#if obligatorio}}required{{/if}}>
+            {{/if}}
+            <!-- continuar según los distintos tipos de datos -->
+        </div>
+    {{/each}}
+    <button type="submit" class="btn btn-primary">Enviar</button>
+</form>

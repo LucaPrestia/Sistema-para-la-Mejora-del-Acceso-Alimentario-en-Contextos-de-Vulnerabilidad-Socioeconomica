@@ -1,0 +1,65 @@
+<!-- formulario.hbs -->
+<h2>Gestión de Campos Formulario
+    {{#if (eq (toString formulario.tipoColaborador) "PERSONA_HUMANA")}}
+    Persona Humana
+    {{else}}
+    Persona Jurídica
+    {{/if }}
+</h2>
+<h3>Agregar nuevo campo</h3>
+<form action="/formulario/agregarCampo" method="POST">
+    <input type="hidden" name="tipoColaborador" value="{{formulario.tipoColaborador}}">
+    <label for="nombreCampo">Nombre del Campo:</label>
+    <input type="text" id="nombreCampo" name="nombreCampo" required>
+
+    <label for="etiqueta">Etiqueta:</label>
+    <input type="text" id="etiqueta" name="etiqueta" required>
+
+    <label for="tipo">Tipo:</label>
+    <select id="tipo" name="tipo" required>
+        {{#each tiposDeCampo}}
+            <option value="{{this}}">{{this}}</option>
+        {{/each}}
+    </select>
+
+    <label for="obligatorio">Obligatorio:</label>
+    <input type="checkbox" id="obligatorio" name="obligatorio">
+
+    <button type="submit">Agregar Campo</button>
+</form>
+
+<form action="/formulario/eliminarCampo" method="POST">
+    <input type="hidden" name="tipoColaborador" value="{{formulario.tipoColaborador}}">
+
+    <label for="nombreCampoEliminar">Nombre del Campo a Eliminar:</label>
+    <input type="text" id="nombreCampoEliminar" name="nombreCampo" required>
+
+    <button type="submit">Quitar Campo</button>
+</form>
+
+<h3>Campos Actuales</h3>
+<ul>
+    {{#each formulario.campos}}
+        <li>
+            {{this.etiqueta}} ({{this.tipo}}) -
+            <form action="/formulario/modificarCampo" method="POST" style="display:inline;">
+                <input type="hidden" name="tipoColaborador" value="{{../formulario.tipoColaborador}}">
+                <input type="hidden" name="nombreCampo" value="{{this.nombreCampo}}">
+                <label for="nuevaEtiqueta">Nueva Etiqueta:</label>
+                <input type="text" id="nuevaEtiqueta" name="nuevaEtiqueta" value="{{this.etiqueta}}" required>
+
+                <label for="nuevoTipo">Nuevo Tipo:</label>
+                <select id="nuevoTipo" name="nuevoTipo" required>
+                    {{#each tiposDeCampo}}
+                        <option value="{{this}}" {{#if (eq (toString ../this.tipo) this)}}selected{{/if}}>{{this}}</option>
+                    {{/each}}
+                </select>
+
+                <label for="nuevoObligatorio">Nuevo Obligatorio:</label>
+                <input type="checkbox" id="nuevoObligatorio" name="nuevoObligatorio" {{#if this.obligatorio}}checked{{/if}}>
+
+                <button type="submit">Modificar Campo</button>
+            </form>
+        </li>
+    {{/each}}
+</ul>

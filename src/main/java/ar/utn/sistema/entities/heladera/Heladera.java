@@ -19,13 +19,18 @@ public class Heladera extends PersistenciaID {
     private Estados estado;
     private int maxViandas;
     private List<Vianda> viandas = new ArrayList<Vianda>();
-    private int currentCantViandas;
 
 //METODOS
     public void AgragarAListaVianda(Vianda vianda){
         this.viandas.add(vianda);
     }
     public boolean Llena(){
-        return this.maxViandas >= currentCantViandas;
+        return this.maxViandas == viandas.size();
+    }
+
+    public Heladera(String nombre, String owner, Direccion direccion) {
+        this.nombre = nombre;
+        this.owner = owner;
+        this.direccion = direccion;
     }
 }

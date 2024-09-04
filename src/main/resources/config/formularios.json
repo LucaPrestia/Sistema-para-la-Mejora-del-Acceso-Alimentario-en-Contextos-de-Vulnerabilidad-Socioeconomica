@@ -1,0 +1,64 @@
+{
+  "formulariosColaborador" : [ {
+    "tipoColaborador" : "PERSONA_HUMANA",
+    "campos" : [ {
+      "nombreCampo" : "nombre",
+      "etiqueta" : "Nombre",
+      "tipo" : "TEXTO",
+      "obligatorio" : true
+    }, {
+      "nombreCampo" : "apellido",
+      "etiqueta" : "Apellido",
+      "tipo" : "TEXTO",
+      "obligatorio" : true
+    }, {
+      "nombreCampo" : "medioDeContacto",
+      "etiqueta" : "Medio de Contacto",
+      "tipo" : "TEXTO",
+      "obligatorio" : true
+    }, {
+      "nombreCampo" : "fechaNacimiento",
+      "etiqueta" : "Fecha de Nacimiento",
+      "tipo" : "FECHA",
+      "obligatorio" : false
+    }, {
+      "nombreCampo" : "direccion",
+      "etiqueta" : "Direccion",
+      "tipo" : "TEXTO",
+      "obligatorio" : false
+    } ]
+  }, {
+    "tipoColaborador" : "PERSONA_JURIDICA",
+    "campos" : [ {
+      "nombreCampo" : "razonSocial",
+      "etiqueta" : "Razón Social",
+      "tipo" : "TEXTO",
+      "obligatorio" : true
+    }, {
+      "nombreCampo" : "cuit",
+      "etiqueta" : "CUIT",
+      "tipo" : "TEXTO",
+      "obligatorio" : true
+    }, {
+      "nombreCampo" : "tipo",
+      "etiqueta" : "Tipo",
+      "tipo" : "CHECKBOX",
+      "obligatorio" : true
+    }, {
+      "nombreCampo" : "rubro",
+      "etiqueta" : "Rubro",
+      "tipo" : "TEXTO",
+      "obligatorio" : true
+    }, {
+      "nombreCampo" : "medioDeContacto",
+      "etiqueta" : "Medio de Contacto",
+      "tipo" : "TEXTO",
+      "obligatorio" : true
+    }, {
+      "nombreCampo" : "direccion",
+      "etiqueta" : "Direccion",
+      "tipo" : "TEXTO",
+      "obligatorio" : false
+    } ]
+  } ]
+}
