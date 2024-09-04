@@ -31,8 +31,9 @@ public class FormularioController {
                                @RequestParam("nombreCampo") String nombreCampo,
                                @RequestParam("etiqueta") String etiqueta,
                                @RequestParam("tipo") TipoCampo tipo,
-                               @RequestParam(value = "obligatorio", required = false) boolean obligatorio, Model model) {
-        CampoFormulario nuevoCampo = new CampoFormulario(nombreCampo, etiqueta, tipo, obligatorio);
+                               @RequestParam(value = "requerido", required = false) boolean requerido,
+                               Model model) {
+        CampoFormulario nuevoCampo = new CampoFormulario(nombreCampo, etiqueta, tipo, requerido);
         service.agregarCampo(tipoColaborador, nuevoCampo);
         cargarABMFormulario((tipoColaborador.equals("PERSONA_HUMANA") ? 0 : 1), model);
         return "abmFormulario";
@@ -42,7 +43,7 @@ public class FormularioController {
     public String quitarCampo(@RequestParam String tipoColaborador,
                               @RequestParam String nombreCampo,
                               Model model) {
-        service.eliminarCampo(tipoColaborador, nombreCampo);
+        service.eliminarCampo(tipoColaborador, nombreCampo); // TODO: si el campo está registrado como obligatorio no debería dejarlo borrar
         cargarABMFormulario((tipoColaborador.equals("PERSONA_HUMANA") ? 0 : 1), model);
         return "abmFormulario";
     }
@@ -52,9 +53,9 @@ public class FormularioController {
                                  @RequestParam("nombreCampo") String nombreCampo,
                                  @RequestParam("nuevaEtiqueta") String nuevaEtiqueta,
                                  @RequestParam("nuevoTipo") TipoCampo nuevoTipo,
-                                 @RequestParam(value = "nuevoObligatorio", required = false) boolean nuevoObligatorio,
+                                 @RequestParam(value = "nuevoRequerido", required = false) boolean requerido,
                                  Model model) {
-        service.modificarCampo(tipoColaborador, nombreCampo, nuevaEtiqueta, nuevoTipo, nuevoObligatorio);
+        service.modificarCampo(tipoColaborador, nombreCampo, nuevaEtiqueta, nuevoTipo, requerido);
         cargarABMFormulario((tipoColaborador.equals("PERSONA_HUMANA") ? 0 : 1), model);
         return "abmFormulario";
     }

@@ -22,8 +22,8 @@
         {{/each}}
     </select>
 
-    <label for="obligatorio">Obligatorio:</label>
-    <input type="checkbox" id="obligatorio" name="obligatorio">
+    <label for="requerido">Requerido:</label>
+    <input type="checkbox" id="requerido" name="requerido">
 
     <button type="submit">Agregar Campo</button>
 </form>
@@ -45,18 +45,23 @@
             <form action="/formulario/modificarCampo" method="POST" style="display:inline;">
                 <input type="hidden" name="tipoColaborador" value="{{../formulario.tipoColaborador}}">
                 <input type="hidden" name="nombreCampo" value="{{this.nombreCampo}}">
-                <label for="nuevaEtiqueta">Nueva Etiqueta:</label>
-                <input type="text" id="nuevaEtiqueta" name="nuevaEtiqueta" value="{{this.etiqueta}}" required>
-
-                <label for="nuevoTipo">Nuevo Tipo:</label>
-                <select id="nuevoTipo" name="nuevoTipo" required>
+                <label for="nuevaEtiqueta">Etiqueta:</label>
+                <input type="text" id="nuevaEtiqueta" name="nuevaEtiqueta" value="{{this.etiqueta}}"
+                       {{#if this.obligatorio}}disabled{{/if}} required
+                >
+                <label for="nuevoTipo">Tipo:</label>
+                <select id="nuevoTipo" name="nuevoTipo"
+                    {{#if this.obligatorio}}disabled{{/if}} required
+                >
                     {{#each tiposDeCampo}}
                         <option value="{{this}}" {{#if (eq (toString ../this.tipo) this)}}selected{{/if}}>{{this}}</option>
                     {{/each}}
                 </select>
 
-                <label for="nuevoObligatorio">Nuevo Obligatorio:</label>
-                <input type="checkbox" id="nuevoObligatorio" name="nuevoObligatorio" {{#if this.obligatorio}}checked{{/if}}>
+                <label for="nuevoRequerido">Requerido:</label>
+                <input type="checkbox" id="nuevoRequerido" name="nuevoRequerido" {{#if this.requerido}}checked{{/if}}
+                    {{#if this.obligatorio}}disabled{{/if}}
+                >
 
                 <button type="submit">Modificar Campo</button>
             </form>

@@ -10,12 +10,14 @@ public class CampoFormulario {
     private String etiqueta;
     private TipoCampo tipo;
     private boolean obligatorio;
+    private boolean requerido;
 
     // Constructor
-    public CampoFormulario(String nombreCampo, String etiqueta, TipoCampo tipo, boolean obligatorio) {
+    public CampoFormulario(String nombreCampo, String etiqueta, TipoCampo tipo, boolean requerido) {
         this.nombreCampo = nombreCampo;
         this.etiqueta = etiqueta;
         this.tipo = tipo;
-        this.obligatorio = obligatorio;
+        this.requerido = requerido;
+        this.obligatorio = false; // los valores obligatorios ya están definidos por defecto en el JSON y la ONG no podrá cambiarlos
     }
 }

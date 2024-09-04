@@ -5,27 +5,32 @@
       "nombreCampo" : "nombre",
       "etiqueta" : "Nombre",
       "tipo" : "TEXTO",
-      "obligatorio" : true
+      "obligatorio" : true,
+      "requerido" : true
     }, {
       "nombreCampo" : "apellido",
       "etiqueta" : "Apellido",
       "tipo" : "TEXTO",
-      "obligatorio" : true
+      "obligatorio" : true,
+      "requerido" : true
     }, {
       "nombreCampo" : "medioDeContacto",
       "etiqueta" : "Medio de Contacto",
       "tipo" : "TEXTO",
-      "obligatorio" : true
+      "obligatorio" : true,
+      "requerido" : true
     }, {
       "nombreCampo" : "fechaNacimiento",
       "etiqueta" : "Fecha de Nacimiento",
       "tipo" : "FECHA",
-      "obligatorio" : false
+      "obligatorio" : false,
+      "requerido" : false
     }, {
       "nombreCampo" : "direccion",
       "etiqueta" : "Direccion",
       "tipo" : "TEXTO",
-      "obligatorio" : false
+      "obligatorio" : false,
+      "requerido" : false
     } ]
   }, {
     "tipoColaborador" : "PERSONA_JURIDICA",
@@ -33,32 +38,38 @@
       "nombreCampo" : "razonSocial",
       "etiqueta" : "Razón Social",
       "tipo" : "TEXTO",
-      "obligatorio" : true
+      "obligatorio" : true,
+      "requerido" : true
     }, {
       "nombreCampo" : "cuit",
       "etiqueta" : "CUIT",
       "tipo" : "TEXTO",
-      "obligatorio" : true
+      "obligatorio" : true,
+      "requerido" : true
     }, {
       "nombreCampo" : "tipo",
       "etiqueta" : "Tipo",
       "tipo" : "CHECKBOX",
-      "obligatorio" : true
+      "obligatorio" : true,
+      "requerido" : false
     }, {
       "nombreCampo" : "rubro",
       "etiqueta" : "Rubro",
       "tipo" : "TEXTO",
-      "obligatorio" : true
+      "obligatorio" : true,
+      "requerido" : true
     }, {
       "nombreCampo" : "medioDeContacto",
       "etiqueta" : "Medio de Contacto",
       "tipo" : "TEXTO",
-      "obligatorio" : true
+      "obligatorio" : true,
+      "requerido" : true
     }, {
       "nombreCampo" : "direccion",
       "etiqueta" : "Direccion",
       "tipo" : "TEXTO",
-      "obligatorio" : false
+      "obligatorio" : false,
+      "requerido" : false
     } ]
   } ]
 }

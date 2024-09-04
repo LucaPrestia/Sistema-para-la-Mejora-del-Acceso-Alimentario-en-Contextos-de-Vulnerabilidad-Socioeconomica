@@ -57,14 +57,14 @@ import java.util.stream.Collectors;
     }
 
 
-    public void modificarCampo(String tipoColaborador, String nombreCampo, String nuevaEtiqueta, TipoCampo nuevoTipo, boolean nuevoObligatorio) {
+    public void modificarCampo(String tipoColaborador, String nombreCampo, String nuevaEtiqueta, TipoCampo nuevoTipo, boolean nuevoRequerido) {
         Formulario formulario = formularios.get(tipoColaborador);
         if (formulario != null) {
             for (CampoFormulario campo : formulario.getCampos()) {
                 if (campo.getNombreCampo().equals(nombreCampo)) {
                     campo.setEtiqueta(nuevaEtiqueta);
                     campo.setTipo(nuevoTipo);
-                    campo.setObligatorio(nuevoObligatorio);
+                    campo.setRequerido(nuevoRequerido);
                     break;
                 }
             }
