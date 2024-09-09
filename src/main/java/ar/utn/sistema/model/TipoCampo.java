@@ -1,5 +1,8 @@
 package ar.utn.sistema.model;
 
+import lombok.Getter;
+
+@Getter
 public enum TipoCampo {
     TEXTO("TEXTO"),
     NUMERO("NUMERO"),
@@ -13,7 +16,4 @@ public enum TipoCampo {
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
-    }
 }
