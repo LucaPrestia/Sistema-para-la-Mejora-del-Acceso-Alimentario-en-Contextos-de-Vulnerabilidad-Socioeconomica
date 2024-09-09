@@ -3,7 +3,7 @@ package ar.utn.sistema.entities.colaboracion;
 public enum RubroServicio {
     GASTRONOMIA,
     ELECTRONICA,
-    ARTÍCULOS_HOGAR,
+    ARTICULOS_HOGAR,
     ENTRETENIMIENTO,
     SALUD_BIENESTAR,
     TURISMO,
