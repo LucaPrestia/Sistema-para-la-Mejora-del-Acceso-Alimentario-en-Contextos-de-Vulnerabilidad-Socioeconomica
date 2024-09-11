@@ -16,6 +16,12 @@ public class ColaboracionDinero extends Colaboracion {
         this.frencuencia = frecuencia;
     }
 
+    public ColaboracionDinero(int cantidad) {
+        super(TipoColaboracion.DONACION_DINERO, 0.5);
+        this.monto = monto;
+        this.frencuencia = TipoFrecuencia.UNICA;
+    }
+
     public void donarDinero(){
         // TODO
     }

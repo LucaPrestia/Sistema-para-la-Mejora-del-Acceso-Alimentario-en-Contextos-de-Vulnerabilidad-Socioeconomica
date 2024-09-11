@@ -15,6 +15,7 @@ public abstract class Colaboracion extends PersistenciaID {
     private LocalDate fechaColaboracion;
     private TipoColaboracion tipo;
     private Double coeficientePuntos;
+    private Boolean viejo = false;
 
     public Colaboracion(TipoColaboracion tipo, Double coeficientePuntos) {
         this.tipo = tipo;

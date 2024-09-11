@@ -17,8 +17,7 @@ import java.util.Map;
 
 
 @Getter @Setter @NoArgsConstructor
-public abstract class Colaborador extends PersistenciaID {
-    private Usuario usuario; // información de usuario en una entidad aparte
+public abstract class Colaborador extends Rol {
     private List<Contacto> contactos = new ArrayList<Contacto>();
     private Direccion direccion;
     private List<Colaboracion> colaboraciones = new ArrayList<Colaboracion>();

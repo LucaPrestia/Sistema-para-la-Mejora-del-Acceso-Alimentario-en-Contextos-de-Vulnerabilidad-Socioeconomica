@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 public class Usuario {
+    private Rol rol;
     private String usuario;
     private String contrasena;
     private List<Requisitos> requisitos ;

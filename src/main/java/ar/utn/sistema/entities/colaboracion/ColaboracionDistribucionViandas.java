@@ -25,6 +25,12 @@ public class ColaboracionDistribucionViandas extends Colaboracion {
         this.motivoDistribucion = motivo;
     }
 
+    public ColaboracionDistribucionViandas(int cantidad) {
+        for(int i=0;i<cantidad;i++){
+            this.viandas.add(new Vianda());
+        }
+    }
+
     public void realizarDistribucion(){
         // TODO
     }
