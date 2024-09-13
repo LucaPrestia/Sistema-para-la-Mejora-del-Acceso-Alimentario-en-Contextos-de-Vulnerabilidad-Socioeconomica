@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor
-public class Tecnico extends PersistenciaID {
+public class Tecnico extends Rol {
     private String nombre;
     private String apellido;
     private TipoDocumento tipoDocumento;

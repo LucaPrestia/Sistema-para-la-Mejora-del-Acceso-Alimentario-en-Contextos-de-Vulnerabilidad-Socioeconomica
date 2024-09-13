@@ -24,6 +24,7 @@ public class Heladera extends PersistenciaID {
     private double tempMin;
     private double tempMax;
     private double ultTempRegs;
+    private boolean robo;
 
     // Constructor
     public Heladera(String nombre, String owner, Direccion direccion, EstadoHeladera estado, double tempMax, double tempMin, int maxViandas) {
@@ -36,6 +37,7 @@ public class Heladera extends PersistenciaID {
         this.tempMin = tempMin;
         this.maxViandas = maxViandas;
     }
+
 
     // Métodos
     public void AgragarAListaVianda(Vianda vianda){
