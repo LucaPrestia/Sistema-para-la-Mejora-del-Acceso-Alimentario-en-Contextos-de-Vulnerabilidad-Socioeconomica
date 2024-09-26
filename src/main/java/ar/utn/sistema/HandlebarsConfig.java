@@ -1,5 +1,6 @@
 package ar.utn.sistema;
 
+import ar.utn.sistema.utils.InformarError;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
@@ -25,6 +26,7 @@ public class HandlebarsConfig implements WebMvcConfigurer {
         resolver.setPrefix("classpath:/templates/"); // classpath toma la ruta de los recursos del sistema (src/main/resources)
         resolver.setSuffix(".hbs");
         resolver.setCache(false);
+
         resolver.registerHelper("ifCond", (context, options) -> {
             String operator = options.param(0).toString();
             Object value = options.param(1);
@@ -39,6 +41,7 @@ public class HandlebarsConfig implements WebMvcConfigurer {
                 default -> throw new IllegalArgumentException("Operador no soportado: " + operator);
             };
         });
+
         resolver.registerHelper("eq", (context, options) -> {
             logger.debug("Context: " + context);
             logger.debug("Parameter: " + options.param(0));
@@ -47,12 +50,15 @@ public class HandlebarsConfig implements WebMvcConfigurer {
             }
             return context.equals(options.param(0));
         });
+
         resolver.registerHelper("toString", (context, options) -> {
            return context.toString();
         });
+
         resolver.registerHelper("isEqual", (context, options) -> {
             return context == options.param(0) ? options.fn(this) : options.inverse(this);
         });
+
         return resolver;
     }
 }

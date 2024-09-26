@@ -8,6 +8,10 @@ public enum TipoCampo {
     NUMERO("NUMERO"),
     CHECKBOX("CHECKBOX"),
     FECHA("FECHA"),
+    /*COLABORACION("COLABORACION"),
+    MEDIO("MEDIO"),
+    DIRECCION("DIRECCION"),
+    TIPOJURIDICO("TIPOJURIDICO"),*/
     SELECCION("SELECCION");
 
     private final String value;
@@ -15,5 +19,4 @@ public enum TipoCampo {
     TipoCampo(String value) {
         this.value = value;
     }
-
 }

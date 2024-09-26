@@ -8,6 +8,7 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor
 public class Tecnico extends Rol {
+    private Usuario usuario;
     private String nombre;
     private String apellido;
     private TipoDocumento tipoDocumento;
@@ -16,7 +17,8 @@ public class Tecnico extends Rol {
     private Contacto contacto;
     private String areaCobertura;
 
-    public Tecnico(String nombre, String apellido, TipoDocumento tipoDocumento, Long documento, Long cuil, Contacto contacto, String areaCobertura) {
+    public Tecnico(Usuario usuario, String nombre, String apellido, TipoDocumento tipoDocumento, Long documento, Long cuil, Contacto contacto, String areaCobertura) {
+        this.usuario = usuario;
         this.nombre = nombre;
         this.apellido = apellido;
         this.tipoDocumento = tipoDocumento;

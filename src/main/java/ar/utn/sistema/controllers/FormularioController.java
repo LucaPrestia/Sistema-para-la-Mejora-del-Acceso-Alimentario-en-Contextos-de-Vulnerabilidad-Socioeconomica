@@ -4,6 +4,7 @@ import ar.utn.sistema.model.CampoFormulario;
 import ar.utn.sistema.model.Formulario;
 import ar.utn.sistema.model.TipoCampo;
 import ar.utn.sistema.services.FormularioService;
+import ar.utn.sistema.utils.InformarError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +31,7 @@ public class FormularioController {
     public String agregarCampo(@RequestParam("tipoColaborador") String tipoColaborador,
                                @RequestParam("nombreCampo") String nombreCampo,
                                @RequestParam("etiqueta") String etiqueta,
-                               @RequestParam("tipo") TipoCampo tipo,
+                               @RequestParam("tipo") String tipo,
                                @RequestParam(value = "requerido", required = false) boolean requerido,
                                Model model) {
         CampoFormulario nuevoCampo = new CampoFormulario(nombreCampo, etiqueta, tipo, requerido);
@@ -43,16 +44,27 @@ public class FormularioController {
     public String quitarCampo(@RequestParam String tipoColaborador,
                               @RequestParam String nombreCampo,
                               Model model) {
-        service.eliminarCampo(tipoColaborador, nombreCampo); // TODO: si el campo está registrado como obligatorio no debería dejarlo borrar
+
         cargarABMFormulario((tipoColaborador.equals("PERSONA_HUMANA") ? 0 : 1), model);
+        InformarError informarError = new InformarError();
+
+        if(!service.verificarExistenciaCampo(tipoColaborador, nombreCampo))
+            informarError.addError("eliminarCampo", "campo_inexistente", "No existe campo con dicho nombre");
+        else if(!service.eliminarCampo(tipoColaborador, nombreCampo))
+            informarError.addError("eliminarCampo","borrar_campo_obligatorio", "No puede eliminar un campo obligatorio");
+
+        if(informarError.hasErrors())
+            model.addAttribute("error", informarError);
+
         return "abmFormulario";
+
     }
 
     @PostMapping("/modificarCampo")
     public String modificarCampo(@RequestParam("tipoColaborador") String tipoColaborador,
                                  @RequestParam("nombreCampo") String nombreCampo,
                                  @RequestParam("nuevaEtiqueta") String nuevaEtiqueta,
-                                 @RequestParam("nuevoTipo") TipoCampo nuevoTipo,
+                                 @RequestParam("nuevoTipo") String nuevoTipo,
                                  @RequestParam(value = "nuevoRequerido", required = false) boolean requerido,
                                  Model model) {
         service.modificarCampo(tipoColaborador, nombreCampo, nuevaEtiqueta, nuevoTipo, requerido);

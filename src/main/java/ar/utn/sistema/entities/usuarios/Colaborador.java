@@ -21,18 +21,8 @@ public abstract class Colaborador extends Rol {
     private List<Contacto> contactos = new ArrayList<Contacto>();
     private Direccion direccion;
     private List<Colaboracion> colaboraciones = new ArrayList<Colaboracion>();
-    private Map<String, String> camposOpcionales = new HashMap<>();
-    private double puntosAcumulados;
     private double puntosDisponibles;
     private List<OfertaCanje> serviciosCanjeados = new ArrayList<OfertaCanje>();
-
-    public void agregarCampo(String nombre, String valor) {
-        camposOpcionales.put(nombre, valor);
-    }
-
-    public String obtenerCampo(String nombre) {
-        return camposOpcionales.get(nombre);
-    }
 
     public void agregarColaboracion(Colaboracion colaboracion){
         this.colaboraciones.add(colaboracion);
@@ -40,14 +30,17 @@ public abstract class Colaborador extends Rol {
         actualizarPuntos(puntos);
     }
 
-    public void canjearServicio(OfertaCanje oferta){
-        // todo: validar si el colaborador tiene suficientes puntos acumulados para utilizar el servicio
-        serviciosCanjeados.add(oferta);
-        puntosDisponibles -= oferta.getPuntosRequeridos();
+    public boolean canjearPuntos(OfertaCanje oferta){
+        if(oferta.getPuntosRequeridos() > this.puntosDisponibles)
+            return false;
+        else {
+            serviciosCanjeados.add(oferta);
+            actualizarPuntos(oferta.getPuntosRequeridos() * (-1));
+        }
+        return true;
     }
 
-    private void actualizarPuntos(double puntos) {
-        puntosAcumulados += puntos;
+    public void actualizarPuntos(double puntos) {
         puntosDisponibles += puntos;
     }
 

@@ -46,18 +46,25 @@ import java.util.stream.Collectors;
         }
     }
 
-    public void eliminarCampo(String tipoColaborador, String nombreCampo) {
+    public boolean eliminarCampo(String tipoColaborador, String nombreCampo) {
         Formulario formulario = formularios.get(tipoColaborador);
-        if (formulario != null) {
+        // controla que el campo que se quiere eliminar no sea obligatorio
+        if (formulario != null && formulario.getCampos().stream().filter(c -> c.getNombreCampo().equals(nombreCampo) && !c.getObligatorio()).findFirst().isPresent()) {
             formulario.setCampos(formulario.getCampos().stream()
                     .filter(c -> !c.getNombreCampo().equals(nombreCampo))
                     .collect(Collectors.toList()));
             guardarFormularios();
-        }
+            return true;
+        } else return false;
+    }
+
+    public boolean verificarExistenciaCampo(String tipoColaborador, String nombreCampo){
+        Formulario formulario = formularios.get(tipoColaborador);
+        return formulario.getCampos().stream().filter(c -> c.getNombreCampo().equals(nombreCampo)).findFirst().isPresent();
     }
 
 
-    public void modificarCampo(String tipoColaborador, String nombreCampo, String nuevaEtiqueta, TipoCampo nuevoTipo, boolean nuevoRequerido) {
+    public void modificarCampo(String tipoColaborador, String nombreCampo, String nuevaEtiqueta, String nuevoTipo, boolean nuevoRequerido) {
         Formulario formulario = formularios.get(tipoColaborador);
         if (formulario != null) {
             for (CampoFormulario campo : formulario.getCampos()) {

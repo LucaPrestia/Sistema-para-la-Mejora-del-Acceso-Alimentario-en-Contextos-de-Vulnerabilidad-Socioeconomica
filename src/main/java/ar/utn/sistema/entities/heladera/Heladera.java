@@ -8,9 +8,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
 
 @Getter @Setter @NoArgsConstructor
 public class Heladera extends PersistenciaID {
@@ -24,7 +22,6 @@ public class Heladera extends PersistenciaID {
     private double tempMin;
     private double tempMax;
     private double ultTempRegs;
-    private boolean robo;
 
     // Constructor
     public Heladera(String nombre, String owner, Direccion direccion, EstadoHeladera estado, double tempMax, double tempMin, int maxViandas) {
@@ -38,14 +35,15 @@ public class Heladera extends PersistenciaID {
         this.maxViandas = maxViandas;
     }
 
-
     // Métodos
-    public void AgragarAListaVianda(Vianda vianda){
+    public void agregarAListaVianda(Vianda vianda){
         this.viandas.add(vianda);
     }
-    public boolean Llena(){
+
+    public boolean llena(){
         return this.maxViandas == viandas.size();
     }
+
     public int mesesActiva(){
         LocalDate fechaActual = LocalDate.now();
         Period periodo = Period.between(this.fechaPuestaFuncionamiento, fechaActual);

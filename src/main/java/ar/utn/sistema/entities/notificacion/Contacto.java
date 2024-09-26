@@ -17,10 +17,9 @@ public class Contacto extends PersistenciaID {
     // @Transient
     private IMedioDeContacto medioDeContacto;
 
-    public Contacto(MedioNotificacion medio, String contacto, IMedioDeContacto medioDeContacto) {
+    public Contacto(MedioNotificacion medio, String contacto) {
         this.medio = medio;
         this.contacto = contacto;
-        this.medioDeContacto = medioDeContacto;
     }
 
     public void notificar(Notificacion notificacion) {

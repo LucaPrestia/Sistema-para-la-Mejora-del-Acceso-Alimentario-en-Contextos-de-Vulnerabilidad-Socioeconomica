@@ -1,6 +1,7 @@
 package ar.utn.sistema.entities.colaboracion;
 
 import ar.utn.sistema.entities.heladera.Heladera;
+import ar.utn.sistema.entities.usuarios.ColaboradorFisico;
 import ar.utn.sistema.entities.usuarios.PersonaVulnerable;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,10 +12,17 @@ import java.util.Date;
 import java.util.List;
 @Getter @Setter
 public class Tarjeta {
+
+    private static final int cantUsosXDia = 4;
+    private static final int cantUsosXMenor = 2;
+
     private String codigo;
     private PersonaVulnerable personaVulnerable;
+    private ColaboradorFisico registrador;
     private List<MovimientoTarjeta>  movimientos = new ArrayList<MovimientoTarjeta>();
-    public Tarjeta() {}
+    public Tarjeta(String codigo) {
+        this.codigo = codigo;
+    }
     public int usosDeTarjetaHoy(){
         int contador = 0;
         Calendar cal1 = Calendar.getInstance();
@@ -33,7 +41,7 @@ public class Tarjeta {
         return contador;
     }
     public boolean puedoUsarTarjeta(){
-        return this.usosDeTarjetaHoy() < personaVulnerable.getMenoresACargo() * 2 + 4 ;
+        return this.usosDeTarjetaHoy() < personaVulnerable.getMenoresACargo() * cantUsosXMenor + cantUsosXDia ;
     }
     public boolean UsarTarjeta(Heladera heladera){
         boolean se_puede = puedoUsarTarjeta();

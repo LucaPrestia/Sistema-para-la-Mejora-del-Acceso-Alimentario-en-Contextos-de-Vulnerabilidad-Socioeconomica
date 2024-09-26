@@ -1,7 +1,6 @@
 package ar.utn.sistema.entities.usuarios;
 
 import ar.utn.sistema.entities.Direccion;
-import ar.utn.sistema.entities.PersistenciaID;
 import ar.utn.sistema.entities.colaboracion.Tarjeta;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +19,4 @@ public class PersonaVulnerable extends Rol {
     private TipoDocumento tipoDocumento;
     private String documento;
     private Integer menoresACargo;
-
-
 }

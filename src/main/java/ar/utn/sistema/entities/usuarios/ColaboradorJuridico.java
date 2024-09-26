@@ -8,6 +8,8 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor
 public class ColaboradorJuridico extends Colaborador {
     private String razonSocial;
-    private TipoJuridico tipoJuridico; // TODO: si se agregan más tipos jurídicos sería conveniente que esto sea una tabla y no un enum
+    private String rubro;
+    private String cuit;
+    private TipoJuridico tipoJuridico;
     private Heladera heladera;
 }
