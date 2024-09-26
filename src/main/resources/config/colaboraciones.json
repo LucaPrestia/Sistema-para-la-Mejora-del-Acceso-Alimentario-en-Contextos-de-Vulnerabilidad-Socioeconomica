@@ -1,0 +1,23 @@
+{
+  "formColaboracion" : [ {
+    "tipoColaborador" : "PERSONA_HUMANA",
+    "colaboraciones" : [ {
+      "nombre" : "DONACION_DINERO"
+    }, {
+      "nombre" : "DONACION_VIANDA"
+    }, {
+      "nombre" : "DISTRUBUCION_VIANDA"
+    }, {
+      "nombre" : "REGISTRO_PERSONA_VULNERABLE"
+    } ]
+  }, {
+    "tipoColaborador" : "PERSONA_JURIDICA",
+    "colaboraciones" : [ {
+      "nombre" : "DONACION_DINERO"
+    }, {
+      "nombre" : "GESTION_HELADERA"
+    }, {
+      "nombre" : "OFERTA_SERVICIO"
+    } ]
+  } ]
+}

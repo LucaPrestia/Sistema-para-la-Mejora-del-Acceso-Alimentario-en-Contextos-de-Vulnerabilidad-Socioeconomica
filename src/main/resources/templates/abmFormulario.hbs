@@ -34,6 +34,19 @@
     <label for="nombreCampoEliminar">Nombre del Campo a Eliminar:</label>
     <input type="text" id="nombreCampoEliminar" name="nombreCampo" required>
 
+     {{#if error.erroresPorSeccion.eliminarCampo}}
+            {{#each error.erroresPorSeccion.eliminarCampo}}
+                <p style="color:red;">{{this}}</p>
+            {{/each}}
+     {{/if}}
+
+    {{#if error.errores.borrar_campo_obligatorio}}
+        <p style="color:red;">{{error.errores.borrar_campo_obligatorio}}</p>
+    {{/if}}
+    {{#if error.errores.campo_obligatorio}}
+            <p style="color:red;">{{error.errores.campo_obligatorio}}</p>
+    {{/if}}
+
     <button type="submit">Quitar Campo</button>
 </form>
 
@@ -41,7 +54,7 @@
 <ul>
     {{#each formulario.campos}}
         <li>
-            {{this.etiqueta}} ({{this.tipo}}) -
+            {{this.nombreCampo}} ({{this.tipo}}) -
             <form action="/formulario/modificarCampo" method="POST" style="display:inline;">
                 <input type="hidden" name="tipoColaborador" value="{{../formulario.tipoColaborador}}">
                 <input type="hidden" name="nombreCampo" value="{{this.nombreCampo}}">

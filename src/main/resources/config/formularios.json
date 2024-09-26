@@ -14,9 +14,9 @@
       "obligatorio" : true,
       "requerido" : true
     }, {
-      "nombreCampo" : "medioDeContacto",
-      "etiqueta" : "Medio de Contacto",
-      "tipo" : "TEXTO",
+      "nombreCampo" : "documento",
+      "etiqueta" : "Documento",
+      "tipo" : "DOCUMENTO",
       "obligatorio" : true,
       "requerido" : true
     }, {
@@ -26,15 +26,39 @@
       "obligatorio" : false,
       "requerido" : false
     }, {
+      "nombreCampo" : "formasColaboracion",
+      "etiqueta" : "Formas de Colaboración",
+      "tipo" : "COLABORACION",
+      "obligatorio" : true,
+      "requerido" : true
+    }, {
+      "nombreCampo" : "medioDeContacto",
+      "etiqueta" : "Medio de Contacto",
+      "tipo" : "MEDIO",
+      "obligatorio" : true,
+      "requerido" : true
+    }, {
       "nombreCampo" : "direccion",
       "etiqueta" : "Direccion",
-      "tipo" : "TEXTO",
+      "tipo" : "DIRECCION",
       "obligatorio" : false,
       "requerido" : false
     } ]
   }, {
     "tipoColaborador" : "PERSONA_JURIDICA",
     "campos" : [ {
+      "nombreCampo" : "tipoJuridico",
+      "etiqueta" : "Tipo",
+      "tipo" : "TIPOJURIDICO",
+      "obligatorio" : true,
+      "requerido" : false
+    }, {
+      "nombreCampo" : "rubro",
+      "etiqueta" : "Rubro",
+      "tipo" : "TEXTO",
+      "obligatorio" : true,
+      "requerido" : true
+    }, {
       "nombreCampo" : "razonSocial",
       "etiqueta" : "Razón Social",
       "tipo" : "TEXTO",
@@ -47,27 +71,21 @@
       "obligatorio" : true,
       "requerido" : true
     }, {
-      "nombreCampo" : "tipo",
-      "etiqueta" : "Tipo",
-      "tipo" : "CHECKBOX",
-      "obligatorio" : true,
-      "requerido" : false
-    }, {
-      "nombreCampo" : "rubro",
-      "etiqueta" : "Rubro",
-      "tipo" : "TEXTO",
+      "nombreCampo" : "formasColaboracion",
+      "etiqueta" : "Formas de Colaboración",
+      "tipo" : "COLABORACION",
       "obligatorio" : true,
       "requerido" : true
     }, {
       "nombreCampo" : "medioDeContacto",
       "etiqueta" : "Medio de Contacto",
-      "tipo" : "TEXTO",
+      "tipo" : "MEDIO",
       "obligatorio" : true,
       "requerido" : true
     }, {
       "nombreCampo" : "direccion",
       "etiqueta" : "Direccion",
-      "tipo" : "TEXTO",
+      "tipo" : "DIRECCION",
       "obligatorio" : false,
       "requerido" : false
     } ]

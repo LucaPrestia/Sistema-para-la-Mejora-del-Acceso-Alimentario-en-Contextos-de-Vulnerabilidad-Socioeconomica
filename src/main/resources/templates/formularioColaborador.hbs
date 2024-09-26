@@ -1,16 +1,41 @@
-<form action="/colaborador/submitAltaColaborador" method="post">
+<form action="/colaborador/submitAlta/{{tipoColaborador}}" method="post">
     <input type="hidden" name="tipoColaborador" value="{{tipoColaborador}}">
     {{#each formularioColaborador.campos}}
         <div class="form-group">
             <label for="{{nombreCampo}}">{{etiqueta}}</label>
-            {{#if (ifCond (toString tipo) "==" "TEXTO")}}
-                <input type="text" class="form-control" id="{{nombreCampo}}" name="{{nombreCampo}}" {{#if requerido}}required{{/if}}>
+            {{#if (ifCond (toString tipo) "==" "TIPOJURIDICO")}}
+                <select id="{{nombreCampo}}" name="{{nombreCampo}}" {{#if requerido}}required{{/if}}>
+                    {{#each tipoJuridico}}
+                        <option value="{{this}}">{{this}}</option>
+                    {{/each}}
+                </select>
+            {{else if (ifCond (toString tipo) "==" "TEXTO")}}
+                <input type="text" class="form-control" id="{{nombreCampo}}" name="{{nombreCampo}}" placeholder="{{etiqueta}}" {{#if requerido}}required{{/if}}>
+            {{else if (ifCond (toString tipo) "==" "FECHA")}}
+                <input type="date" class="form-control" id="{{nombreCampo}}" name="{{nombreCampo}}" placeholder="{{etiqueta}}" {{#if requerido}}required{{/if}}>
+            {{else if (ifCond (toString tipo) "==" "MEDIO")}}
+                <select class="form-control" id="medio" name="medio" {{#if requerido}}required{{/if}}>
+                    {{#each tipoContacto}}
+                        <option value="{{this}}">{{this}}</option>
+                    {{/each}}
+                </select>
+                <input type="text" class="form-control mt-2" id="contacto" name="contacto" placeholder="Ingrese el contacto" {{#if requerido}}required{{/if}}>
+            {{else if (ifCond (toString tipo) "==" "DOCUMENTO")}}
+                            <select class="form-control" id="tipoDocumento" name="tipoDocumento" {{#if requerido}}required{{/if}}>
+                                {{#each tipoDocumento}}
+                                    <option value="{{this}}">{{descripcion}}</option>
+                                {{/each}}
+                            </select>
+                            <input type="text" class="form-control mt-2" id="documento" name="documento" placeholder="Ingrese su documento" {{#if requerido}}required{{/if}}>
+            {{else if (ifCond (toString tipo) "==" "DIRECCION")}}
+                 {{> direccion latlon="0" }}
+            {{else if (ifCond (toString tipo) "==" "COLABORACION")}}
+                 </br>
+                 {{#each tiposColaboracion}}
+                        <input type="checkbox" name="opcionesColaboracion" value="{{this}}"> {{value}}<br>
+                 {{/each}}
             {{/if}}
-            {{#if (ifCond (toString tipo) "==" "FECHA")}}
-                <input type="date" class="form-control" id="{{nombreCampo}}" name="{{nombreCampo}}" {{#if requerido}}required{{/if}}>
-            {{/if}}
-            <!-- TODO continuar según los distintos tipos de datos -->
         </div>
     {{/each}}
-    <button type="submit" class="btn btn-primary">Enviar</button>
+    <button type="submit" class="btn btn-primary">Aceptar</button>
 </form>

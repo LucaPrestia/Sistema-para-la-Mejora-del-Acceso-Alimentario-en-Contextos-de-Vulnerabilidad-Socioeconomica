@@ -1,0 +1,30 @@
+<div class="form-group">
+    <label for="pais">País</label>
+    <input type="text" class="form-control" id="pais" name="pais">
+
+    <label for="provincia">Provincia</label>
+    <input type="text" class="form-control" id="provincia" name="provincia">
+
+    <label for="localidad">Localidad</label>
+    <input type="text" class="form-control" id="localidad" name="localidad">
+
+    <label for="codigo_postal">Código Postal</label>
+    <input type="number" class="form-control" id="codigo_postal" name="codigo_postal">
+
+    <label for="calle">Calle</label>
+    <input type="text" class="form-control" id="calle" name="calle">
+
+    <label for="numero">Número</label>
+    <input type="number" class="form-control" id="numero" name="numero">
+
+    {{#if (ifCond latlon "==" "0")}}
+        <input type="hidden" name="lat" value="0.0">
+        <input type="hidden" name="lon" value="0.0">
+    {{else}}
+        <label for="lat">Latitud</label>
+        <input type="number" class="form-control" id="lat" name="lat" step="any">
+
+        <label for="lon">Longitud</label>
+        <input type="number" class="form-control" id="lon" name="lon" step="any">
+    {{/if}}
+</div>
