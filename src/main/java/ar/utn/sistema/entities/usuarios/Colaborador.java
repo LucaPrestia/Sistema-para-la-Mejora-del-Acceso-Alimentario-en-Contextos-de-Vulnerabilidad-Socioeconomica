@@ -18,6 +18,7 @@ import java.util.Map;
 
 @Getter @Setter @NoArgsConstructor
 public abstract class Colaborador extends Rol {
+    private Usuario usuario;
     private List<Contacto> contactos = new ArrayList<Contacto>();
     private Direccion direccion;
     private List<Colaboracion> colaboraciones = new ArrayList<Colaboracion>();
@@ -50,6 +51,7 @@ public abstract class Colaborador extends Rol {
         for (Contacto contacto : contactos) {
             if (contacto.getMedio() == notificacion.getMedio()) {
                 notificacion.setContacto(contacto.getContacto());
+                notificacion.setUsuario(this.usuario);
                 contacto.notificar(notificacion);
                 break;
             }
