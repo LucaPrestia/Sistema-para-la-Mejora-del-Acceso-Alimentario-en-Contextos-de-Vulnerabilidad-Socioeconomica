@@ -41,9 +41,9 @@ public class CargaColaboracionesMasivas {
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("[d][dd]/[M][MM]/yyyy");
                 LocalDate fechaColaboracion = LocalDate.parse(fechaColaboracionStr, formatter);
-                TipoColaboracion tipoColaboracion = TipoColaboracion.valueOf(formaColaboracion);
+                TipoColaboracionEnum tipoColaboracionEnum = TipoColaboracionEnum.valueOf(formaColaboracion);
 
-                Colaboracion colaboracion = getColaboracion(tipoColaboracion, cantidad, fechaColaboracion);
+                Colaboracion colaboracion = getColaboracion(tipoColaboracionEnum, cantidad, fechaColaboracion);
                 colaborador.agregarColaboracion(colaboracion); // esto ya se encarga de sumar los puntos
                 // TODO: persistir en la base de datos
                 colaboraciones.add(colaboracion);
@@ -53,9 +53,9 @@ public class CargaColaboracionesMasivas {
         return colaboraciones;
     }
 
-    private static Colaboracion getColaboracion(TipoColaboracion tipoColaboracion, int cantidad, LocalDate fecha) {
+    private static Colaboracion getColaboracion(TipoColaboracionEnum tipoColaboracionEnum, int cantidad, LocalDate fecha) {
         Colaboracion colaboracion;
-        switch (tipoColaboracion) {
+        switch (tipoColaboracionEnum) {
             case DINERO ->{
                 colaboracion = new ColaboracionDinero((float) cantidad, fecha); // SUPONGO UNICA
                 colaboracion.setViejo(true);

@@ -1,20 +1,18 @@
 package ar.utn.sistema.entities.colaboracion;
 
+import ar.utn.sistema.entities.PersistenciaID;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Getter
-public enum TipoColaboracion {
-    DINERO("Donación Dinero"),
-    DONACION_VIANDAS("Donacion Viandas"),
-    REDISTRIBUCION_VIANDAS("Distribución Viandas"),
-    GESTION_HELADERA("Gestion Heladeras"),
-    OFERTA_SERVICIO("Oferta Servicio"),
-    ENTREGA_TARJETAS("Entrega Tarjetas");
+@Getter @Setter @NoArgsConstructor
+public class TipoColaboracion {
+    private Integer id;
+    private String codigo;
+    private String nombre;
 
-    private final String value;
-
-    TipoColaboracion(String value) {
-        this.value = value;
+    public TipoColaboracion(Integer id, String nombre) {
+        this.id = id;
+        this.nombre = nombre;
     }
-
 }

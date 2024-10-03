@@ -3,6 +3,7 @@ package ar.utn.sistema.entities.usuarios;
 import ar.utn.sistema.entities.PersistenciaID;
 import ar.utn.sistema.entities.colaboracion.Colaboracion;
 import ar.utn.sistema.entities.colaboracion.OfertaCanje;
+import ar.utn.sistema.entities.colaboracion.TipoColaboracion;
 import ar.utn.sistema.entities.notificacion.Contacto;
 import ar.utn.sistema.entities.notificacion.Notificacion;
 import ar.utn.sistema.entities.Direccion;
@@ -24,6 +25,7 @@ public abstract class Colaborador extends Rol {
     private List<Colaboracion> colaboraciones = new ArrayList<Colaboracion>();
     private double puntosDisponibles;
     private List<OfertaCanje> serviciosCanjeados = new ArrayList<OfertaCanje>();
+    private List<TipoColaboracion> tiposColaboracion; // los tipos de colaboraciones que seleccionó para realizar
 
     public void agregarColaboracion(Colaboracion colaboracion){
         this.colaboraciones.add(colaboracion);

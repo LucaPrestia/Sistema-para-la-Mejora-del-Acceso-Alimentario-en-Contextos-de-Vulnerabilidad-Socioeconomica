@@ -1,23 +1,39 @@
 {
-  "formColaboracion" : [ {
-    "tipoColaborador" : "PERSONA_HUMANA",
-    "colaboraciones" : [ {
-      "nombre" : "DONACION_DINERO"
+  "formColaboracion" : [
+    {
+      "tipoColaborador" : "PERSONA_HUMANA",
+      "tipoColaboracion" : [ {
+        "id": 0,
+        "codigo": "DINERO",
+        "nombre": "Donación Dinero"
+      }, {
+        "id": 1,
+        "codigo": "DONACION_VIANDAS",
+        "nombre": "Donación Viandas"
+      }, {
+        "id": 2,
+        "codigo": "REDISTRIBUCION_VIANDAS",
+        "nombre": "Distribucion Viandas"
+      }, {
+        "id": 3,
+        "codigo": "ENTREGA_TARJETAS",
+        "nombre": "Registro de Personas Vulnerables - Repartición Tajertas"
+      } ]
     }, {
-      "nombre" : "DONACION_VIANDA"
-    }, {
-      "nombre" : "DISTRUBUCION_VIANDA"
-    }, {
-      "nombre" : "REGISTRO_PERSONA_VULNERABLE"
-    } ]
-  }, {
-    "tipoColaborador" : "PERSONA_JURIDICA",
-    "colaboraciones" : [ {
-      "nombre" : "DONACION_DINERO"
-    }, {
-      "nombre" : "GESTION_HELADERA"
-    }, {
-      "nombre" : "OFERTA_SERVICIO"
-    } ]
-  } ]
+      "tipoColaborador" : "PERSONA_JURIDICA",
+      "tipoColaboracion" : [ {
+        "id": 0,
+        "codigo": "DINERO",
+        "nombre": "Donación Dinero"
+      }, {
+        "id": 4,
+        "codigo": "GESTION_HELADERA",
+        "nombre": "Gestión de Heladera"
+      }, {
+        "id": 5,
+        "codigo": "OFERTA_SERVICIO",
+        "nombre": "Prestar Servicio para Canje"
+      } ]
+    }
+  ]
 }

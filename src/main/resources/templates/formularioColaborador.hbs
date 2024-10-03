@@ -32,7 +32,7 @@
             {{else if (ifCond (toString tipo) "==" "COLABORACION")}}
                  </br>
                  {{#each tiposColaboracion}}
-                        <input type="checkbox" name="opcionesColaboracion" value="{{this}}"> {{value}}<br>
+                        <input type="checkbox" name="opcionesColaboracion" value={{id}}> {{nombre}}<br>
                  {{/each}}
             {{/if}}
         </div>

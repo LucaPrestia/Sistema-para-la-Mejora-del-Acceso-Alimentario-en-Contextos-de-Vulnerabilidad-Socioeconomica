@@ -14,7 +14,7 @@ public class ColaboracionVianda extends Colaboracion {
     private int cantidad;
 
     public ColaboracionVianda(List<Vianda> vianda, int cantidad){
-        super(TipoColaboracion.DONACION_VIANDAS, 1.5);
+        super(TipoColaboracionEnum.DONACION_VIANDAS, 1.5);
         // TODO: cuando agreguemos la base de datos, vamos a tomar el coeficiente desde la tabla CoeficientesColaboracion
         this.vianda = vianda;
         this.cantidad = cantidad;
@@ -22,7 +22,7 @@ public class ColaboracionVianda extends Colaboracion {
 
     // para la carga masiva: no importa qué viandas se distribuyeron sino la cantidad para sumar puntos!
     public ColaboracionVianda(int cantidadCargaMasiva, LocalDate fechaCargaMasiva){
-        super(TipoColaboracion.DONACION_VIANDAS, 1.5);
+        super(TipoColaboracionEnum.DONACION_VIANDAS, 1.5);
         this.cantidad = cantidadCargaMasiva;
         this.setFechaColaboracion(fechaCargaMasiva);
 

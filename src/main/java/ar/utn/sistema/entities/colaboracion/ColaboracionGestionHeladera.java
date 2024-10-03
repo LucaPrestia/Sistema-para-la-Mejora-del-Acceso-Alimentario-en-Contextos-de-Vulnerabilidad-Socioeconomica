@@ -10,7 +10,7 @@ public class ColaboracionGestionHeladera extends Colaboracion{
     private Heladera heladera;
 
     public ColaboracionGestionHeladera(Heladera heladera){
-        super(TipoColaboracion.GESTION_HELADERA, 5.0);
+        super(TipoColaboracionEnum.GESTION_HELADERA, 5.0);
         this.heladera = heladera;
     }
 

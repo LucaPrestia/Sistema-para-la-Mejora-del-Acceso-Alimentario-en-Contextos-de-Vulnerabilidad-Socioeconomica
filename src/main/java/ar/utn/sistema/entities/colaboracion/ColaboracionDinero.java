@@ -12,14 +12,14 @@ public class ColaboracionDinero extends Colaboracion {
     private TipoFrecuencia frecuencia;
 
     public ColaboracionDinero(Float monto, TipoFrecuencia frecuencia){
-        super(TipoColaboracion.DINERO, 0.5);
+        super(TipoColaboracionEnum.DINERO, 0.5);
         // TODO: cuando agreguemos la base de datos, vamos a tomar el coeficiente desde la tabla CoeficientesColaboracion
         this.monto = monto;
         this.frecuencia = frecuencia;
     }
 
     public ColaboracionDinero(Float montoCargaMasiva, LocalDate fechaCargaMasiva){
-        super(TipoColaboracion.DINERO, 0.5);
+        super(TipoColaboracionEnum.DINERO, 0.5);
         this.monto = montoCargaMasiva;
         this.frecuencia = TipoFrecuencia.UNICA;
         this.setFechaColaboracion(fechaCargaMasiva);

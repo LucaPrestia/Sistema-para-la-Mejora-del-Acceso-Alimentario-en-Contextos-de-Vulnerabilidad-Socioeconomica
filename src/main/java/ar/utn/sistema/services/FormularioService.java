@@ -18,7 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Service public class FormularioService {
+@Service
+public class FormularioService {
     private Map<String, Formulario> formularios = new HashMap<>();
 
     @PostConstruct

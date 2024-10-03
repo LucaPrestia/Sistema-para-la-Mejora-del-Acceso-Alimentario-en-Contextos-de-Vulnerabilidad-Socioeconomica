@@ -25,6 +25,6 @@ public class CodigoGenerador {
     }
 
     private static boolean codigoYaExisteEnBaseDeDatos(String codigo) {
-        return false; // TODO!!!
+        return false; // TODO: consulta a la base de datos
     }
 }
