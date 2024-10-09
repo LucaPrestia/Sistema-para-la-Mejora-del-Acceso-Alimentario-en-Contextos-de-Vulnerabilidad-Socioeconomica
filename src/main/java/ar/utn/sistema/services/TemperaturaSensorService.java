@@ -1,8 +1,7 @@
 package ar.utn.sistema.services;
 
 import ar.utn.sistema.entities.heladera.Heladera;
-import ar.utn.sistema.model.MensajeTemperatura;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+// import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -13,8 +12,10 @@ import java.util.Random;
 @Service
 public class TemperaturaSensorService {
     // https://keepcoding.io/blog/que-es-rabbitmq-y-como-funciona/
+    /*
     @Autowired
     private RabbitTemplate rabbitTemplate;
+     */
 
     @Autowired
     private HeladeraService service;
@@ -27,7 +28,8 @@ public class TemperaturaSensorService {
         for (Heladera heladera : heladeras) {
             // Se podría obtener la temperatura desde un sensor o una API externa
             double temperatura = obtenerTemperaturaDeHeladera(heladera);
-            rabbitTemplate.convertAndSend("heladera.exchange", "temperatura.heladera", new MensajeTemperatura(heladera.getId(), temperatura));
+            //rabbitTemplate.convertAndSend("heladera.exchange", "temperatura.heladera", new MensajeTemperatura(heladera.getId(), temperatura));
+            System.out.println("envio mensaje temperatura heladera id: " + heladera.getId() + " temp: " + temperatura);
         }
     }
 

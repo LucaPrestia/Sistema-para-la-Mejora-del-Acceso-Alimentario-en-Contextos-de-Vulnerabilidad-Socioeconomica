@@ -7,28 +7,36 @@ import lombok.Setter;
 import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter @Setter @NoArgsConstructor
 public class Vianda extends PersistenciaID {
 
     private String comida;
     private LocalDate fechaCaducidad;
-    private LocalDate fechaDonacion;
-    private Heladera heladera;
+    // private Heladera heladera; // hace falta?? ya se persiste en los movimientos de las viandas y cuando está en una heladera se encuentra dentro de la lista de heladeras. lo comento por el momento para evitar bidireccionalidad
     private Float calorias;
     private Float peso;
-    private LocalDate fechaConsumo;
+    private List<MovimientoVianda> movimientos = new ArrayList<MovimientoVianda>();
 
     public Vianda(String comida, LocalDate fechaCaducidad, Heladera heladera, Float calorias, Float peso) {
         this.comida = comida;
         this.fechaCaducidad = fechaCaducidad;
-        this.fechaDonacion = LocalDate.now();
-        this.heladera = heladera;
         this.calorias = calorias;
         this.peso = peso;
+
+        MovimientoVianda movimiento = new MovimientoVianda(TipoMovimientoVianda.DONACION, heladera, null, null);
+        agregarMovimientoVianda(movimiento);
+        heladera.agregarVianda(this);
+    }
+    public void consumirVianda(Heladera heladera) {
+        MovimientoVianda movimiento = new MovimientoVianda(TipoMovimientoVianda.CONSUMO, heladera, null, null);
+        agregarMovimientoVianda(movimiento);
+        heladera.sacarVianda(this);
     }
 
-    public void consumirVianda() {
-        this.fechaConsumo = LocalDate.now();
+    public void agregarMovimientoVianda(MovimientoVianda movimiento) {
+        this.movimientos.add(movimiento);
     }
 }

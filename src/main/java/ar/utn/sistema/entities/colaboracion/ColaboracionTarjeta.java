@@ -1,5 +1,6 @@
 package ar.utn.sistema.entities.colaboracion;
 
+import ar.utn.sistema.entities.tarjeta.TarjetaPersonaVulnerable;
 import ar.utn.sistema.entities.usuarios.ColaboradorFisico;
 import ar.utn.sistema.entities.usuarios.PersonaVulnerable;
 import ar.utn.sistema.utils.CodigoGenerador;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 @Getter@Setter
 public class ColaboracionTarjeta extends Colaboracion {
-    private List<Tarjeta> tarjetasAsignadas = new ArrayList<Tarjeta>();
+    private List<TarjetaPersonaVulnerable> tarjetasAsignadas = new ArrayList<TarjetaPersonaVulnerable>();
     private int cantidadTarjetasAsignadas;
     private int cantidadTarjetasRepartidas;
     private Boolean es_vieja;
@@ -20,7 +21,7 @@ public class ColaboracionTarjeta extends Colaboracion {
         this.cantidadTarjetasAsignadas = cantidadTarjetasRecibidas;
         this.cantidadTarjetasRepartidas = 0;
         for (int i = 0; i < this.cantidadTarjetasAsignadas; i++) {
-            this.tarjetasAsignadas.add(new Tarjeta(CodigoGenerador.generarCodigoUnico()));
+            this.tarjetasAsignadas.add(new TarjetaPersonaVulnerable(CodigoGenerador.generarCodigoUnico()));
         }
     }
 
@@ -42,9 +43,9 @@ public class ColaboracionTarjeta extends Colaboracion {
 
     }
 
-    public Tarjeta registrarPersonaVulnerable(PersonaVulnerable persona, ColaboradorFisico colaborador){
+    public TarjetaPersonaVulnerable registrarPersonaVulnerable(PersonaVulnerable persona, ColaboradorFisico colaborador){
         // en un form de alta se van a cargar los datos de la persona vulnerable a partir de esta colaboración vigente (quedan tarjetas sin repartir)
-        Tarjeta tarjeta = this.tarjetasAsignadas.stream().filter(t -> t.getPersonaVulnerable() == null ).findFirst().get();
+        TarjetaPersonaVulnerable tarjeta = this.tarjetasAsignadas.stream().filter(t -> t.getPersonaVulnerable() == null ).findFirst().get();
         tarjeta.setPersonaVulnerable(persona);
         tarjeta.setRegistrador(colaborador);
         colaborador.actualizarPuntos(this.getCoeficientePuntos());

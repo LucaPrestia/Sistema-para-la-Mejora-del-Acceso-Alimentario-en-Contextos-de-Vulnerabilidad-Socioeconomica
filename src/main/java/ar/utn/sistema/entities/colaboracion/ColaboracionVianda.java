@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter @Setter @NoArgsConstructor
 public class ColaboracionVianda extends Colaboracion {
-    private List<Vianda> vianda;
+    private List<Vianda> vianda; // en el NEW de cada vianda ya se cargó un movimiento de vianda de tipo donacion
     private int cantidad;
 
     public ColaboracionVianda(List<Vianda> vianda, int cantidad){
@@ -25,7 +25,6 @@ public class ColaboracionVianda extends Colaboracion {
         super(TipoColaboracionEnum.DONACION_VIANDAS, 1.5);
         this.cantidad = cantidadCargaMasiva;
         this.setFechaColaboracion(fechaCargaMasiva);
-
     }
 
     @Override

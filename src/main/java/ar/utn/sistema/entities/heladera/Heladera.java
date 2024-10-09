@@ -1,6 +1,9 @@
 package ar.utn.sistema.entities.heladera;
 import ar.utn.sistema.entities.Direccion;
 import ar.utn.sistema.entities.PersistenciaID;
+import ar.utn.sistema.entities.notificacion.Notificacion;
+import ar.utn.sistema.entities.notificacion.PreferenciaNotificacion;
+import ar.utn.sistema.entities.usuarios.Suscriptor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,6 +25,7 @@ public class Heladera extends PersistenciaID {
     private double tempMin;
     private double tempMax;
     private double ultTempRegs;
+    private List<Suscriptor> suscriptores;
 
     // Constructor
     public Heladera(String nombre, String owner, Direccion direccion, double tempMax, double tempMin, int maxViandas) {
@@ -36,8 +40,41 @@ public class Heladera extends PersistenciaID {
     }
 
     // Métodos
-    public void agregarAListaVianda(Vianda vianda){
+    public void agregarVianda(Vianda vianda){
+        // todo: ¿¿ chequea si hay autorizacion de apertura ??
         this.viandas.add(vianda);
+        int espacioViandasDisponibles = maxViandas - viandas.size();
+        StringBuilder mensaje = new StringBuilder();
+        mensaje.append("Queda espacio para ")
+                .append(espacioViandasDisponibles)
+                .append(" vianda/s en la heladera de nombre '")
+                .append(nombre)
+                .append("' ubicada en la dirección ")
+                .append(direccion.obtenerCadenaDireccion())
+                .append(".");
+        Notificacion notificacion = new Notificacion(mensaje.toString());
+        notificarSuscriptor(notificacion, PreferenciaNotificacion.HELADERA_LLENA, espacioViandasDisponibles);
+    }
+
+    public void sacarVianda(Vianda vianda){
+        // todo: ¿¿ chequea si hay autorizacion de apertura ??
+        this.viandas.remove(vianda);
+        int cantidadViandasDisponibles = viandas.size();
+        StringBuilder mensaje = new StringBuilder();
+        mensaje.append("Queda/n solamente ")
+                .append(cantidadViandasDisponibles)
+                .append(" vianda/s disponible/s en la heladera de nombre '")
+                .append(nombre)
+                .append("' ubicada en la dirección ")
+                .append(direccion.obtenerCadenaDireccion())
+                .append(".");
+        Notificacion notificacion = new Notificacion(mensaje.toString());
+        notificarSuscriptor(notificacion, PreferenciaNotificacion.POCAS_VIANDAS, cantidadViandasDisponibles);
+    }
+
+
+    public void notificarDesperfecto(Notificacion notificacion){
+        notificarSuscriptor(notificacion, PreferenciaNotificacion.DESPERFECTO, 0);
     }
 
     public boolean llena(){
@@ -49,4 +86,22 @@ public class Heladera extends PersistenciaID {
         Period periodo = Period.between(this.fechaPuestaFuncionamiento, fechaActual);
         return periodo.getYears() * 12 + periodo.getMonths();
     }
+
+    public void suscribir(Suscriptor s){
+        this.suscriptores.add(s);
+    }
+
+    public void  desuscribir(Suscriptor s){
+        this.suscriptores.remove(s);
+    }
+
+    private void notificarSuscriptor(Notificacion notificacion, PreferenciaNotificacion pref, int cantidadViandas){
+        for (Suscriptor s: suscriptores){
+            if (s.correspondeVerificar(pref, cantidadViandas)){
+                s.notificar(notificacion);
+            }
+        }
+    }
+
+
 }
