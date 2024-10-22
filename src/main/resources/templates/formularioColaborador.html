@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario Colaborador</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4>Formulario Colaborador</h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/colaborador/submitAlta/{tipoColaborador}(tipoColaborador=${tipoColaborador})}" method="post">
+                        <input type="hidden" name="tipoColaborador" value="${tipoColaborador}">
+
+                        <!-- Iterar sobre los campos del formulario -->
+                        <div th:each="campo : ${formularioColaborador.campos}">
+                            <div class="form-group">
+                                <label th:for="${campo.nombreCampo}" th:text="${campo.etiqueta}"></label>
+                                <div th:switch="${campo.tipo}">
+                                    <select th:case="'TIPOJURIDICO'" th:name="${campo.nombreCampo}" class="form-control" th:required="${campo.requerido}">
+                                        <option th:each="tipo : ${tipoJuridico}" th:value="${tipo}" th:text="${tipo}"></option>
+                                    </select>
+
+                                    <input th:case="'TEXTO'" type="text" class="form-control" th:name="${campo.nombreCampo}" th:placeholder="${campo.etiqueta}" th:required="${campo.requerido}" />
+                                    <input th:case="'FECHA'" type="date" class="form-control" th:name="${campo.nombreCampo}" th:required="${campo.requerido}" />
+
+                                    <div th:case="'MEDIO'">
+                                        <select class="form-control" th:name="medio" th:required="${campo.requerido}">
+                                            <option th:each="medio : ${tipoContacto}" th:value="${medio}" th:text="${medio}"></option>
+                                        </select>
+                                        <input type="text" class="form-control mt-2" th:name="contacto" th:required="${campo.requerido}" />
+                                    </div>
+
+                                    <div th:case="'DOCUMENTO'">
+                                        <select class="form-control" th:name="tipoDocumento" th:required="${campo.requerido}">
+                                            <option th:each="tipo : ${tipoDocumento}" th:value="${tipo}" th:text="${tipo.descripcion}"></option>
+                                        </select>
+                                        <input type="text" class="form-control mt-2" th:name="documento" placeholder="Ingrese su documento" th:required="${campo.requerido}" />
+                                    </div>
+
+                                    <div th:case="'DIRECCION'">
+                                        <div th:replace="~{fragments/direccion :: direccionFragment('0')}"></div>
+                                    </div>
+
+                                    <div th:case="'COLABORACION'">
+                                        <div th:each="colaboracion : ${tiposColaboracion}" class="form-check">
+                                            <input class="form-check-input" type="checkbox" th:value="${colaboracion.id}" name="opcionesColaboracion" />
+                                            <label class="form-check-label" th:text="${colaboracion.nombre}"></label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-primary btn-block">Aceptar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS (opcional) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

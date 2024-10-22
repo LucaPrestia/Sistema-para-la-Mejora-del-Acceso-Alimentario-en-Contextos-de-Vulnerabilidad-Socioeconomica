@@ -18,15 +18,15 @@ public class MapController {
                           Model model) {
         model.addAttribute("lat", lat);
         model.addAttribute("lon", lon);
-        return "map";
+        return "fragments/map";
     }
 
-    // esto lo dejé acá como ejemplo nomas
+    /*// esto lo dejé acá como ejemplo nomas
     @GetMapping("/index")
     public String showIndex(Model model) {
         model.addAttribute("title", "Página de Inicio");
         model.addAttribute("description", "Bienvenido a la página de inicio de nuestra aplicación.");
         LOG.info("Estas por acceder a index");
         return "index";
-    }
+    }*/
 }

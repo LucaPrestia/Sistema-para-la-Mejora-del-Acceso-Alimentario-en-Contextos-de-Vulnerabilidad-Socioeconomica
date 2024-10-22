@@ -30,7 +30,7 @@ public class HeladeraService {
     }
 
     // Receive temperature sensor messages
-    @RabbitListener(queues = "temperatura.heladera")
+    // @RabbitListener(queues = "temperatura.heladera")
     public void registrarTemperatura(MensajeTemperatura mensaje) {
         Heladera heladera = obtenerHeladeraPorId(mensaje.getHeladeraId());
         double temperatura = mensaje.getTemperatura();
@@ -48,7 +48,7 @@ public class HeladeraService {
     }
 
     // Receive movement sensor messages
-    @RabbitListener(queues = "movimiento.heladera", priority = "10") // higher priority
+    // @RabbitListener(queues = "movimiento.heladera", priority = "10") // higher priority
     public void registrarMovimiento(Integer heladeraId) {
         Heladera heladera = obtenerHeladeraPorId(heladeraId);
         String mensajeNotificacion = "Alerta de movimiento, posible fraude en la heladera '" + heladera.getNombre() +

@@ -53,7 +53,7 @@ public class ColaboradorController {
         // devuelve las colaboraciones seleccionadas por la ONG por tipo de colaborador
         ColaboradorColaboracion colaboraciones = serviceColaboracion.obtenerFormularioPorTipo(tipo);
         model.addAttribute("tiposColaboracion", colaboraciones.getTipoColaboracion());
-        return "formularioColaborador"; // esto carga los datos en el formularioColaborador.hbs
+        return "formularioColaborador"; // esto carga los datos en el formularioColaborador.html
     }
 
     @PostMapping("/submitAlta/0")
@@ -70,7 +70,7 @@ public class ColaboradorController {
         colaborador.setTiposColaboracion(colaboracionesSeleccionadas);
         colaborador.setDireccion(direccion); // TODO: corroborar que tenga datos y que estén bien cargados!!
         // TODO: persistir en la base de datos!!!
-        return "redirect:/colaborador/confirmacion"; // Redirigir a una página de confirmación o éxito
+        return "redirect:/colaborador/confirmar"; // Redirigir a una página de confirmación o éxito
     }
 
     @PostMapping("/submitAlta/1")
@@ -87,12 +87,12 @@ public class ColaboradorController {
         colaborador.setTiposColaboracion(colaboracionesSeleccionadas);
         colaborador.setDireccion(direccion); // TODO: corroborar que tenga datos y que estén bien cargados!!
         // TODO: persistir en la base de datos!!!
-        return "redirect:/colaborador/confirmacion"; // Redirigir a una página de confirmación o éxito
+        return "redirect:/colaborador/confirmar"; // Redirigir a una página de confirmación o éxito
     }
 
-    @GetMapping("/confirmacion")
+    @GetMapping("/confirmar")
     public String mostrarConfirmacion(Model model) {
-        return "confirmacionColaborador"; // TODO: AGREGAR HBS
+        return "confirmarCarga";
     }
 
 }

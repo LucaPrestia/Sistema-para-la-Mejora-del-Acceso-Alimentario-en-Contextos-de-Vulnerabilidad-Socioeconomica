@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 @Getter @Setter @NoArgsConstructor
 public abstract class Colaborador extends Rol implements Suscriptor{
     private Usuario usuario;

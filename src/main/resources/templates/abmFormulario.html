@@ -1,0 +1,77 @@
+<!-- formulario.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ABM Formulario</title>
+</head>
+<body>
+<h2>Gestión de Campos Formulario
+    <span th:if="${formulario.tipoColaborador == 'PERSONA_HUMANA'}">Persona Humana</span>
+    <span th:if="${formulario.tipoColaborador != 'PERSONA_HUMANA'}">Persona Jurídica</span>
+</h2>
+
+<h3>Agregar nuevo campo</h3>
+<form action="/formulario/agregarCampo" method="POST">
+    <input type="hidden" name="tipoColaborador" th:value="${formulario.tipoColaborador}">
+
+    <label for="nombreCampo">Nombre del Campo:</label>
+    <input type="text" id="nombreCampo" name="nombreCampo" required>
+
+    <label for="etiqueta">Etiqueta:</label>
+    <input type="text" id="etiqueta" name="etiqueta" required>
+
+    <label for="tipo">Tipo:</label>
+    <select id="tipo" name="tipo" required>
+        <option th:each="tipo : ${tiposDeCampo}" th:value="${tipo}" th:text="${tipo}"></option>
+    </select>
+
+    <label for="requerido">Requerido:</label>
+    <input type="checkbox" id="requerido" name="requerido">
+
+    <button type="submit">Agregar Campo</button>
+</form>
+
+<form action="/formulario/eliminarCampo" method="POST">
+    <input type="hidden" name="tipoColaborador" th:value="${formulario.tipoColaborador}">
+
+    <label for="nombreCampoEliminar">Nombre del Campo a Eliminar:</label>
+    <input type="text" id="nombreCampoEliminar" name="nombreCampo" required>
+
+    <div th:if="${error.erroresPorSeccion.eliminarCampo}">
+        <p th:each="err : ${error.erroresPorSeccion.eliminarCampo}" style="color:red;" th:text="${err}"></p>
+    </div>
+
+    <p th:if="${error.errores.borrar_campo_obligatorio}" style="color:red;" th:text="${error.errores.borrar_campo_obligatorio}"></p>
+    <p th:if="${error.errores.campo_obligatorio}" style="color:red;" th:text="${error.errores.campo_obligatorio}"></p>
+
+    <button type="submit">Quitar Campo</button>
+</form>
+
+<h3>Campos Actuales</h3>
+<ul>
+    <li th:each="campo : ${formulario.campos}">
+        <span th:text="${campo.nombreCampo}"></span> (<span th:text="${campo.tipo}"></span>) -
+        <form action="/formulario/modificarCampo" method="POST" style="display:inline;">
+            <input type="hidden" name="tipoColaborador" th:value="${formulario.tipoColaborador}">
+            <input type="hidden" name="nombreCampo" th:value="${campo.nombreCampo}">
+
+            <label for="nuevaEtiqueta">Etiqueta:</label>
+            <input type="text" id="nuevaEtiqueta" name="nuevaEtiqueta" th:value="${campo.etiqueta}"
+                   th:disabled="${campo.obligatorio}" required>
+
+            <label for="nuevoTipo">Tipo:</label>
+            <select id="nuevoTipo" name="nuevoTipo" th:disabled="${campo.obligatorio}" required>
+                <option th:each="tipo : ${tiposDeCampo}" th:value="${tipo}" th:text="${tipo}"
+                        th:selected="${campo.tipo == tipo}"></option>
+            </select>
+
+            <label for="nuevoRequerido">Requerido:</label>
+            <input type="checkbox" id="nuevoRequerido" name="nuevoRequerido" th:checked="${campo.requerido}"
+                   th:disabled="${campo.obligatorio}">
+
+            <button type="submit">Modificar Campo</button>
+        </form>
+    </li>
+</ul>
+</body>
+</html>

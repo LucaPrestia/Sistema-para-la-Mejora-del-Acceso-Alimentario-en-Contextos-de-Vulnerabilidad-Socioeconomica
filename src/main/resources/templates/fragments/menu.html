@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Menu</title>
+</head>
+<body>
+<div th:fragment="menuprincipal(username)">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <!-- Opción común para todos los roles -->
+        <a class="navbar-brand" th:href="@{/home}">Sistema de Gestión de Alimentos</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <!-- todo: opciones de menú específicas para cada tipo de usuario (los roles se deberían configurar también desde securityConfig) -->
+                <!--
+                Opciones exclusivas del COLABORADOR
+                <li class="nav-item" th:if="${#authorization.expression('hasRole(''COLABORADOR'')')}">
+                    <a class="nav-link" th:href="@{/colaborador/dashboard}">Dashboard Colaborador</a>
+                </li>
+
+                 Opciones exclusivas del TECNICO
+                <li class="nav-item" th:if="${#authorization.expression('hasRole(''TECNICO'')')}">
+                    <a class="nav-link" th:href="@{/tecnico/dashboard}">Dashboard Técnico</a>
+                </li>
+
+                Opciones exclusivas del ADMIN
+                <li class="nav-item" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                    <a class="nav-link" th:href="@{/admin/dashboard}">Dashboard Admin</a>
+                </li>
+                -->
+
+                <!-- Mostrar el nombre del usuario para entrar al panel de sus datos -->
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#"><span th:text="${username}"></span></a>
+                </li>
+
+                <!-- Link de logout común a todos -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/logout}">Cerrar sesión</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+</body>
+</html>

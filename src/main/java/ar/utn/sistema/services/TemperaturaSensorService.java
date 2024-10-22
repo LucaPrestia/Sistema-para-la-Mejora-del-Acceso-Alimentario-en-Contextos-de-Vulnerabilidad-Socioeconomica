@@ -29,7 +29,7 @@ public class TemperaturaSensorService {
             MensajeTemperatura mensaje = new MensajeTemperatura(heladera.getId(), temperatura);
 
             try {
-                rabbitTemplate.convertAndSend("heladera.exchange", "temperatura.heladera", mensaje);
+                // rabbitTemplate.convertAndSend("heladera.exchange", "temperatura.heladera", mensaje);
                 System.out.println("Enviando mensaje: " + mensaje);
             } catch (Exception e) {
                 System.err.println("Error al enviar el mensaje: " + e.getMessage());

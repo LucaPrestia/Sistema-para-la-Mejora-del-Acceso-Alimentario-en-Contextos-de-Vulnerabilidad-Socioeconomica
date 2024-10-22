@@ -4,7 +4,6 @@ package ar.utn.sistema.services;
 import ar.utn.sistema.model.CampoFormulario;
 import ar.utn.sistema.model.Formulario;
 import ar.utn.sistema.model.FormulariosConfig;
-import ar.utn.sistema.model.TipoCampo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import org.springframework.core.io.ClassPathResource;

@@ -1,4 +1,4 @@
-package ar.utn.sistema;
+package ar.utn.sistema.config;
 
 import ar.utn.sistema.model.MensajeTemperatura;
 import org.springframework.amqp.core.Binding;
@@ -13,9 +13,8 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Collections;
 
-@Configuration
+// @Configuration
 public class RabbitMQConfig {
-
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);

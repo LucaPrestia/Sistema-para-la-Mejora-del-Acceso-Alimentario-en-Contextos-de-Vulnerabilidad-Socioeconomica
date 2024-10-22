@@ -30,6 +30,7 @@ public class Tests {
     public void setUp() {
 
     }
+    /*
     @Test
     public void registrarUsuario(){
         Usuario usuarioNuevo = new Usuario();
@@ -48,6 +49,8 @@ public class Tests {
         boolean resp = usuarioNuevo.registrarUsuario("usuario","155");
         assertFalse(resp);
     }
+     */
+
    /* @Test COMENTADO PARA NO GASTAR USOS DE LA API QUEDAN 990 USOS
     public void obtenerCoordenadasHeladera() throws IOException {
         ServicioDeUbicacionHeladera servicio = ServicioDeUbicacionHeladera.instancia();

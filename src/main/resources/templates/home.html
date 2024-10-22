@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema de Gestión de Alimentos</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<header>
+    <div th:insert="~{fragments/menu :: menuprincipal(username=${username})}"></div>
+</header>
+<body>
+    <div class="container mt-5">
+        <!-- Centrar texto usando las clases text-center y mt-5 para margen superior -->
+        <h1 class="text-center">Bienvenido/a al Sistema de Gestión de Alimentos</h1>
+        <p class="text-center mt-3">Este es el contenido compartido que se muestra a todos los usuarios
+            (podría ser un mapa de las heladeras informando ubicación, capacidad, viandas, estado, etc.)
+        </p>
+    </div>
+    <div class="container mt-5">
+        <div th:insert="~{fragments/map :: mapBody(lat=${lat}, lon=${lon})}"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>

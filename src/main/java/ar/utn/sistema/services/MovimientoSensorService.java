@@ -14,7 +14,7 @@ public class MovimientoSensorService {
 
 
     public void enviarMovimiento(Integer id) {
-        rabbitTemplate.convertAndSend("heladera.exchange", "movimiento.heladera", id );
+        //rabbitTemplate.convertAndSend("heladera.exchange", "movimiento.heladera", id );
         System.out.println("envio mensaje heladera en movimiento");
     }
 }

@@ -13,4 +13,8 @@ public class Tamanio extends Requisitos {
             return false;
         }
     }
+
+    public Tamanio() {
+        super("La contraseña debe tener entre 8 y 63 caracteres");
+    }
 }

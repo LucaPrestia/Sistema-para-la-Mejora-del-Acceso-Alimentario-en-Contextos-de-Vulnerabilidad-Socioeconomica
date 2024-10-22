@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenStreetMap</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #map {
+            height: 400px; /* Ajusta la altura del mapa */
+            width: 100%; /* El mapa ocupará todo el ancho del contenedor */
+        }
+        .map-container {
+            max-width: 800px; /* Ajusta el ancho máximo del contenedor del mapa */
+            margin: 0 auto; /* Centrando el contenedor */
+        }
+    </style>
+</head>
+<body>
+<div th:fragment="mapBody(lat, lon)">
+    <div class="container mt-5">
+        <h1 class="text-center">Ubicación del Mapa</h1>
+        <div class="map-container">
+            <div id="map" style="height: 400px; width: 100%;"></div> <!-- Añadiendo estilos directamente aquí -->
+        </div>
+    </div>
+</div>
+
+<!-- Leaflet.js y Bootstrap JS -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Variables de latitud y longitud pasadas desde el controlador
+        var lat = [[${lat}]]; // Latitud del mapa
+        var lon = [[${lon}]]; // Longitud del mapa
+
+        // Verificar si existe el div del mapa
+        var mapElement = document.getElementById('map');
+        if (mapElement) {
+            // Crear el mapa centrado en las coordenadas
+            var map = L.map('map').setView([lat, lon], 13);
+
+            // Cargar los tiles de OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+        }
+    });
+</script>
+</body>
+</html>
