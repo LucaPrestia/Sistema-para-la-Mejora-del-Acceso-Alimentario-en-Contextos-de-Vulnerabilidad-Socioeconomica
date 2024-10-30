@@ -15,6 +15,9 @@
                     <h4>Iniciar Sesión</h4>
                 </div>
                 <div class="card-body">
+                    <div th:if="${param.success}" class="alert alert-success text-center">
+                        <p>Registro exitoso. Por favor, inicia sesión.</p>
+                    </div>
                     <form th:action="@{/login}" method="post">
                         <div class="form-group">
                             <label for="username">Nombre de usuario</label>
