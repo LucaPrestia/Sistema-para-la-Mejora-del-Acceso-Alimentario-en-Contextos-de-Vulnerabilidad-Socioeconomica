@@ -74,6 +74,10 @@
                             </div>
                         </div>
 
+                        <div th:if="${param.errorContrasenia}" class="alert alert-danger">
+                            <p>Contraseña inválida</p>
+                        </div>
+
                         <div class="form-group text-center">
                             <button type="submit" class="btn btn-primary btn-block">Registrarse</button>
                         </div>

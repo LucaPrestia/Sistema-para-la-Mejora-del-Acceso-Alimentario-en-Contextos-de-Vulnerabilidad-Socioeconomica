@@ -95,13 +95,15 @@ public class UsuarioSesionService implements UserDetailsService {
     }
 
     public Usuario registrarUsuario(String user, String pass, String rol) {
-        Usuario nuevoUsuario = new Usuario();
-        nuevoUsuario.setUsuario(user);
-        nuevoUsuario.setContrasena(passwordEncoder.encode(pass));
-        nuevoUsuario.setRol(rol);
-        // todo: se crearía acá el registro para Colaborador o Tecnico ??
-        // TODO: Guardar nuevoUsuario en la base de datos usando repository
-        // return repository.save(nuevoUsuario);
-        return nuevoUsuario;
+        if(this.controlarRequisitosContrasenia(pass)){
+            Usuario nuevoUsuario = new Usuario();
+            nuevoUsuario.setUsuario(user);
+            nuevoUsuario.setContrasena(passwordEncoder.encode(pass));
+            nuevoUsuario.setRol(rol);
+            // todo: se crearía acá el registro para Colaborador o Tecnico ??
+            // TODO: Guardar nuevoUsuario en la base de datos usando repository
+            // return repository.save(nuevoUsuario);
+            return nuevoUsuario;
+        } else return null;
     }
 }

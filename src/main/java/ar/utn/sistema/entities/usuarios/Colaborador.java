@@ -22,7 +22,7 @@ import java.util.Map;
 
 @Getter @Setter @NoArgsConstructor
 public abstract class Colaborador extends Rol implements Suscriptor{
-    private Usuario usuario;
+    private Usuario usuario; // id_usuario: 5
     private List<Contacto> contactos = new ArrayList<Contacto>();
     private Direccion direccion;
     private List<Colaboracion> colaboraciones = new ArrayList<Colaboracion>();

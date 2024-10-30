@@ -4,6 +4,7 @@ import ar.utn.sistema.entities.PersistenciaID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import java.time.LocalDate;
 
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 public abstract class Colaboracion extends PersistenciaID {
     // private Colaborador colaborador; relacion desde Colaborador
     private LocalDate fechaColaboracion;
+
     private TipoColaboracionEnum tipo;
     private Double coeficientePuntos;
     private Boolean viejo = false;

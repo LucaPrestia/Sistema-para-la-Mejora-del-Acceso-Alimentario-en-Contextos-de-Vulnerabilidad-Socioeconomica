@@ -11,12 +11,18 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter @Setter @NoArgsConstructor
+@Getter @Setter
 public class Usuario extends PersistenciaID {
     private String rol;
     private String usuario;
     private String contrasena;
     private List<Requisitos> requisitos;
+
+    public Usuario(){
+        this.requisitos = new ArrayList<>();
+        this.requisitos.add(new Tamanio());
+        this.requisitos.add(new TOP10000());
+    }
 
     // el registrarUsuario lo movi al service del usuario porque es lógica de negocio
     public  Usuario(String username, String contrasena, String rol){
