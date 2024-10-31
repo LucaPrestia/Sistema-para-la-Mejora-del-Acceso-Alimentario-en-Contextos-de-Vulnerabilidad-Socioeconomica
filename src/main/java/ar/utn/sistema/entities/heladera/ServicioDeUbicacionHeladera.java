@@ -34,6 +34,4 @@ public class ServicioDeUbicacionHeladera {
     Response<List<Coordenadas>> responsePosicion = requestPosicion.execute();
     return responsePosicion.body();
   }
-
-
 }

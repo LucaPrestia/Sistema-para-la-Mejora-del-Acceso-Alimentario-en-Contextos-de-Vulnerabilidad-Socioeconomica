@@ -43,7 +43,7 @@
       <optional>true</optional>
     </dependency>
 
-    <!-- Base de datos + persistencia  // comento por el momento hasta que hagamos la conexion a la base
+    <!-- Base de datos + persistencia  // comento por el momento hasta que hagamos la conexion a la base -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -55,11 +55,10 @@
     </dependency>
 
     <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <version>8.0.29</version>
+      <groupId>com.microsoft.sqlserver</groupId>
+      <artifactId>mssql-jdbc</artifactId>
+      <version>9.4.0.jre8</version> <!-- Asegúrate de usar una versión compatible -->
     </dependency>
-    -->
 
     <!-- Spring Session + Security -->
     <dependency>
