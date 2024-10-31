@@ -25,3 +25,24 @@
   - user: colaborador pass: colaborador123
   - user: tecnico pass: tecnico123
   - user: admin pass: admin123
+### Config JPA y DB
+- creamos con click derecho en database una nueva base de nombre base_dds
+- después desplegar las carpetas del explorador de objetos en el panel izquierdo, ir a seguridad-usuarios, hacer click derecho y crear usuario.
+  Se debe seleccionar el SQL SERVER AUTHENTICATION, y nombre y pass con admin_dds. Darle ok
+- Después dentro de la base de datos, desplegar carpetas, ir a seguridad-usuarios y click derecho nuevo usuario.
+nombre: admin_dds, nombre usuario seleccionar el anteriormente creado, y en defaul
+- Credenciales:
+  - nombre: admin_dds 
+  - pass: admin_dds
+- si lanza error en el usuario admin_dds, ir al object explorer click derecho propiedades
+  ir a security
+  si lanza error por TCP/IP: ir al SQL SERVER CONFIGURATION MANAGER
+  ir al servidor de la base que se levantó en SQL SERVER NETWORK CONFIGURATION
+  hacer click derecho en TCP e ir a properties
+  ir a la solapa de IP ADDRESSES
+  ir al final de todo a la sección de IPAII y, si no hay un puerto seleccionado, poner el puerto 1433 en TCP PORT
+  reiniciar el servicio desde Servicios 
+- si lanza error en el usuario admin_dds, ir al object explorer click derecho propiedades
+  ir a security
+  tildar en server authentication la opción SQL SERVER AND WINDOWS AUTHENTICATION MODE
+  reiniciar el servicios desde Servicios
