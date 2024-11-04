@@ -4,6 +4,7 @@ import ar.utn.sistema.entities.heladera.EstadoHeladera;
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.incidente.Incidente;
 import ar.utn.sistema.entities.incidente.IncidenteAlerta;
+import ar.utn.sistema.entities.incidente.TipoAlerta;
 import ar.utn.sistema.entities.notificacion.Notificacion;
 import ar.utn.sistema.model.MensajeTemperatura;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -41,7 +42,7 @@ public class HeladeraService {
             String mensajeNotificacion = "Alerta de temperatura " + temperaturaStr +
                     " ( " + temperatura + "°C) en la heladera '" + heladera.getNombre() +
                     "' ubicada en la dirección " + heladera.getDireccion().obtenerCadenaDireccion() + ".";
-            registrarAlerta(heladera, "TEMPERATURA", mensajeNotificacion);
+            registrarAlerta(heladera, TipoAlerta.TEMPERATURA, mensajeNotificacion);
         } else {
             // TODO: persist heladera state
         }
@@ -53,10 +54,10 @@ public class HeladeraService {
         Heladera heladera = obtenerHeladeraPorId(heladeraId);
         String mensajeNotificacion = "Alerta de movimiento, posible fraude en la heladera '" + heladera.getNombre() +
                 "' ubicada en la dirección " + heladera.getDireccion().obtenerCadenaDireccion() + ".";
-        registrarAlerta(heladera, "FRAUDE", mensajeNotificacion);
+        registrarAlerta(heladera, TipoAlerta.FRAUDE, mensajeNotificacion);
     }
 
-    private void registrarAlerta(Heladera heladera, String motivo, String mensajeNotif) {
+    private void registrarAlerta(Heladera heladera, TipoAlerta motivo, String mensajeNotif) {
         heladera.setEstado(EstadoHeladera.INACTIVA);
         Incidente incidente = new IncidenteAlerta(LocalDateTime.now(), heladera, motivo);
         Notificacion notificacion = new Notificacion(mensajeNotif);

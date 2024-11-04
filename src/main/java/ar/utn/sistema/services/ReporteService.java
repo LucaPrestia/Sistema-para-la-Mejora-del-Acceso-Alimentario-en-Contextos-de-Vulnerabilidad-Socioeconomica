@@ -82,7 +82,7 @@ public class ReporteService {
     private void generarReporteFallasPorHeladera() {
         List<Heladera> heladeras = new ArrayList<Heladera>(); //todo: buscar en BD heladeraRepository.findAll();
         for (Heladera heladera : heladeras) {
-            int cantidadFallas = 0;  // todo: incidenteRepository.countByHeladeraIdAndFechaBetween(heladera.getId(), LocalDateTime.now().minusWeeks(1), LocalDateTime.now());
+            int cantidadFallas = 0;  // todo: incidenteRepository.countByHeladeraIdAndFechaBetween(heladera.getId(), LocalDateTimeConverter.java.now().minusWeeks(1), LocalDateTimeConverter.java.now());
 
             ReporteFallasHeladera reporte = new ReporteFallasHeladera();
             reporte.setHeladera(heladera);

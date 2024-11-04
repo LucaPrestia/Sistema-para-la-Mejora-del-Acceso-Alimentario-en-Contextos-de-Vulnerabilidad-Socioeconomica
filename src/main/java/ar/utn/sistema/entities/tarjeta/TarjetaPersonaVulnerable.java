@@ -41,7 +41,7 @@ public class TarjetaPersonaVulnerable extends Tarjeta{
 
     private int usosDeTarjetaHoy(){
         int contador = 0;
-        LocalDate hoy = LocalDate.now(); // lo cambie a LocalDateTime por el nuevo requerimiento en la entrega 3 donde pide comparar cantidad de horas
+        LocalDate hoy = LocalDate.now(); // lo cambie a LocalDateTimeConverter.java por el nuevo requerimiento en la entrega 3 donde pide comparar cantidad de horas
         List<LocalDateTime> fechasDeUso = getMovimientos().stream().map(x -> x.getFechaApertura()).toList();
 
         for (LocalDateTime fecha : fechasDeUso)

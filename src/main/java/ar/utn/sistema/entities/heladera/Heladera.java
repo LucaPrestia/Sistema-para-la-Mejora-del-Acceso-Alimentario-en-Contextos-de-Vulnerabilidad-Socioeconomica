@@ -3,7 +3,9 @@ import ar.utn.sistema.entities.Direccion;
 import ar.utn.sistema.entities.PersistenciaID;
 import ar.utn.sistema.entities.notificacion.Notificacion;
 import ar.utn.sistema.entities.notificacion.PreferenciaNotificacion;
+import ar.utn.sistema.entities.usuarios.Colaborador;
 import ar.utn.sistema.entities.usuarios.Suscriptor;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,21 +14,26 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
-
+@Entity
 @Getter @Setter @NoArgsConstructor
 public class Heladera extends PersistenciaID {
     private String nombre;
     private String owner;
     private LocalDate fechaPuestaFuncionamiento;
+    @Embedded
     private Direccion direccion;
+    @Enumerated(EnumType.STRING)
     private EstadoHeladera estado;
     private int maxViandas;
+    @OneToMany
+    @JoinColumn(name = "heladeraId",referencedColumnName = "id")
     private List<Vianda> viandas = new ArrayList<Vianda>();
     private double tempMin;
     private double tempMax;
     private double ultTempRegs;
+    @OneToMany(targetEntity = Colaborador.class)
+    @JoinColumn(name = "heladeraId",referencedColumnName = "id")
     private List<Suscriptor> suscriptores;
-
     // Constructor
     public Heladera(String nombre, String owner, Direccion direccion, double tempMax, double tempMin, int maxViandas) {
         this.nombre = nombre;

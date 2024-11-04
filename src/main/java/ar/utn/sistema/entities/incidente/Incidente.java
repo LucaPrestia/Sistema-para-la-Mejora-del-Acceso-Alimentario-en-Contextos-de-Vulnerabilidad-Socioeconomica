@@ -5,13 +5,18 @@ import ar.utn.sistema.entities.PersistenciaID;
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.notificacion.Notificacion;
 import ar.utn.sistema.entities.usuarios.Tecnico;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-
+@Entity
 @Getter @Setter @NoArgsConstructor
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipoIncidente") // Obligatorio para asignarle un nombre al campo que va a determinar de qué tipo de clase hija está conteniendo los datos
+@Table(name = "Incidente")
+
 public abstract class Incidente extends PersistenciaID {
     private LocalDateTime fechaHora;
     private Heladera heladera;

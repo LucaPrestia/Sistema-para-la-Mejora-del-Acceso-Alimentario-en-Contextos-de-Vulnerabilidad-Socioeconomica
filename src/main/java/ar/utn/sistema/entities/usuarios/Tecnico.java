@@ -4,10 +4,12 @@ import ar.utn.sistema.entities.Direccion;
 import ar.utn.sistema.entities.PersistenciaID;
 import ar.utn.sistema.entities.notificacion.Contacto;
 import ar.utn.sistema.entities.notificacion.Notificacion;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+@Entity
 @Getter @Setter @NoArgsConstructor
 public class Tecnico extends Rol {
     private Usuario usuario;
@@ -20,6 +22,7 @@ public class Tecnico extends Rol {
     private String areaCobertura;
 
     // agregamos la dirección para que se pueda identificar al técnico más cercano a una determinada heladera en caso de detectar algún incidente
+    @Embedded
     private Direccion direccion;
 
     public Tecnico(Usuario usuario, String nombre, String apellido, TipoDocumento tipoDocumento, Long documento, Long cuil, Contacto contacto, String areaCobertura, Direccion direccion) {

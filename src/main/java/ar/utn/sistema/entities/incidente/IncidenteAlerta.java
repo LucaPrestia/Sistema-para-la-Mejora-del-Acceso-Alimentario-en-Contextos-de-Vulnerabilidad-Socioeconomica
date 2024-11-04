@@ -1,6 +1,7 @@
 package ar.utn.sistema.entities.incidente;
 
 import ar.utn.sistema.entities.heladera.Heladera;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,10 +9,14 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Getter @Setter @NoArgsConstructor
-public class IncidenteAlerta extends Incidente{
-    private String tipoAlerta; // ("FRAUDE", "TEMPERATURA", "CONEXION")
+@Entity
+@DiscriminatorValue("alerta")
 
-    public IncidenteAlerta(LocalDateTime fechaHora, Heladera heladera, String tipoAlerta) {
+public class IncidenteAlerta extends Incidente{
+    @Enumerated(EnumType.STRING)
+    private TipoAlerta tipoAlerta;
+
+    public IncidenteAlerta(LocalDateTime fechaHora, Heladera heladera, TipoAlerta tipoAlerta) {
         super(fechaHora, heladera, "alerta");
         this.tipoAlerta = tipoAlerta;
     }

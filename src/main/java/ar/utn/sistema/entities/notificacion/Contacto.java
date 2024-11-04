@@ -1,6 +1,7 @@
 package ar.utn.sistema.entities.notificacion;
 
 import ar.utn.sistema.entities.PersistenciaID;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,12 +10,13 @@ import ar.utn.sistema.utils.medioNotificacion.MedioContactoEmail;
 import ar.utn.sistema.utils.medioNotificacion.MedioContactoWhatsApp;
 import ar.utn.sistema.utils.medioNotificacion.adapters.AdapterEmail;
 import ar.utn.sistema.utils.medioNotificacion.adapters.AdapterWhatsApp;
-
+@Entity
 @Getter @Setter @NoArgsConstructor
 public class Contacto extends PersistenciaID {
+    @Enumerated(EnumType.STRING)
     private MedioNotificacion medio;
     private String contacto;
-    // @Transient
+    @Transient
     private IMedioDeContacto medioDeContacto;
 
     public Contacto(MedioNotificacion medio, String contacto) {

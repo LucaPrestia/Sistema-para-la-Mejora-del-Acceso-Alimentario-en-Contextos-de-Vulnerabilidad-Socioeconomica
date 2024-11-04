@@ -1,11 +1,13 @@
 package ar.utn.sistema.entities;
 
+import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@Embeddable
 public class Direccion {
     private double lat;
     private double lon;

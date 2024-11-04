@@ -4,13 +4,14 @@ import ar.utn.sistema.entities.PersistenciaID;
 import ar.utn.sistema.entities.usuarios.requisitosContrasena.TOP10000;
 import ar.utn.sistema.entities.usuarios.requisitosContrasena.Tamanio;
 import ar.utn.sistema.entities.usuarios.requisitosContrasena.Requisitos;
+import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Entity
 @Getter @Setter
 public class Usuario extends PersistenciaID {
     private String rol;

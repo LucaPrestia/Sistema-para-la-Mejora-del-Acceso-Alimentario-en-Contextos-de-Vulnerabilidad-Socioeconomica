@@ -10,6 +10,8 @@ import ar.utn.sistema.entities.notificacion.Contacto;
 import ar.utn.sistema.entities.notificacion.Notificacion;
 import ar.utn.sistema.entities.Direccion;
 import ar.utn.sistema.entities.notificacion.PreferenciaNotificacion;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,11 +21,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+@Entity
 @Getter @Setter @NoArgsConstructor
 public abstract class Colaborador extends Rol implements Suscriptor{
     private Usuario usuario; // id_usuario: 5
     private List<Contacto> contactos = new ArrayList<Contacto>();
+    @Embedded
     private Direccion direccion;
     private List<Colaboracion> colaboraciones = new ArrayList<Colaboracion>();
     private double puntosDisponibles;
