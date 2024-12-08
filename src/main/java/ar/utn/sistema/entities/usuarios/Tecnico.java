@@ -6,18 +6,23 @@ import ar.utn.sistema.entities.notificacion.Contacto;
 import ar.utn.sistema.entities.notificacion.Notificacion;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 @Entity
 @Getter @Setter @NoArgsConstructor
 public class Tecnico extends Rol {
+    @OneToOne
     private Usuario usuario;
     private String nombre;
     private String apellido;
+    @Enumerated
     private TipoDocumento tipoDocumento;
     private Long documento;
     private Long cuil;
+    @OneToOne
     private Contacto contacto;
     private String areaCobertura;
 

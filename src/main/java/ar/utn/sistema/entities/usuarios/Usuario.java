@@ -5,6 +5,7 @@ import ar.utn.sistema.entities.usuarios.requisitosContrasena.TOP10000;
 import ar.utn.sistema.entities.usuarios.requisitosContrasena.Tamanio;
 import ar.utn.sistema.entities.usuarios.requisitosContrasena.Requisitos;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +18,7 @@ public class Usuario extends PersistenciaID {
     private String rol;
     private String usuario;
     private String contrasena;
+    @Transient
     private List<Requisitos> requisitos;
 
     public Usuario(){

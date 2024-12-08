@@ -1,5 +1,6 @@
 package ar.utn.sistema.entities.usuarios.requisitosContrasena;
 
+import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 @Getter

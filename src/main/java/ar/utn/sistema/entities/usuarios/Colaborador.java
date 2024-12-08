@@ -10,8 +10,7 @@ import ar.utn.sistema.entities.notificacion.Contacto;
 import ar.utn.sistema.entities.notificacion.Notificacion;
 import ar.utn.sistema.entities.Direccion;
 import ar.utn.sistema.entities.notificacion.PreferenciaNotificacion;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,17 +20,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @Getter @Setter @NoArgsConstructor
-public abstract class Colaborador extends Rol implements Suscriptor{
+public abstract class Colaborador extends  Suscriptor{
+    @OneToOne()
     private Usuario usuario; // id_usuario: 5
+    @OneToMany()
     private List<Contacto> contactos = new ArrayList<Contacto>();
     @Embedded
     private Direccion direccion;
+    @OneToMany()
     private List<Colaboracion> colaboraciones = new ArrayList<Colaboracion>();
     private double puntosDisponibles;
+    @OneToMany()
     private List<OfertaCanje> serviciosCanjeados = new ArrayList<OfertaCanje>();
+    @OneToMany()
     private List<TipoColaboracion> tiposColaboracion; // los tipos de colaboraciones que seleccionó para realizar
+    @ElementCollection
+    @CollectionTable(name = "preferencias_notificacion", joinColumns = @JoinColumn(name = "suscriptor_id"))
+    @MapKeyColumn(name = "preferencia")
+    @Column(name = "valor")
     private HashMap<PreferenciaNotificacion, Integer> preferenciasNotif;
 
     public void agregarColaboracion(Colaboracion colaboracion){

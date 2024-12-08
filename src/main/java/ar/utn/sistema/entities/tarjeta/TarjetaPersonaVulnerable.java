@@ -3,6 +3,8 @@ package ar.utn.sistema.entities.tarjeta;
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.usuarios.ColaboradorFisico;
 import ar.utn.sistema.entities.usuarios.PersonaVulnerable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,13 +14,15 @@ import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+@Entity
 @Getter @Setter @NoArgsConstructor
 public class TarjetaPersonaVulnerable extends Tarjeta{
 
     private static final int cantUsosXDia = 4;
     private static final int cantUsosXMenor = 2;
-
+    @OneToOne
     private PersonaVulnerable personaVulnerable;
+    @OneToOne
     private ColaboradorFisico registrador;
 
     public TarjetaPersonaVulnerable(String codigo) {

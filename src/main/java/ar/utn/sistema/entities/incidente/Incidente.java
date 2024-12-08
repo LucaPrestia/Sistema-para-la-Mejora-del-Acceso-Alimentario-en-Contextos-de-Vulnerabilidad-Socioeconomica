@@ -19,14 +19,13 @@ import java.time.LocalDateTime;
 
 public abstract class Incidente extends PersistenciaID {
     private LocalDateTime fechaHora;
+    @OneToOne
     private Heladera heladera;
     private String estado; // ("PENDIENTE", "EN_PROGRESO", "RESUELTO")
-    private String tipoIncidente; // "alerta" ; "falla_tecnica"
 
     public Incidente(LocalDateTime fechaHora, Heladera heladera, String tipoIncidente) {
         this.fechaHora = fechaHora;
         this.heladera = heladera;
-        this.tipoIncidente = tipoIncidente;
         this.estado = "PENDIENTE";
     }
 

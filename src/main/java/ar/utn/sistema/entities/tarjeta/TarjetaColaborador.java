@@ -2,13 +2,16 @@ package ar.utn.sistema.entities.tarjeta;
 
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.usuarios.Colaborador;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-
+@Entity
 public class TarjetaColaborador extends Tarjeta{
 
     private int tiempoMovimientoApertura = 3; // todo: tomar este valor de la base de datos luego
+   @OneToOne
     private Colaborador colaborador;
 
     @Override

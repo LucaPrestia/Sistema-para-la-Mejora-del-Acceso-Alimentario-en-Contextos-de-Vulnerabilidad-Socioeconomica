@@ -4,6 +4,9 @@ import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.heladera.MovimientoVianda;
 import ar.utn.sistema.entities.heladera.TipoMovimientoVianda;
 import ar.utn.sistema.entities.heladera.Vianda;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,12 +14,15 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
+@Entity
 @Getter @Setter @NoArgsConstructor
 public class ColaboracionDistribucionViandas extends Colaboracion {
+    @OneToOne
     private Heladera origenHeladera;
+    @OneToOne
     private Heladera destinoHeladera;
     // @Transient --> esto se agrega para que no persista este artributo en la base de datos
+    @OneToMany
     private List<Vianda> viandas = new ArrayList<Vianda>();
     private int cantidad;
     private String motivoDistribucion;

@@ -1,14 +1,20 @@
 package ar.utn.sistema.entities.colaboracion;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-
+@Entity
 @Getter @Setter @NoArgsConstructor
 public class ColaboracionDinero extends Colaboracion {
+    @Column()
     private Float monto;
+    @Enumerated(EnumType.STRING)
     private TipoFrecuencia frecuencia;
 
     public ColaboracionDinero(Float monto, TipoFrecuencia frecuencia){

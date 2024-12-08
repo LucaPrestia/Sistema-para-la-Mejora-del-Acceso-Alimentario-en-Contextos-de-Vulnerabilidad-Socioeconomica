@@ -4,14 +4,20 @@ import ar.utn.sistema.entities.tarjeta.TarjetaPersonaVulnerable;
 import ar.utn.sistema.entities.usuarios.ColaboradorFisico;
 import ar.utn.sistema.entities.usuarios.PersonaVulnerable;
 import ar.utn.sistema.utils.CodigoGenerador;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-@Getter@Setter
+@Entity
+@Getter@Setter@NoArgsConstructor
 public class ColaboracionTarjeta extends Colaboracion {
+    @OneToMany
     private List<TarjetaPersonaVulnerable> tarjetasAsignadas = new ArrayList<TarjetaPersonaVulnerable>();
     private int cantidadTarjetasAsignadas;
     private int cantidadTarjetasRepartidas;

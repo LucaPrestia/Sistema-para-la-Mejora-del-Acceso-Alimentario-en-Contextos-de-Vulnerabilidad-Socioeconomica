@@ -17,6 +17,7 @@ import java.util.List;
 @Entity
 @Getter @Setter @NoArgsConstructor
 public class Heladera extends PersistenciaID {
+
     private String nombre;
     private String owner;
     private LocalDate fechaPuestaFuncionamiento;
@@ -31,7 +32,7 @@ public class Heladera extends PersistenciaID {
     private double tempMin;
     private double tempMax;
     private double ultTempRegs;
-    @OneToMany(targetEntity = Colaborador.class)
+    @OneToMany()
     @JoinColumn(name = "heladeraId",referencedColumnName = "id")
     private List<Suscriptor> suscriptores;
     // Constructor
