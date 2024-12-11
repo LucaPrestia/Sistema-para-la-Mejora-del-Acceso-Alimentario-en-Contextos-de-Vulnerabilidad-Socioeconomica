@@ -46,3 +46,4 @@ nombre: admin_dds, nombre usuario seleccionar el anteriormente creado, y en defa
   ir a security
   tildar en server authentication la opción SQL SERVER AND WINDOWS AUTHENTICATION MODE
   reiniciar el servicios desde Servicios
+- DESDE SECURITY LOGIN USER ADMIN_DDS: ir a Server Roles y MARCAR TODO, e ir a Securables y marcar TODOS los grants en explicits

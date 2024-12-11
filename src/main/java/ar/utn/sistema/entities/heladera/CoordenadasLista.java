@@ -10,7 +10,7 @@ import lombok.Setter;
 
 import java.util.List;
 @Entity
-@Getter@Setter@NoArgsConstructor
+@Getter @Setter @NoArgsConstructor
 public class CoordenadasLista extends PersistenciaID {
     @OneToMany
     private List<Coordenadas> coordenadas;

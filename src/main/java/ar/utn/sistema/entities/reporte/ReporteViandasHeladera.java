@@ -2,8 +2,7 @@ package ar.utn.sistema.entities.reporte;
 
 import ar.utn.sistema.entities.PersistenciaID;
 import ar.utn.sistema.entities.heladera.Heladera;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,8 +17,11 @@ public class ReporteViandasHeladera extends PersistenciaID {
     - cantViandasColocadas: int
     - fechaReporte: LocalDate
     */
-    @OneToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_heladera", referencedColumnName = "id")
     private Heladera heladera;
+
     private int cantViandasRetiradas;
     private int cantViandasColocadas;
     private LocalDate fechaReporte;

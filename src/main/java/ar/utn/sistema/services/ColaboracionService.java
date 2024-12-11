@@ -1,7 +1,7 @@
 package ar.utn.sistema.services;
 
-import ar.utn.sistema.entities.ColaboradorColaboracion;
-import ar.utn.sistema.entities.colaboracion.TipoColaboracion;
+import ar.utn.sistema.entities.configuracion.ColaboradorColaboracion;
+import ar.utn.sistema.entities.configuracion.TipoColaboracion;
 import ar.utn.sistema.model.ColaboradorColaboracionConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;

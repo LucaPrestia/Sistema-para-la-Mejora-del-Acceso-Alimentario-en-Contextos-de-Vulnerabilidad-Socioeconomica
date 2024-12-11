@@ -1,10 +1,7 @@
-package ar.utn.sistema.entities;
+package ar.utn.sistema.entities.configuracion;
 
-import ar.utn.sistema.entities.colaboracion.TipoColaboracion;
-import ar.utn.sistema.entities.usuarios.Colaborador;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import ar.utn.sistema.entities.PersistenciaID;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,8 +13,15 @@ import java.util.List;
 @Getter @Setter @NoArgsConstructor
 public class ColaboradorColaboracion extends PersistenciaID {
     private String tipoColaborador;
-    @OneToMany
+
+    @ManyToMany
+    @JoinTable(
+            name = "colaborador_colaboracion_tipo_colaboracion", // Nombre de la tabla intermedia
+            joinColumns = @JoinColumn(name = "id_colaborador_colaboracion"), // Clave foránea en la tabla intermedia
+            inverseJoinColumns = @JoinColumn(name = "id_tipo_colaboracion") // Clave foránea en la tabla intermedia
+    )
     private List<TipoColaboracion> tipoColaboracion = new ArrayList<TipoColaboracion>();
+    // en este caso esta bien que cree una tabla intermedia!!
 
     public ColaboradorColaboracion(String tipoColaborador, List<TipoColaboracion> tipoColaboracion) {
         this.tipoColaborador = tipoColaborador;

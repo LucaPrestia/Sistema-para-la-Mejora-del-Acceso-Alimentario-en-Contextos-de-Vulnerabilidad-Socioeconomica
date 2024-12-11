@@ -1,6 +1,6 @@
 package ar.utn.sistema.model;
 
-import ar.utn.sistema.entities.ColaboradorColaboracion;
+import ar.utn.sistema.entities.configuracion.ColaboradorColaboracion;
 import lombok.Getter;
 import lombok.Setter;
 

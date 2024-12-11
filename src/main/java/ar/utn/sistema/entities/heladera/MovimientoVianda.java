@@ -15,10 +15,10 @@ public class MovimientoVianda extends PersistenciaID {
     private TipoMovimientoVianda tipoMovimiento;
     private String motivoMovimiento; // si aplica (para redistribución)
     @ManyToOne
-    @JoinColumn(name = "heladeraOrigen", referencedColumnName = "id")
+    @JoinColumn(name = "id_origen_heladera", referencedColumnName = "id")
     private Heladera origenHeladera;
     @ManyToOne
-    @JoinColumn(name = "heladeraDestino", referencedColumnName = "id")
+    @JoinColumn(name = "id_destino_heladera", referencedColumnName = "id")
     private Heladera destinoHeladera; // si aplica (para redistribución)
 
     public MovimientoVianda(TipoMovimientoVianda tipoMovimiento, Heladera origenHeladera, Heladera destinoHeladera, String motivo) {

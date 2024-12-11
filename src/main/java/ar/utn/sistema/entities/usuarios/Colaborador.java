@@ -1,9 +1,8 @@
 package ar.utn.sistema.entities.usuarios;
 
-import ar.utn.sistema.entities.PersistenciaID;
 import ar.utn.sistema.entities.colaboracion.Colaboracion;
 import ar.utn.sistema.entities.colaboracion.OfertaCanje;
-import ar.utn.sistema.entities.colaboracion.TipoColaboracion;
+import ar.utn.sistema.entities.configuracion.TipoColaboracion;
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.incidente.IncidenteFallaTecnica;
 import ar.utn.sistema.entities.notificacion.Contacto;
@@ -19,26 +18,43 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter @Setter @NoArgsConstructor
-public abstract class Colaborador extends  Suscriptor{
-    @OneToOne()
+public abstract class Colaborador extends Suscriptor{
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinColumn(name = "id_usuario")
     private Usuario usuario; // id_usuario: 5
-    @OneToMany()
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinColumn(name = "id_colaborador", nullable = true)
+    // se graba la clave en Contacto! puede ser nulo en caso de que el contacto le pertenezca a un tecnico
     private List<Contacto> contactos = new ArrayList<Contacto>();
+
     @Embedded
     private Direccion direccion;
-    @OneToMany()
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinColumn(name = "id_colaborador") // esto tiene que ir para que no haga una relación ManyToMany
     private List<Colaboracion> colaboraciones = new ArrayList<Colaboracion>();
+
     private double puntosDisponibles;
-    @OneToMany()
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinColumn(name = "id_colaborador")
     private List<OfertaCanje> serviciosCanjeados = new ArrayList<OfertaCanje>();
-    @OneToMany()
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinTable(
+            name = "colaborador_colaboraciones_seleccionadas", // Nombre de la tabla intermedia
+            joinColumns = @JoinColumn(name = "id_colaborador"), // Columna que referencia a esta entidad
+            inverseJoinColumns = @JoinColumn(name = "id_tipo_colaboracion") // Columna que referencia a la entidad relacionada
+    )
     private List<TipoColaboracion> tiposColaboracion; // los tipos de colaboraciones que seleccionó para realizar
+
     @ElementCollection
     @CollectionTable(name = "preferencias_notificacion", joinColumns = @JoinColumn(name = "suscriptor_id"))
     @MapKeyColumn(name = "preferencia")

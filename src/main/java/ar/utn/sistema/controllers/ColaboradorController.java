@@ -1,9 +1,8 @@
 package ar.utn.sistema.controllers;
 
-import ar.utn.sistema.entities.ColaboradorColaboracion;
+import ar.utn.sistema.entities.configuracion.ColaboradorColaboracion;
 import ar.utn.sistema.entities.Direccion;
-import ar.utn.sistema.entities.colaboracion.TipoColaboracion;
-import ar.utn.sistema.entities.colaboracion.TipoColaboracionEnum;
+import ar.utn.sistema.entities.configuracion.TipoColaboracion;
 import ar.utn.sistema.entities.notificacion.Contacto;
 import ar.utn.sistema.entities.notificacion.MedioNotificacion;
 import ar.utn.sistema.entities.usuarios.ColaboradorFisico;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;

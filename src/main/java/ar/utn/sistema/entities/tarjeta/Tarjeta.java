@@ -12,12 +12,16 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 @Entity
-@Inheritance(strategy=InheritanceType.JOINED)
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo_usuario") // Obligatorio para asignarle un nombre al campo que va a determinar de qué tipo de clase hija está conteniendo los datos
+@Table(name = "tarjeta")
 @Getter @Setter @NoArgsConstructor
 public abstract class Tarjeta extends PersistenciaID {
+
     private String codigo;
     private LocalDate fechaActivada;
-    @OneToMany
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private List<MovimientoTarjeta> movimientos;
 
     public Tarjeta(String codigo) {

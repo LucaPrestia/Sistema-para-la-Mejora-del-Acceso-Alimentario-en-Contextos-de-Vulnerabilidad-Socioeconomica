@@ -4,9 +4,7 @@ import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.heladera.MovimientoVianda;
 import ar.utn.sistema.entities.heladera.TipoMovimientoVianda;
 import ar.utn.sistema.entities.heladera.Vianda;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,14 +14,20 @@ import java.util.ArrayList;
 import java.util.List;
 @Entity
 @Getter @Setter @NoArgsConstructor
+@Table(name = "colaboracion_distribucion_viandas")
 public class ColaboracionDistribucionViandas extends Colaboracion {
-    @OneToOne
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "id_origen_heladera")
     private Heladera origenHeladera;
-    @OneToOne
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "id_destino_heladera")
     private Heladera destinoHeladera;
-    // @Transient --> esto se agrega para que no persista este artributo en la base de datos
-    @OneToMany
-    private List<Vianda> viandas = new ArrayList<Vianda>();
+
+    @Transient // --> esto se agrega para que no persista este artributo en la base de datos
+    private List<Vianda> viandas = new ArrayList<Vianda>(); // no interesa persistir
+
     private int cantidad;
     private String motivoDistribucion;
 

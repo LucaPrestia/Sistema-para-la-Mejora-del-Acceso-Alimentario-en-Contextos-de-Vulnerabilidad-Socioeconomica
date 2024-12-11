@@ -4,26 +4,31 @@ import ar.utn.sistema.entities.Direccion;
 import ar.utn.sistema.entities.PersistenciaID;
 import ar.utn.sistema.entities.notificacion.Contacto;
 import ar.utn.sistema.entities.notificacion.Notificacion;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 @Entity
 @Getter @Setter @NoArgsConstructor
 public class Tecnico extends Rol {
-    @OneToOne
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinColumn(name = "id_usuario")
     private Usuario usuario;
+
     private String nombre;
     private String apellido;
-    @Enumerated
+
+    @Enumerated(EnumType.STRING)
     private TipoDocumento tipoDocumento;
+
     private Long documento;
     private Long cuil;
-    @OneToOne
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinColumn(name = "id_contacto")
     private Contacto contacto;
+
     private String areaCobertura;
 
     // agregamos la dirección para que se pueda identificar al técnico más cercano a una determinada heladera en caso de detectar algún incidente

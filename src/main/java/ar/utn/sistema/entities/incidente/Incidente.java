@@ -19,8 +19,11 @@ import java.time.LocalDateTime;
 
 public abstract class Incidente extends PersistenciaID {
     private LocalDateTime fechaHora;
-    @OneToOne
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "id_heladera")
     private Heladera heladera;
+
     private String estado; // ("PENDIENTE", "EN_PROGRESO", "RESUELTO")
 
     public Incidente(LocalDateTime fechaHora, Heladera heladera, String tipoIncidente) {

@@ -7,7 +7,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Suscriptor  extends Rol{
+public abstract class Suscriptor extends Rol{
     public void notificar(Notificacion notificacion) {
 
     }

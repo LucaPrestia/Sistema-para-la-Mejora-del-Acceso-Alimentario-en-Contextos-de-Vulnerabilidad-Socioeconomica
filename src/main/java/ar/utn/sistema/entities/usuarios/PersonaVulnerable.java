@@ -1,8 +1,8 @@
 package ar.utn.sistema.entities.usuarios;
 
 import ar.utn.sistema.entities.Direccion;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
+import ar.utn.sistema.entities.tarjeta.TarjetaPersonaVulnerable;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,9 +15,16 @@ public class PersonaVulnerable extends Rol {
     private LocalDate fechaNacimiento;
     private LocalDate fechaRegistro;
     private Boolean situacionDeCalle;
+
     @Embedded
     private Direccion direccion;
+
+    @Enumerated(EnumType.STRING)
     private TipoDocumento tipoDocumento;
+
     private String documento;
     private Integer menoresACargo;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private TarjetaPersonaVulnerable tarjeta;
 }

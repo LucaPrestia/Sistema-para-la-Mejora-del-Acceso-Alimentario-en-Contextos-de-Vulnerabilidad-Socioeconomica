@@ -1,19 +1,18 @@
-package ar.utn.sistema.entities.colaboracion;
+package ar.utn.sistema.entities.configuracion;
 
 import ar.utn.sistema.entities.PersistenciaID;
 import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 @Entity
-@Getter @Setter @NoArgsConstructor
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class TipoColaboracion extends PersistenciaID {
-    private Integer id;
     private String codigo;
     private String nombre;
 
-    public TipoColaboracion(Integer id, String nombre) {
-        this.id = id;
+    public TipoColaboracion(String nombre) {
         this.nombre = nombre;
     }
 }

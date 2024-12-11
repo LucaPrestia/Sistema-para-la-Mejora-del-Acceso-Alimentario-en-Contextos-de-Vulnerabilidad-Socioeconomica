@@ -3,8 +3,7 @@ package ar.utn.sistema.entities.tarjeta;
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.usuarios.ColaboradorFisico;
 import ar.utn.sistema.entities.usuarios.PersonaVulnerable;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,14 +14,21 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 @Entity
-@Getter @Setter @NoArgsConstructor
+@NoArgsConstructor @Getter @Setter
+@DiscriminatorValue("persona_vulnerable")
 public class TarjetaPersonaVulnerable extends Tarjeta{
 
+    @Transient
     private static final int cantUsosXDia = 4;
+    @Transient
     private static final int cantUsosXMenor = 2;
-    @OneToOne
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "id_persona_vulnerable", nullable = true)
     private PersonaVulnerable personaVulnerable;
-    @OneToOne
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "id_colaborador_registrador",  nullable = true)
     private ColaboradorFisico registrador;
 
     public TarjetaPersonaVulnerable(String codigo) {

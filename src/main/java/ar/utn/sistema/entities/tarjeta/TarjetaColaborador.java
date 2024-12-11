@@ -2,16 +2,22 @@ package ar.utn.sistema.entities.tarjeta;
 
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.usuarios.Colaborador;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 @Entity
+@NoArgsConstructor @Getter @Setter
+@DiscriminatorValue("colaborador")
 public class TarjetaColaborador extends Tarjeta{
-
+    @Transient
     private int tiempoMovimientoApertura = 3; // todo: tomar este valor de la base de datos luego
-   @OneToOne
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_colaborador", nullable = true)
     private Colaborador colaborador;
 
     @Override

@@ -3,9 +3,7 @@ package ar.utn.sistema.entities.incidente;
 import ar.utn.sistema.entities.PersistenciaID;
 import ar.utn.sistema.entities.heladera.EstadoHeladera;
 import ar.utn.sistema.entities.usuarios.Tecnico;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,12 +13,14 @@ import java.time.LocalDate;
 @Getter @Setter @NoArgsConstructor
 public class VisitaIncidente extends PersistenciaID {
     // un incidente puede tener varias visitas de distintos técnicos y a su vez un técnico puede visitar distintos incidentes
-    @ManyToOne  // un incidente puede tener muchas visitas
-    @JoinColumn(name = "incidenteId", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})  // un incidente puede tener muchas visitas
+    @JoinColumn(name = "id_incidente", referencedColumnName = "id")
     private Incidente incidente;
-    @ManyToOne // un incidente puede tener muchos tecnicos (cada visita la puede realizar un tecnico diferente)
+
+    @ManyToOne(fetch = FetchType.LAZY) // un incidente puede tener muchos tecnicos (cada visita la puede realizar un tecnico diferente)
     @JoinColumn(name = "tecnicoId", referencedColumnName = "id")
     private Tecnico tecnico;
+
     private LocalDate fechaVisita;
     private String descripcionTrabajo;
     private byte[] foto;

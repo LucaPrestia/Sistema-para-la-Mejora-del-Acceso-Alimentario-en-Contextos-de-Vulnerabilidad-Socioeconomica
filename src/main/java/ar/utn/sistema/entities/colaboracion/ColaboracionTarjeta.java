@@ -4,9 +4,7 @@ import ar.utn.sistema.entities.tarjeta.TarjetaPersonaVulnerable;
 import ar.utn.sistema.entities.usuarios.ColaboradorFisico;
 import ar.utn.sistema.entities.usuarios.PersonaVulnerable;
 import ar.utn.sistema.utils.CodigoGenerador;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,9 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 @Entity
 @Getter@Setter@NoArgsConstructor
+@Table(name = "colaboracion_tarjeta")
 public class ColaboracionTarjeta extends Colaboracion {
-    @OneToMany
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinColumn(name = "id_colaboracion") // esto se persistir del lado de la tarjeta
     private List<TarjetaPersonaVulnerable> tarjetasAsignadas = new ArrayList<TarjetaPersonaVulnerable>();
+
     private int cantidadTarjetasAsignadas;
     private int cantidadTarjetasRepartidas;
     private Boolean es_vieja;

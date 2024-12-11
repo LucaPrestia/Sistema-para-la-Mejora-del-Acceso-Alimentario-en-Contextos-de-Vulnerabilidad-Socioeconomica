@@ -21,20 +21,27 @@ public class Heladera extends PersistenciaID {
     private String nombre;
     private String owner;
     private LocalDate fechaPuestaFuncionamiento;
+
     @Embedded
     private Direccion direccion;
+
     @Enumerated(EnumType.STRING)
     private EstadoHeladera estado;
+
     private int maxViandas;
-    @OneToMany
-    @JoinColumn(name = "heladeraId",referencedColumnName = "id")
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "id_heladera",referencedColumnName = "id")
     private List<Vianda> viandas = new ArrayList<Vianda>();
+
     private double tempMin;
     private double tempMax;
     private double ultTempRegs;
-    @OneToMany()
-    @JoinColumn(name = "heladeraId",referencedColumnName = "id")
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "id_heladera",referencedColumnName = "id")
     private List<Suscriptor> suscriptores;
+
     // Constructor
     public Heladera(String nombre, String owner, Direccion direccion, double tempMax, double tempMin, int maxViandas) {
         this.nombre = nombre;

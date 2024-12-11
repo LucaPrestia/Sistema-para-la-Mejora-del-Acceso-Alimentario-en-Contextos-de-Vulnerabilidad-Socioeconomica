@@ -2,10 +2,7 @@ package ar.utn.sistema.entities.colaboracion;
 
 import ar.utn.sistema.entities.PersistenciaID;
 import ar.utn.sistema.entities.usuarios.Colaborador;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +14,7 @@ public class OfertaCanje extends PersistenciaID {
     private RubroServicio rubro;
     private double puntosRequeridos;
     private String imagen;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private Colaborador colaborador;
 
     public OfertaCanje(String nombre, RubroServicio rubro, double puntosRequeridos, String imagen, Colaborador colaborador) {

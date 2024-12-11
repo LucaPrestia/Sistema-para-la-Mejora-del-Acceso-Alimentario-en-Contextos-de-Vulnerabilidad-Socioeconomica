@@ -1,16 +1,15 @@
 package ar.utn.sistema.entities.colaboracion;
 
 import ar.utn.sistema.entities.usuarios.Colaborador;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 @Entity
 @Getter @Setter @NoArgsConstructor
+@Table(name = "colaboracion_oferta_servicio")
 public class ColaboracionOfertaServicio extends Colaboracion {
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private OfertaCanje oferta;
 
     public ColaboracionOfertaServicio(String nombre, RubroServicio rubro, double puntosRequeridos, String imagen, Colaborador colaborador){
