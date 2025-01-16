@@ -8,6 +8,7 @@
 
 </head>
 <header>
+    <!--TODO: según el rol pasado por parámetro cargar un menú distinto -->
     <div th:insert="~{fragments/menu :: menuprincipal(username=${username})}"></div>
 </header>
 <body>
@@ -18,7 +19,9 @@
             (podría ser un mapa de las heladeras informando ubicación, capacidad, viandas, estado, etc.)
         </p>
     </div>
-    <div class="container mt-5">
+    <!-- ejemplo if:  <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}" -->
+    <div class="container mt-5" id="dynamic-content">
+        <!-- opcion 2: <div th:insert="~{fragments/opciones :: ${fragmento}}"></div> -->
         <div th:insert="~{fragments/map :: mapBody(lat=${lat}, lon=${lon})}"></div>
     </div>
 
@@ -28,3 +31,21 @@
 
 </body>
 </html>
+<!-- analizar
+<script>
+    // opcion 1:
+    function loadContent(url) {
+        fetch(url)
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("dynamic-content").innerHTML = data;
+            })
+            .catch(error => console.error('Error al cargar el contenido:', error));
+    }
+
+    // opcion 2:
+    function cargarFragmento(nombreFragmento) {
+        window.location.href = '/home?fragmento=' + nombreFragmento;
+    }
+</script>
+-->

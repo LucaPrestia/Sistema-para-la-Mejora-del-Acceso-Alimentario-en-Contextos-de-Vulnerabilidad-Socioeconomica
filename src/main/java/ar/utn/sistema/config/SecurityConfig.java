@@ -16,7 +16,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/login", "/register").permitAll() // sin autenticacion solo se puede entrar a estos dos templates, si se quisiera especificar por carpeta se podría hacer algo así: .requestMatchers("/public/**").permitAll()
+                        .requestMatchers("/login", "/register", "/map").permitAll() // sin autenticacion solo se puede entrar a estos dos templates, si se quisiera especificar por carpeta se podría hacer algo así: .requestMatchers("/public/**").permitAll()
                         .anyRequest().authenticated() // a cualquier otro template no
                         //.anyRequest().permitAll() // todo: agregado provisoriamente para las pruebas, pero despues descomentar las otras dos linea y borrar esta
                 )
