@@ -1,5 +1,6 @@
 package ar.utn.sistema.entities.usuarios;
 
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -10,6 +11,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 @Entity
 @Getter @Setter @NoArgsConstructor
+@DiscriminatorValue("fisico")
 public class ColaboradorFisico extends Colaborador{
     private String nombre;
     private String apellido;

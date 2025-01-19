@@ -5,8 +5,9 @@ import ar.utn.sistema.entities.notificacion.PreferenciaNotificacion;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+import jakarta.persistence.MappedSuperclass;
+
+@MappedSuperclass
 public abstract class Suscriptor extends Rol{
     public void notificar(Notificacion notificacion) {
 

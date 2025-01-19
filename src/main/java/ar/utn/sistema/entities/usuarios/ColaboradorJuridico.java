@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 @Entity
 @Getter @Setter @NoArgsConstructor
+@DiscriminatorValue("juridico")
 public class ColaboradorJuridico extends Colaborador {
     private String razonSocial;
     private String rubro;

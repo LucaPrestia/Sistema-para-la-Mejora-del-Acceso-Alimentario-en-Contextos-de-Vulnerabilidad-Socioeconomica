@@ -21,7 +21,8 @@ import java.util.List;
 
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipoColaborador")
 @Getter @Setter @NoArgsConstructor
 public abstract class Colaborador extends Suscriptor{
 

@@ -40,7 +40,7 @@ public class Heladera extends PersistenciaID {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "id_heladera",referencedColumnName = "id")
-    private List<Suscriptor> suscriptores;
+    private List<Colaborador> suscriptores;
 
     // Constructor
     public Heladera(String nombre, String owner, Direccion direccion, double tempMax, double tempMin, int maxViandas) {
@@ -102,11 +102,11 @@ public class Heladera extends PersistenciaID {
         return periodo.getYears() * 12 + periodo.getMonths();
     }
 
-    public void suscribir(Suscriptor s){
+    public void suscribir(Colaborador s){
         this.suscriptores.add(s);
     }
 
-    public void  desuscribir(Suscriptor s){
+    public void  desuscribir(Colaborador s){
         this.suscriptores.remove(s);
     }
 
