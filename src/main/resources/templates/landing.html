@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Acceso Alimentario</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="text-center text-primary">¡Bienvenido al Sistema de Gestión de Acceso Alimentario!</h1>
+    <p class="text-center">¡Unidos por un propósito: garantizar el acceso a los alimentos para quienes más lo necesitan!</p>
+    <img src="/img/landing_comiendo.jpg" class="img-fluid mx-auto d-block" style="max-width: 70%; height: auto;">
+    <div class="text-center my-4">
+        <form th:action="@{/register}" method="get" class="d-inline-block">
+            <button style="border-radius: 25px;font-size: 28px; padding: 15px 30px; " type="submit" class="btn btn-primary mx-2">Registrarse</button>
+        </form>
+        <form th:action="@{/login}" method="get" class="d-inline-block">
+            <button style="border-radius: 25px;font-size: 28px; padding: 15px 30px; "  type="submit" class="btn btn-secondary mx-2">Iniciar Sesión</button>
+        </form>
+    </div>
+
+    <hr>
+    
+    <section class="my-4">
+        <h2 class="text-secondary">¿Qué problemas resolvemos?</h2>
+        <ul>
+            <li><strong>Alimentos siempre disponibles:</strong> Nos aseguramos de que las heladeras estén abastecidas, evitando días sin comida o pérdidas por alimentos vencidos.</li>
+            <li><strong>Optimización para voluntarios:</strong> Ayudamos a los colaboradores a identificar qué heladeras necesitan alimentos, dónde están ubicadas y su estado actual, para maximizar su impacto.</li>
+            <li><strong>Resolución de problemas técnicos:</strong> Detectamos y gestionamos problemas en las heladeras de manera rápida, enviando personal capacitado para mantenerlas activas y funcionales.</li>
+        </ul>
+    </section>
+
+    <hr>
+
+    <section class="my-4">
+        <h2 class="text-secondary">¿Cómo funciona el sistema?</h2>
+        <ol>
+            <li><strong>Monitoreo constante:</strong> Nuestra plataforma rastrea el estado de cada heladera en tiempo real.</li>
+            <li><strong>Gestión inteligente de recursos:</strong> Coordinamos el envío de alimentos y la asignación de voluntarios de manera eficiente.</li>
+            <li><strong>Mantenimiento ágil:</strong> Reportamos y resolvemos fallas técnicas rápidamente para garantizar el funcionamiento continuo.</li>
+        </ol>
+    </section>
+
+    <hr>
+
+    <footer class="text-center mt-4">
+        <p><strong>Contacto:</strong></p>
+        <p>📧 contacto@accesoalimentario.org</p>
+        <p>📞 0800-ALIMENTOS</p>
+        <p>Construyamos juntos un país más solidario y equitativo. 🌱</p>
+    </footer>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
