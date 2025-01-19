@@ -1,20 +1,27 @@
 package ar.utn.sistema.config;
 
+import ar.utn.sistema.entities.configuracion.CoeficientesColaboracion;
 import ar.utn.sistema.entities.configuracion.ColaboradorColaboracion;
+import ar.utn.sistema.entities.configuracion.ParametrosGenerales;
 import ar.utn.sistema.entities.configuracion.TipoColaboracion;
+import ar.utn.sistema.repositories.configuracion.CoeficientesColaboracionRepository;
 import ar.utn.sistema.repositories.configuracion.ColaboradorColaboracionRepository;
 import ar.utn.sistema.repositories.configuracion.ParametrosGeneralesRepository;
 import ar.utn.sistema.repositories.configuracion.TipoColaboracionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Configuration
 public class InsertsIniciales {
+    private Logger logger = LoggerFactory.getLogger(InsertsIniciales.class);
     @Value("${spring.jpa.hibernate.ddl-auto}")
     private String ddlAuto;
 
@@ -26,6 +33,9 @@ public class InsertsIniciales {
 
     @Autowired
     private TipoColaboracionRepository rTipoColaboracion;
+
+    @Autowired
+    private CoeficientesColaboracionRepository rCoeficientes;
 
     @Bean
     public CommandLineRunner initData() {
@@ -53,11 +63,25 @@ public class InsertsIniciales {
                 ColaboradorColaboracion colaboradorPersonaJuridica = new ColaboradorColaboracion("PERSONA_JURIDICA", tiposPersonaJuridica);
                 rColaborador.save(colaboradorPersonaJuridica);
 
-                // ESTO POR AHORA CARGA TABLAS: colaborador_colaboracion_tipo_colaboracion, colaborador_colaboracion y tipo_colaborador
+                // ESTO POR AHORA CARGA TABLAS: colaborador_colaboracion_tipo_colaboracion, colaborador_colaboracion y tipo_colaboracion
                 // chequear los selects en la base, en mi caso fue bien!!
 
-                // todo: insertar parámetros generales, como el tiempoMovimientoApertura para las tarjetas!
-                // todo: insertar coeficientes para las colaboraciones
+                // Inserta parámetros generales, como el tiempoMovimientoApertura para las tarjetas!
+                // todo: evaluar si quedan pendiente ingresar otros parámetros generales
+                ParametrosGenerales par1 = new ParametrosGenerales("TIEMPO_MOVIMIENTO_APERTURA", new BigDecimal(3));
+                rParametro.save(par1);
+
+                // Inserta coeficientes para puntos por cada colaboracion:
+                CoeficientesColaboracion coef1 = new CoeficientesColaboracion(tipo1, 0.5);
+                CoeficientesColaboracion coef2 = new CoeficientesColaboracion(tipo2, 1.5);
+                CoeficientesColaboracion coef3 = new CoeficientesColaboracion(tipo3, 1.0);
+                CoeficientesColaboracion coef4 = new CoeficientesColaboracion(tipo4, 2.0);
+                CoeficientesColaboracion coef5 = new CoeficientesColaboracion(tipo5, 5.0);
+                CoeficientesColaboracion coef6 = new CoeficientesColaboracion(tipo6, 0.0);
+
+                rCoeficientes.saveAll(List.of(coef1, coef2, coef3, coef4, coef5, coef6));
+
+                logger.info("todos los inserts iniciales fueron bien!!");
             }
         };
     }

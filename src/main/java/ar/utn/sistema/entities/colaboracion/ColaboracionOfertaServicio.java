@@ -12,8 +12,8 @@ public class ColaboracionOfertaServicio extends Colaboracion {
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private OfertaCanje oferta;
 
-    public ColaboracionOfertaServicio(String nombre, RubroServicio rubro, double puntosRequeridos, String imagen, Colaborador colaborador){
-        super(TipoColaboracionEnum.OFERTA_SERVICIO, 0.0);
+    public ColaboracionOfertaServicio(String nombre, RubroServicio rubro, double puntosRequeridos, String imagen, Colaborador colaborador, Double coeficiente){
+        super(TipoColaboracionEnum.OFERTA_SERVICIO, coeficiente);
         this.oferta = new OfertaCanje(nombre, rubro, puntosRequeridos, imagen, colaborador);
     }
 

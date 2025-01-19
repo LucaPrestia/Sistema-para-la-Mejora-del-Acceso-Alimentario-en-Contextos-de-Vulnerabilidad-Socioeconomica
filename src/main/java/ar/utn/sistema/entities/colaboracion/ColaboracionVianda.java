@@ -17,16 +17,15 @@ public class ColaboracionVianda extends Colaboracion {
     private List<Vianda> vianda; // en el NEW de cada vianda ya se cargó un movimiento de vianda de tipo donacion
     private int cantidad;
 
-    public ColaboracionVianda(List<Vianda> vianda, int cantidad){
-        super(TipoColaboracionEnum.DONACION_VIANDAS, 1.5);
-        // TODO: cuando agreguemos la base de datos, vamos a tomar el coeficiente desde la tabla CoeficientesColaboracion
+    public ColaboracionVianda(List<Vianda> vianda, int cantidad, Double coeficiente){
+        super(TipoColaboracionEnum.DONACION_VIANDAS, coeficiente);
         this.vianda = vianda;
         this.cantidad = cantidad;
     }
 
     // para la carga masiva: no importa qué viandas se distribuyeron sino la cantidad para sumar puntos!
-    public ColaboracionVianda(int cantidadCargaMasiva, LocalDate fechaCargaMasiva){
-        super(TipoColaboracionEnum.DONACION_VIANDAS, 1.5);
+    public ColaboracionVianda(int cantidadCargaMasiva, LocalDate fechaCargaMasiva, Double coeficienteCargaMasiva){
+        super(TipoColaboracionEnum.DONACION_VIANDAS, coeficienteCargaMasiva);
         this.cantidad = cantidadCargaMasiva;
         this.setFechaColaboracion(fechaCargaMasiva);
     }

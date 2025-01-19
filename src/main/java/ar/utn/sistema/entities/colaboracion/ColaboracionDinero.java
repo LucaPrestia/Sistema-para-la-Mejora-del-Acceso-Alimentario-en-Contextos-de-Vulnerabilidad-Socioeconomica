@@ -16,15 +16,14 @@ public class ColaboracionDinero extends Colaboracion {
     @Enumerated(EnumType.STRING)
     private TipoFrecuencia frecuencia;
 
-    public ColaboracionDinero(Float monto, TipoFrecuencia frecuencia){
-        super(TipoColaboracionEnum.DINERO, 0.5);
-        // TODO: cuando agreguemos la base de datos, vamos a tomar el coeficiente desde la tabla CoeficientesColaboracion
+    public ColaboracionDinero(Float monto, TipoFrecuencia frecuencia, Double coeficiente){
+        super(TipoColaboracionEnum.DINERO, coeficiente);
         this.monto = monto;
         this.frecuencia = frecuencia;
     }
 
-    public ColaboracionDinero(Float montoCargaMasiva, LocalDate fechaCargaMasiva){
-        super(TipoColaboracionEnum.DINERO, 0.5);
+    public ColaboracionDinero(Float montoCargaMasiva, LocalDate fechaCargaMasiva, Double coeficienteCargaMasiva){
+        super(TipoColaboracionEnum.DINERO, coeficienteCargaMasiva);
         this.monto = montoCargaMasiva;
         this.frecuencia = TipoFrecuencia.UNICA;
         this.setFechaColaboracion(fechaCargaMasiva);

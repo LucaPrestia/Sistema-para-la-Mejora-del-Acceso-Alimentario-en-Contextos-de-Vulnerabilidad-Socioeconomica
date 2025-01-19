@@ -1,17 +1,24 @@
-package ar.utn.sistema.entities.colaboracion;
+package ar.utn.sistema.services;
 
+import ar.utn.sistema.entities.colaboracion.*;
 import ar.utn.sistema.entities.notificacion.Contacto;
 import ar.utn.sistema.entities.notificacion.MedioNotificacion;
 import ar.utn.sistema.entities.usuarios.ColaboradorFisico;
 import ar.utn.sistema.entities.usuarios.TipoDocumento;
 import ar.utn.sistema.utils.LectorArchivo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class CargaColaboracionesMasivas {
+
+    @Autowired
+    private CoeficientesColaboracionService sCoeficientes;
     private String dir;
     public List<Colaboracion> cargarColaboracionesMasivamente(){
         LectorArchivo lector = new LectorArchivo();
@@ -53,23 +60,23 @@ public class CargaColaboracionesMasivas {
         return colaboraciones;
     }
 
-    private static Colaboracion getColaboracion(TipoColaboracionEnum tipoColaboracionEnum, int cantidad, LocalDate fecha) {
+    private Colaboracion getColaboracion(TipoColaboracionEnum tipoColaboracionEnum, int cantidad, LocalDate fecha) {
         Colaboracion colaboracion;
         switch (tipoColaboracionEnum) {
             case DINERO ->{
-                colaboracion = new ColaboracionDinero((float) cantidad, fecha); // SUPONGO UNICA
+                colaboracion = new ColaboracionDinero((float) cantidad, fecha, sCoeficientes.obtenerCoeficiente("DINERO")); // SUPONGO UNICA
                 colaboracion.setViejo(true);
             }
             case DONACION_VIANDAS ->{
-                colaboracion = new ColaboracionVianda(cantidad, fecha);
+                colaboracion = new ColaboracionVianda(cantidad, fecha, sCoeficientes.obtenerCoeficiente("DONACION_VIANDAS"));
                 colaboracion.setViejo(true);
             }
             case REDISTRIBUCION_VIANDAS ->{
-                colaboracion = new ColaboracionDistribucionViandas(cantidad, fecha);
+                colaboracion = new ColaboracionDistribucionViandas(cantidad, fecha, sCoeficientes.obtenerCoeficiente("REDISTRIBUCION_VIANDAS"));
                 colaboracion.setViejo(true);
             }
             case ENTREGA_TARJETAS ->{
-                colaboracion = new ColaboracionTarjeta(cantidad, fecha);
+                colaboracion = new ColaboracionTarjeta(cantidad, fecha, sCoeficientes.obtenerCoeficiente("ENTREGA_TARJETAS"));
                 colaboracion.setViejo(true);
             }
 

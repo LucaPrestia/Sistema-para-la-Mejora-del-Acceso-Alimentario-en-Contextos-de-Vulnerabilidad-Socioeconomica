@@ -24,8 +24,8 @@ public class ColaboracionTarjeta extends Colaboracion {
     private int cantidadTarjetasAsignadas;
     private int cantidadTarjetasRepartidas;
     private Boolean es_vieja;
-    public ColaboracionTarjeta(int cantidadTarjetasRecibidas) {
-        super(TipoColaboracionEnum.ENTREGA_TARJETAS, 2.0);
+    public ColaboracionTarjeta(int cantidadTarjetasRecibidas, Double coeficiente) {
+        super(TipoColaboracionEnum.ENTREGA_TARJETAS, coeficiente);
         this.cantidadTarjetasAsignadas = cantidadTarjetasRecibidas;
         this.cantidadTarjetasRepartidas = 0;
         for (int i = 0; i < this.cantidadTarjetasAsignadas; i++) {
@@ -33,8 +33,8 @@ public class ColaboracionTarjeta extends Colaboracion {
         }
     }
 
-    public ColaboracionTarjeta(int cantidadCargaMasiva, LocalDate fechaCargaMasiva) {
-        super(TipoColaboracionEnum.ENTREGA_TARJETAS, 2.0);
+    public ColaboracionTarjeta(int cantidadCargaMasiva, LocalDate fechaCargaMasiva, Double coeficienteCargaMasiva) {
+        super(TipoColaboracionEnum.ENTREGA_TARJETAS, coeficienteCargaMasiva);
         this.cantidadTarjetasRepartidas = cantidadCargaMasiva;
         this.setFechaColaboracion(fechaCargaMasiva);
         // como no hay info de las tarjetas en la carga masiva, no se carga creo

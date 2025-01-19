@@ -12,8 +12,8 @@ public class ColaboracionGestionHeladera extends Colaboracion{
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private Heladera heladera;
 
-    public ColaboracionGestionHeladera(Heladera heladera){
-        super(TipoColaboracionEnum.GESTION_HELADERA, 5.0);
+    public ColaboracionGestionHeladera(Heladera heladera, Double coeficiente){
+        super(TipoColaboracionEnum.GESTION_HELADERA, coeficiente);
         this.heladera = heladera;
     }
 

@@ -9,8 +9,8 @@ import lombok.Setter;
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class TipoColaboracion extends PersistenciaID {
-    private String codigo;
-    private String nombre;
+    private String codigo; //Ej: "DINERO"
+    private String nombre; //Ej: "Donación Dinero"
 
     public TipoColaboracion(String nombre) {
         this.nombre = nombre;
