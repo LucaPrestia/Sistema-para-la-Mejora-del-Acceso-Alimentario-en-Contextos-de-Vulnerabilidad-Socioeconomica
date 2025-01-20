@@ -1,11 +1,13 @@
 package ar.utn.sistema.repositories;
 
 import ar.utn.sistema.entities.usuarios.Tecnico;
+import ar.utn.sistema.entities.usuarios.Usuario;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-// @Repository // todo: implementar interfaz JPA
-public interface TecnicoRepository {
-    Optional<Tecnico> findByUsuario(Integer id);
+@Repository
+public interface TecnicoRepository extends JpaRepository<Tecnico, Integer> {
+    Optional<Tecnico> findByUsuario(Usuario usuario);
 }

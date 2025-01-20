@@ -15,7 +15,7 @@ import java.util.List;
 @Entity
 @Getter @Setter
 public class Usuario extends PersistenciaID {
-    private String rol;
+    private String rol; // COLABORADOR_FISICO, COLABORADOR_JURIDICO, TECNICO, ADMIN, PERSONA_VULNERABLE
     private String usuario;
     private String contrasena;
     @Transient

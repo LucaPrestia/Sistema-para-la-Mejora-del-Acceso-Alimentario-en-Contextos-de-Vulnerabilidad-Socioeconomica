@@ -59,9 +59,9 @@ public class CargaColaboracionesMasivas {
                     String username;
                     do {
                         username = CodigoGenerador.generarCodigoUnico();
-                    } while (rUsuario.findById(Integer.valueOf(username)).isPresent());
+                    } while (rUsuario.findByUsuario(username).isPresent());
 
-                    Usuario usuario = new Usuario(username, documento, "colaborador"); // por default el documento es la contraseña
+                    Usuario usuario = new Usuario(username, documento, "COLABORADOR_FISICO"); // por default el documento es la contraseña
                     nuevoColaborador.setUsuario(usuario);
 
                     /* TODO: lo del mail(?

@@ -4,6 +4,9 @@ import ar.utn.sistema.entities.configuracion.CoeficientesColaboracion;
 import ar.utn.sistema.entities.configuracion.ColaboradorColaboracion;
 import ar.utn.sistema.entities.configuracion.ParametrosGenerales;
 import ar.utn.sistema.entities.configuracion.TipoColaboracion;
+import ar.utn.sistema.entities.usuarios.*;
+import ar.utn.sistema.repositories.AdminRepository;
+import ar.utn.sistema.repositories.ColaboradorRepository;
 import ar.utn.sistema.repositories.configuracion.CoeficientesColaboracionRepository;
 import ar.utn.sistema.repositories.configuracion.ColaboradorColaboracionRepository;
 import ar.utn.sistema.repositories.configuracion.ParametrosGeneralesRepository;
@@ -15,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -26,7 +30,7 @@ public class InsertsIniciales {
     private String ddlAuto;
 
     @Autowired
-    private ColaboradorColaboracionRepository rColaborador;
+    private ColaboradorColaboracionRepository rConfigColaboracion;
 
     @Autowired
     private ParametrosGeneralesRepository rParametro;
@@ -36,6 +40,15 @@ public class InsertsIniciales {
 
     @Autowired
     private CoeficientesColaboracionRepository rCoeficientes;
+
+    @Autowired
+    private AdminRepository rAdmin;
+
+    @Autowired
+    private ColaboradorRepository rColaborador;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Bean
     public CommandLineRunner initData() {
@@ -59,9 +72,9 @@ public class InsertsIniciales {
 
                 // Crear las entidades ColaboradorColaboracion
                 ColaboradorColaboracion colaboradorPersonaHumana = new ColaboradorColaboracion("PERSONA_HUMANA", tiposPersonaHumana);
-                rColaborador.save(colaboradorPersonaHumana);
+                rConfigColaboracion.save(colaboradorPersonaHumana);
                 ColaboradorColaboracion colaboradorPersonaJuridica = new ColaboradorColaboracion("PERSONA_JURIDICA", tiposPersonaJuridica);
-                rColaborador.save(colaboradorPersonaJuridica);
+                rConfigColaboracion.save(colaboradorPersonaJuridica);
 
                 // ESTO POR AHORA CARGA TABLAS: colaborador_colaboracion_tipo_colaboracion, colaborador_colaboracion y tipo_colaboracion
                 // chequear los selects en la base, en mi caso fue bien!!
@@ -80,6 +93,21 @@ public class InsertsIniciales {
                 CoeficientesColaboracion coef6 = new CoeficientesColaboracion(tipo6, 0.0);
 
                 rCoeficientes.saveAll(List.of(coef1, coef2, coef3, coef4, coef5, coef6));
+
+                // agrego usuarios por default
+                Usuario admin = new Usuario("admin",passwordEncoder.encode("admin123"),"ADMIN");
+                Ong ong = new Ong("ONG Sistema Mejora Acceso Alimentario", admin);
+                rAdmin.save(ong);
+
+                Usuario colaboradorUsr = new Usuario("colaboradorP",passwordEncoder.encode("colaboradorP123"),"COLABORADOR_FISICO");
+                Colaborador colaboradorP = new ColaboradorFisico("colaborador", "prueba", TipoDocumento.DNI, "11111111");
+                colaboradorP.setUsuario(colaboradorUsr);
+
+                Usuario colaboradorJrd = new Usuario("colaboradorJ",passwordEncoder.encode("colaboradorJ123"),"COLABORADOR_JURIDICO");
+                Colaborador colaboradorJ  = new ColaboradorJuridico("razon social", "GASTRONOMIA", "27444444444",TipoJuridico.EMPRESA);
+                colaboradorJ.setUsuario(colaboradorJrd);
+
+                rColaborador.saveAll(List.of(colaboradorP, colaboradorJ));
 
                 logger.info("todos los inserts iniciales fueron bien!!");
             }

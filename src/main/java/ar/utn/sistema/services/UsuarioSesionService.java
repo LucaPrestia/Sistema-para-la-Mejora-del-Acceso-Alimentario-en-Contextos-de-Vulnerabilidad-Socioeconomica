@@ -21,52 +21,36 @@ import java.util.List;
 @Service
 public class UsuarioSesionService implements UserDetailsService {
 
-    // private final UsuarioRepository repository;
-    // provisorio por no tener repositorios de la base de datos:
-    private List<Usuario> usuarios;
+    private final UsuarioRepository repository;
     private final PasswordEncoder passwordEncoder;
 
-    /*
     @Autowired
-    private ColaboradorRepository colaboradorRepo;
+    private ColaboradorRepository rColaborador;
     @Autowired
-    private TecnicoRepository tecnicoRepo;
+    private TecnicoRepository rTecnico;
     @Autowired
-    private AdminRepository adminRepo;
-    */
+    private AdminRepository rAdmin;
 
-    public UsuarioSesionService(/*UsuarioRepository repository,*/ PasswordEncoder passwordEncoder) {
-        //this.repository = repository;
+    public UsuarioSesionService(UsuarioRepository repository, PasswordEncoder passwordEncoder) {
+        this.repository = repository;
         this.passwordEncoder = passwordEncoder;
-        this.usuarios = List.of(
-            new Usuario("colaborador", passwordEncoder.encode("colaborador123"), "COLABORADOR"),
-            new Usuario("tecnico", passwordEncoder.encode("tecnico123"), "TECNICO"),
-            new Usuario("admin", passwordEncoder.encode("admin123"), "ADMIN")
-        );
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuario usuario = usuarios.stream()
-                .filter(u -> u.getUsuario().equals(username))
-                .findFirst()
+        Usuario usuario = repository.findByUsuario(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
-        //repository.findByUsuario(username);
-
-        if (usuario == null) {
-            throw new UsernameNotFoundException("Usuario no encontrado");
-        }
 
         Rol rol;
         switch (usuario.getRol()){
-            case "COLABORADOR":
-                rol = new ColaboradorFisico(); //colaboradorRepo.findByUsuario(usuario.getId()).orElseThrow(() -> new RuntimeException("Colaborador no encontrado"));
+            case "COLABORADOR_FISICO": case "COLABORADOR_JURIDICO":
+                rol = rColaborador.findByUsuario(usuario).orElseThrow(() -> new RuntimeException("Colaborador no encontrado"));
                 break;
             case "TECNICO":
-                rol = new Tecnico(); //tecnicoRepo.findByUsuario(usuario.getId()).orElseThrow(() -> new RuntimeException("Técnico no encontrado"));
+                rol = rTecnico.findByUsuario(usuario).orElseThrow(() -> new RuntimeException("Técnico no encontrado"));
                 break;
             case "ADMIN":
-                rol = new Ong(); // adminRepo.findByUsuario(usuario.getId()).orElseThrow(() -> new RuntimeException("Admin no encontrado"));
+                rol = rAdmin.findByUsuario(usuario).orElseThrow(() -> new RuntimeException("Admin no encontrado"));
                 break;
             default:
                 throw new IllegalArgumentException("Rol no válido");
@@ -100,9 +84,7 @@ public class UsuarioSesionService implements UserDetailsService {
             nuevoUsuario.setUsuario(user);
             nuevoUsuario.setContrasena(passwordEncoder.encode(pass));
             nuevoUsuario.setRol(rol);
-            // todo: se crearía acá el registro para Colaborador o Tecnico ??
-            // TODO: Guardar nuevoUsuario en la base de datos usando repository
-            // return repository.save(nuevoUsuario);
+            repository.save(nuevoUsuario);
             return nuevoUsuario;
         } else return null;
     }

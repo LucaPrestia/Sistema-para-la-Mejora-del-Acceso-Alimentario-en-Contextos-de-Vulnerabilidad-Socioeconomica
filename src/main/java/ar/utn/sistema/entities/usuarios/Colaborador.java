@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Entity
@@ -58,9 +59,10 @@ public abstract class Colaborador extends Suscriptor{
 
     @ElementCollection
     @CollectionTable(name = "preferencias_notificacion", joinColumns = @JoinColumn(name = "suscriptor_id"))
+    @MapKeyEnumerated(EnumType.STRING)
     @MapKeyColumn(name = "preferencia")
     @Column(name = "valor")
-    private HashMap<PreferenciaNotificacion, Integer> preferenciasNotif;
+    private Map<PreferenciaNotificacion, Integer> preferenciasNotif = new HashMap<>();
 
     public void agregarColaboracion(Colaboracion colaboracion){
         this.colaboraciones.add(colaboracion);

@@ -19,4 +19,11 @@ public class ColaboradorJuridico extends Colaborador {
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "id_heladera")
     private Heladera heladera;
+
+    public ColaboradorJuridico(String razonSocial, String rubro, String cuit, TipoJuridico tipoJuridico) {
+        this.razonSocial = razonSocial;
+        this.rubro = rubro;
+        this.cuit = cuit;
+        this.tipoJuridico = tipoJuridico;
+    }
 }

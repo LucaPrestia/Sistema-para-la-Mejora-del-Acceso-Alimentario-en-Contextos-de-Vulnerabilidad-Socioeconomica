@@ -21,9 +21,9 @@
 ### Comentado provisoriamente
 - se comentaron algunas funciones y anotaciones del broker Rabbit para que no lance errores si no tenemos instalado el programa (lineas comentadas en archivos service/(Temperatura, Movimiento, Heladera))
 - se comentaron los repositorios de la base de datos porque hasta la entrega 5 no tenemos que agregar persistencia
-- se accede siempre primero al login, por ahora los unicos usuarios hardcodeados para entrar son los sgtes: 
-  - user: colaborador pass: colaborador123
-  - user: tecnico pass: tecnico123
+- se accede siempre primero al login, por ahora los unicos usuarios agregados a la base por default son los sgtes: 
+  - user: colaboradorP pass: colaboradorP123
+  - user: colaboradorJ pass: colaboradorJ123
   - user: admin pass: admin123
 ### Config JPA y DB
 - creamos con click derecho en database una nueva base de nombre base_dds

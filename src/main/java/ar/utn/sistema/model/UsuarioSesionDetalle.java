@@ -10,7 +10,7 @@ import java.util.Collection;
 // esta clase es para guardar datos del usuario que se logueó para que puedan ser consultados desde distintos lados del código
 public class UsuarioSesionDetalle implements UserDetails {
     @Getter
-    private String rol; // "COLABORADOR", "TECNICO", "ADMIN/ONG"
+    private String rol; // "COLABORADOR_FISICO", "COLABORADOR_JURIDICO", "TECNICO", "ADMIN/ONG"
     @Getter
     private Rol usuario;  // se puede guardar un Colaborador, Técnico o Admin
     private String username;
