@@ -20,15 +20,18 @@ public class ColaboradorFisico extends Colaborador{
     private TipoDocumento tipoDocumento;
     private String documento;
 
-    public ColaboradorFisico(String nombre, String apellido, LocalDate fechaNacimiento,
-                             TipoDocumento tipoDocumento, String documento) {
+    public ColaboradorFisico(String nombre, String apellido, LocalDate fechaNacimiento,TipoDocumento tipoDocumento, String documento) {
+
         this.nombre = nombre;
         this.apellido = apellido;
         this.fechaNacimiento = fechaNacimiento;
         this.tipoDocumento = tipoDocumento;
         this.documento = documento;
     }
-
+    public ColaboradorFisico(Usuario user){
+        //TODO PONER RESTO DE PARAMETROS FALTA AÑADIR EN EL FORM DE REGISTRO
+        this.setUsuario(user);
+    }
     public ColaboradorFisico(String nombre, String apellido, TipoDocumento tipoDocumento, String documento) {
         this.nombre = nombre;
         this.apellido = apellido;

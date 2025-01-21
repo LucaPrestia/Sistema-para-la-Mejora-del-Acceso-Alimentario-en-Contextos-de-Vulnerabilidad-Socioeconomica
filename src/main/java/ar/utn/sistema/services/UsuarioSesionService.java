@@ -31,6 +31,7 @@ public class UsuarioSesionService implements UserDetailsService {
     @Autowired
     private AdminRepository rAdmin;
 
+
     public UsuarioSesionService(UsuarioRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
@@ -40,11 +41,10 @@ public class UsuarioSesionService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Usuario usuario = repository.findByUsuario(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
-
         Rol rol;
         switch (usuario.getRol()){
             case "COLABORADOR_FISICO": case "COLABORADOR_JURIDICO":
-                rol = rColaborador.findByUsuario(usuario).orElseThrow(() -> new RuntimeException("Colaborador no encontrado"));
+                rol = rColaborador.findByUsuario_Id(usuario.getId()).orElseThrow(() -> new RuntimeException("Colaborador no encontrado"));
                 break;
             case "TECNICO":
                 rol = rTecnico.findByUsuario(usuario).orElseThrow(() -> new RuntimeException("Técnico no encontrado"));
@@ -84,6 +84,25 @@ public class UsuarioSesionService implements UserDetailsService {
             nuevoUsuario.setUsuario(user);
             nuevoUsuario.setContrasena(passwordEncoder.encode(pass));
             nuevoUsuario.setRol(rol);
+            switch (rol) {
+                case "COLABORADOR_FISICO":
+                    Colaborador rolClase = new ColaboradorFisico(nuevoUsuario);
+                    rColaborador.save(rolClase);
+                    break;
+                case "COLABORADOR_JURIDICO":
+                /*    Colaborador rolClase = new ColaboradorJuridico(nuevoUsuario);
+                    rColaborador.save(rolClase);*/
+                    break;
+                case "TECNICO":
+                /*    Tecnico rolClase = new Tecnico(nuevoUsuario);
+                    rColaborador.save(rolClase);*/
+                    break;
+                case "ADMIN":
+                   // rolClase = new Ong();
+                    break;
+                default:
+                    throw new IllegalArgumentException("Rol no válido");
+            }
             repository.save(nuevoUsuario);
             return nuevoUsuario;
         } else return null;

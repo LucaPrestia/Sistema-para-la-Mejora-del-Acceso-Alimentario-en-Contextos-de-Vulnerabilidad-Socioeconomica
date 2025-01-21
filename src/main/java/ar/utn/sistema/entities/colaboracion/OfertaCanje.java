@@ -15,6 +15,7 @@ public class OfertaCanje extends PersistenciaID {
     private double puntosRequeridos;
     private String imagen;
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn()
     private Colaborador colaborador;
 
     public OfertaCanje(String nombre, RubroServicio rubro, double puntosRequeridos, String imagen, Colaborador colaborador) {

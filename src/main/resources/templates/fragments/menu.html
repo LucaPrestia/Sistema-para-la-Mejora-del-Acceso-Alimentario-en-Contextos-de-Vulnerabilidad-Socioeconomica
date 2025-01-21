@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Menu</title>
@@ -15,22 +15,22 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <!-- todo: opciones de menú específicas para cada tipo de usuario (los roles se deberían configurar también desde securityConfig) -->
-                <!--
-                Opciones exclusivas del COLABORADOR
-                <li class="nav-item" th:if="${#authorization.expression('hasRole(''COLABORADOR'')')}">
-                    <a class="nav-link" th:href="@{/colaborador/dashboard}">Dashboard Colaborador</a>
-                </li>
 
-                 Opciones exclusivas del TECNICO
-                <li class="nav-item" th:if="${#authorization.expression('hasRole(''TECNICO'')')}">
+                <li class="nav-item" th:if="${rol == 'COLABORADOR_FISICO'}">
+                    <a class="nav-link" th:href="@{/colaborador/dashboard}">Dashboard Colaborador FISICO </a>
+                </li>
+                <li class="nav-item" th:if="${rol == 'COLABORADOR_JURIDICO'}">
+                    <a class="nav-link" th:href="@{/colaborador/dashboard}">Dashboard Colaborador JURIDICO</a>
+                </li>
+                <li class="nav-item" th:if="${rol == 'TECNICO'}">
                     <a class="nav-link" th:href="@{/tecnico/dashboard}">Dashboard Técnico</a>
                 </li>
 
-                Opciones exclusivas del ADMIN
-                <li class="nav-item" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                <li class="nav-item" th:if="${rol == 'ADMIN'}">
                     <a class="nav-link" th:href="@{/admin/dashboard}">Dashboard Admin</a>
                 </li>
-                -->
+
+
 
                 <!-- Mostrar el nombre del usuario para entrar al panel de sus datos -->
                 <li class="nav-item">
@@ -46,17 +46,6 @@
     </nav>
 </div>
 
-<!-- TODO: hacer menu personalizados -->
-<div th:fragment="menuColaboradorHumano(username)">
-    <!-- <a class="nav-link" href="#" onclick="cargarFragmento('opcion1')">Opción 1</a> -->
-</div>
-
-<div th:fragment="menuColaboradorJuridico(username)">
-    <!-- <a class="nav-link" href="#" onclick="loadContent('/contenido/opcion1')">Opción 1</a>-->
-</div>
-
-<div th:fragment="menuAdministrador(username)">
-</div>
 
 
 </body>

@@ -11,7 +11,7 @@ import lombok.Setter;
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class CoeficientesColaboracion extends PersistenciaID {
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne() // fetch = FetchType.LAZY  --- COMENTE ESTO PORQUE ME DABA ERROR EN LA CREACION DEL SERVICIO COEFICIENTESCOLABORACIONSERVICE
     private TipoColaboracion tipoColaboracion;
 
     private Double coeficientePuntos;

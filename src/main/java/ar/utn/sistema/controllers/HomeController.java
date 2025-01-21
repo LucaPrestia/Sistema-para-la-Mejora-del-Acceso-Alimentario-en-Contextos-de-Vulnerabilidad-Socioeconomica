@@ -17,6 +17,7 @@ public class HomeController {
     public String loadHome(Model model){
         model.addAttribute("username", sesion.obtenerUsuarioAutenticado().getUsername());
         model.addAttribute("rol", sesion.obtenerUsuarioAutenticado().getRol());
+        System.out.println(sesion.obtenerUsuarioAutenticado().getRol());
         double lat = -34.6597832;
         double lon = -58.4680729;
         model.addAttribute("lat", lat);
