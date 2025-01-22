@@ -103,7 +103,7 @@ public class UsuarioSesionService implements UserDetailsService {
                 default:
                     throw new IllegalArgumentException("Rol no válido");
             }
-            repository.save(nuevoUsuario);
+            // repository.save(nuevoUsuario); -> por cascada en las clases de roles ya se guarda el usuario automaticamente, no hace falta persistir de vuelta
             return nuevoUsuario;
         } else return null;
     }

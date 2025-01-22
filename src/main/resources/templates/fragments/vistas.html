@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Vistas</title>
+</head>
+<body>
+<!-- algunas vistas sólo de ejemplo: luego van a ser el contenido de cada contenedor del sector principal (cambio ante selección menú) -->
+<div th:fragment="opcion1">
+    <h2 class="text-center" >Contenido de Opción 1</h2>
+    <p class="text-center mt-3" th:text="'Este es el contenido dinámico de la ' + ${nombre} + '.'"></p>
+</div>
+<div th:fragment="opcion2">
+    <h2 class="text-center">Contenido de Opción 2</h2>
+    <p class="text-center mt-3" th:text="'Este es el contenido dinámico de la ' + ${nombre} + '.'"></p>
+</div>
+<div th:fragment="opcion3">
+    <h2 class="text-center">Contenido de Opción 3</h2>
+    <p class="text-center mt-3" th:text="'Este es el contenido dinámico de la ' + ${nombre} + '.'"></p>
+    <p class="text-center mt-3" th:text="${info}"></p>
+</div>
+
+</body>
+</html>

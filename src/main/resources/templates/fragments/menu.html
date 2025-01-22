@@ -14,20 +14,20 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
-                <!-- todo: opciones de menú específicas para cada tipo de usuario (los roles se deberían configurar también desde securityConfig) -->
-
                 <li class="nav-item" th:if="${rol == 'COLABORADOR_FISICO'}">
                     <a class="nav-link" th:href="@{/colaborador/dashboard}">Dashboard Colaborador FISICO </a>
+                    <a class="nav-link" href="#" onclick="cargarVista('opcion1')">Opción 1</a>
                 </li>
                 <li class="nav-item" th:if="${rol == 'COLABORADOR_JURIDICO'}">
                     <a class="nav-link" th:href="@{/colaborador/dashboard}">Dashboard Colaborador JURIDICO</a>
+                    <a class="nav-link" href="#" onclick="cargarVista('opcion2')">Opción 2</a>
                 </li>
                 <li class="nav-item" th:if="${rol == 'TECNICO'}">
                     <a class="nav-link" th:href="@{/tecnico/dashboard}">Dashboard Técnico</a>
                 </li>
-
                 <li class="nav-item" th:if="${rol == 'ADMIN'}">
                     <a class="nav-link" th:href="@{/admin/dashboard}">Dashboard Admin</a>
+                    <a class="nav-link" href="#" onclick="cargarVista('opcion3')">Opción 3</a>
                 </li>
 
 

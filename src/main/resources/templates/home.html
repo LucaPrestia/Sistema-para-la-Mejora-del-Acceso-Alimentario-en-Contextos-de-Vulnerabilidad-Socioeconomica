@@ -12,17 +12,14 @@
     <div th:insert="~{fragments/menu :: menuprincipal(${username})}"></div>
 </header>
 <body>
-    <div class="container mt-5">
+    <div class="container mt-5" id="sector_central_vistas">
         <!-- Centrar texto usando las clases text-center y mt-5 para margen superior -->
         <h1 class="text-center">Bienvenido/a al Sistema de Gestión de Alimentos</h1>
         <p class="text-center mt-3">Este es el contenido compartido que se muestra a todos los usuarios
             (podría ser un mapa de las heladeras informando ubicación, capacidad, viandas, estado, etc.)
         </p>
-    </div>
-    <!-- ejemplo if:  <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}" -->
-    <div class="container mt-5" id="dynamic-content">
-        <!-- opcion 2: <div th:insert="~{fragments/opciones :: ${fragmento}}"></div> -->
-        <div th:insert="~{fragments/map :: mapBody(lat=${lat}, lon=${lon})}"></div>
+        <h2>Selecciona una opción para ver su contenido</h2>
+        <!--todo: analizar si va como vista preliminar el mapa = <div th:insert="~{fragments/map :: mapBody(lat=${lat}, lon=${lon})}"></div>-->
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
@@ -31,9 +28,9 @@
 
 </body>
 </html>
+
 <!-- analizar
-<script>
-    // opcion 1:
+    opcion 1:
     function loadContent(url) {
         fetch(url)
             .then(response => response.text())
@@ -47,5 +44,27 @@
     function cargarFragmento(nombreFragmento) {
         window.location.href = '/home?fragmento=' + nombreFragmento;
     }
-</script>
 -->
+<script>
+    function cargarVista(opcion) {
+        // URL del endpoint que devuelve la opcion seleccionada con los parámetros ya cargados para su renderizacion
+        const url = `/vistas/${opcion}`; // Responde el controller VistasController.java
+
+        // Realiza la solicitud fetch
+        fetch(url, { method: 'GET' })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error al cargar la vista: ${response.statusText}`);
+                }
+                return response.text(); // Obtiene el HTML como texto
+            })
+            .then(html => {
+                // Inserta el contenido en el contenedor
+                document.getElementById("sector_central_vistas").innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error al cargar la vista:', error);
+            });
+    }
+
+</script>
