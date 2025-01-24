@@ -1,16 +1,19 @@
 package ar.utn.sistema.entities;
 
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 @Getter
 @Setter
 @NoArgsConstructor
-@Embeddable
-public class Direccion {
-    private double lat;
-    private double lon;
+@Entity
+public class Direccion extends PersistenciaID {
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Coordenadas coordenadas;
+
     private String pais;
     private String provincia;
     private String localidad;
@@ -19,19 +22,8 @@ public class Direccion {
     private String departamento;
     private int codigo_postal;
 
-    public Direccion(String pais, String provincia, String localidad, String calle, int numero, int codigo_postal, String departamento) {
-        this.pais = pais;
-        this.provincia = provincia;
-        this.localidad = localidad;
-        this.calle = calle;
-        this.numero = numero;
-        this.codigo_postal = codigo_postal;
-        this.departamento = departamento;
-    }
-
-    public Direccion(double lat, double lon, String pais, String provincia, String localidad, String calle, int numero, int codigo_postal, String departamento) {
-        this.lat = lat;
-        this.lon = lon;
+    public Direccion(Coordenadas coordenadas, String pais, String provincia, String localidad, String calle, int numero, int codigo_postal, String departamento) {
+        this.coordenadas = coordenadas;
         this.pais = pais;
         this.provincia = provincia;
         this.localidad = localidad;
@@ -54,6 +46,4 @@ public class Direccion {
 
         return direccion.toString();
     }
-
-
 }

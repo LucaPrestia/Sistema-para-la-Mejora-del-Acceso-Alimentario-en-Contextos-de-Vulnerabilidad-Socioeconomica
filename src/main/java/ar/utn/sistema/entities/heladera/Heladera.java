@@ -5,6 +5,7 @@ import ar.utn.sistema.entities.notificacion.Notificacion;
 import ar.utn.sistema.entities.notificacion.PreferenciaNotificacion;
 import ar.utn.sistema.entities.usuarios.Colaborador;
 import ar.utn.sistema.entities.usuarios.Suscriptor;
+import ar.utn.sistema.entities.usuarios.Usuario;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,10 +20,11 @@ import java.util.List;
 public class Heladera extends PersistenciaID {
 
     private String nombre;
-    private String owner;
+    @OneToOne()
+    private Usuario owner;
     private LocalDate fechaPuestaFuncionamiento;
 
-    @Embedded
+    @OneToOne(cascade = CascadeType.ALL)
     private Direccion direccion;
 
     @Enumerated(EnumType.STRING)
@@ -43,7 +45,7 @@ public class Heladera extends PersistenciaID {
     private List<Colaborador> suscriptores;
 
     // Constructor
-    public Heladera(String nombre, String owner, Direccion direccion, double tempMax, double tempMin, int maxViandas) {
+    public Heladera(String nombre, Usuario owner, Direccion direccion, double tempMax, double tempMin, int maxViandas) {
         this.nombre = nombre;
         this.owner = owner;
         this.direccion = direccion;

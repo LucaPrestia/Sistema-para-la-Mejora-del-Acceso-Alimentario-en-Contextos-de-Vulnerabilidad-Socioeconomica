@@ -32,7 +32,7 @@ public class Tecnico extends Rol {
     private String areaCobertura;
 
     // agregamos la dirección para que se pueda identificar al técnico más cercano a una determinada heladera en caso de detectar algún incidente
-    @Embedded
+    @OneToOne
     private Direccion direccion;
 
     public Tecnico(Usuario usuario, String nombre, String apellido, TipoDocumento tipoDocumento, Long documento, Long cuil, Contacto contacto, String areaCobertura, Direccion direccion) {

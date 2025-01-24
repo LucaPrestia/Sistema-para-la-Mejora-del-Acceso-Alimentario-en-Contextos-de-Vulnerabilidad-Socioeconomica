@@ -3,9 +3,11 @@ package ar.utn.sistema.model;
 import ar.utn.sistema.entities.usuarios.Rol;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 // esta clase es para guardar datos del usuario que se logueó para que puedan ser consultados desde distintos lados del código
 public class UsuarioSesionDetalle implements UserDetails {
@@ -16,7 +18,8 @@ public class UsuarioSesionDetalle implements UserDetails {
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
-
+    @Getter
+    int id;
     public UsuarioSesionDetalle(String rol, Rol usuario, String username, String password, Collection<? extends GrantedAuthority> authorities) {
         this.rol = rol;
         this.usuario = usuario;
@@ -24,6 +27,16 @@ public class UsuarioSesionDetalle implements UserDetails {
         this.password = password;
         this.authorities = authorities;
     }
+
+    public UsuarioSesionDetalle(Integer id, java.lang.String rol, ar.utn.sistema.entities.usuarios.Rol usuario, java.lang.String username, java.lang.String password, List<SimpleGrantedAuthority> authorities) {
+        this.id = id;
+        this.rol = rol;
+        this.usuario = usuario;
+        this.username = username;
+        this.password = password;
+        this.authorities = authorities;
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

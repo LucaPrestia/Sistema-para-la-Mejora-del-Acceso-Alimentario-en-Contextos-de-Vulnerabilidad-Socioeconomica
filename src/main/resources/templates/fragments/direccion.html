@@ -19,16 +19,6 @@
         <label for="numero">Número</label>
         <input type="number" class="form-control" id="numero" name="numero">
 
-        <div th:if="${latlon == '0'}">
-            <input type="hidden" name="lat" value="0.0">
-            <input type="hidden" name="lon" value="0.0">
-        </div>
-        <div th:if="${latlon != '0'}">
-            <label for="lat">Latitud</label>
-            <input type="number" class="form-control" id="lat" name="lat" step="any">
 
-            <label for="lon">Longitud</label>
-            <input type="number" class="form-control" id="lon" name="lon" step="any">
-        </div>
     </div>
 </div>

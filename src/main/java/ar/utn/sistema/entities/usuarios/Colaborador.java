@@ -36,7 +36,7 @@ public abstract class Colaborador extends Suscriptor{
     // se graba la clave en Contacto! puede ser nulo en caso de que el contacto le pertenezca a un tecnico
     private List<Contacto> contactos = new ArrayList<Contacto>();
 
-    @Embedded
+    @OneToOne()
     private Direccion direccion;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})

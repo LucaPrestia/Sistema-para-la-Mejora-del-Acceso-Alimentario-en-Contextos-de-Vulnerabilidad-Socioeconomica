@@ -16,7 +16,7 @@ public class PersonaVulnerable extends Rol {
     private LocalDate fechaRegistro;
     private Boolean situacionDeCalle;
 
-    @Embedded
+    @OneToOne
     private Direccion direccion;
 
     @Enumerated(EnumType.STRING)

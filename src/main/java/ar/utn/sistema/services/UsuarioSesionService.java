@@ -57,6 +57,7 @@ public class UsuarioSesionService implements UserDetailsService {
         }
 
         return new UsuarioSesionDetalle(
+                usuario.getId(),
                 usuario.getRol(),
                 rol,
                 usuario.getUsuario(),
