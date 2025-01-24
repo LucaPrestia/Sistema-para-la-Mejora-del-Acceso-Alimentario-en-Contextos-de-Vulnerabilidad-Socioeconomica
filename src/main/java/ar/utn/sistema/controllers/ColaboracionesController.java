@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller()
@@ -42,7 +43,7 @@ public class ColaboracionesController {
     private UsuarioRepository usuarioRepository;
 
     @GetMapping("/colocarHeladera")
-    public String cargarPaginacolocarHeladera(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException
+    public String cargarPaginaColocarHeladera(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException
     {
         List<Direccion> direccionesSugeridas = ServicioDeUbicacionHeladera.instancia().listadoPosicionesHeladera(new Coordenadas(), 2);
         direccionesSugeridas = direccionRepository.saveAll(direccionesSugeridas);
@@ -79,8 +80,30 @@ public class ColaboracionesController {
     }
 
     @GetMapping("/hacerseCargoHeladera")
-    public String hacerceCargoHeladera(Model model){
-        model.addAttribute("registerDTO", new RegisterDto());
-        return "hacerceCargoHeladera";
+    public String cargarPaginaHacerseCargoHeladera(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException
+    {
+        List<Heladera> heladerasSinOwner = heladeraRepository.findByOwnerIsNull();
+        model.addAttribute("heladeraList", heladerasSinOwner);
+
+
+        if (success != null && success) {
+            model.addAttribute("success", true);
+        }
+        return "colaboraciones/hacerseCargoHeladera";
+    }
+    @PostMapping("/hacerseCargoHeladera")
+    public String guardarHacerseCargoHeladera(@RequestParam("direccionSeleccionada") Integer heladeraId, Model model) {
+        try {
+            Heladera heladera = heladeraRepository.findById(heladeraId).get();
+            Usuario owner  = usuarioRepository.findById(sesion.obtenerUsuarioAutenticado().getId()).get();
+            System.out.println(owner.getId());
+            heladera.setOwner(owner);
+            heladeraRepository.save(heladera);
+
+            return "redirect:/colaboraciones/hacerseCargoHeladera?success=true";
+        } catch (Exception e) {
+            model.addAttribute("error", "Ocurrió un error al guardar la heladera: " + e.getMessage());
+            return "error";
+        }
     }
 }

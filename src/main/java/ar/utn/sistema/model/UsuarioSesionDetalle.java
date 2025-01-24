@@ -28,7 +28,7 @@ public class UsuarioSesionDetalle implements UserDetails {
         this.authorities = authorities;
     }
 
-    public UsuarioSesionDetalle(Integer id, java.lang.String rol, ar.utn.sistema.entities.usuarios.Rol usuario, java.lang.String username, java.lang.String password, List<SimpleGrantedAuthority> authorities) {
+    public UsuarioSesionDetalle(Integer id, String rol, Rol usuario, String username, String password, List<SimpleGrantedAuthority> authorities) {
         this.id = id;
         this.rol = rol;
         this.usuario = usuario;

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Heladera</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<header>
+        <div th:insert="~{fragments/menu :: menuprincipal(${username})}"></div>
+</header>
+<body>
+<div class="container mt-5">
+    <h1 th:unless="${heladeraList.isEmpty()}" class="text-center">Hacerse cargo de una Heladera</h1>
+    <div class="card-body">
+        <div th:if="${success}" class="alert alert-success text-center">
+            <p>Heladera Tomada Correctamente</p>
+        </div>
+    </div>
+    <div th:if="${heladeraList.isEmpty()}">
+        <h1 class="text-center">No Hay heladeras Sin Dueño</h1>
+    </div>
+    <form th:unless="${heladeraList.isEmpty()}" th:action="@{/colaboraciones/hacerseCargoHeladera}" method="post">
+        <div class="form-group">
+            <label for="heladeraSelect">Heladeras</label>
+            <select class="form-control" id="heladeraSelect" name="heladeraSelect">
+                <option th:each="heladera : ${heladeraList}"
+                            th:value="${heladera.id}"
+                            th:text="${heladera.nombre} 'Coordenadas, Latitud: '+ ${heladera.direccion.coordenadas.latitud} + ', Altitud: ' + ${heladera.direccion.coordenadas.longitud} + ')'">
+                </option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Crear Heladera</button>
+    </form>
+    </div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
