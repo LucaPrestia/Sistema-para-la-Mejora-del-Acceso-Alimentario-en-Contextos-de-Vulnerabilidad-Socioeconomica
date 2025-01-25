@@ -1,5 +1,6 @@
 package ar.utn.sistema.config;
 
+import ar.utn.sistema.entities.colaboracion.TipoColaboracionEnum;
 import ar.utn.sistema.entities.configuracion.CoeficientesColaboracion;
 import ar.utn.sistema.entities.configuracion.ColaboradorColaboracion;
 import ar.utn.sistema.entities.configuracion.ParametrosGenerales;

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Heladera</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<header>
+        <div th:insert="~{fragments/menu :: menuprincipal(${username})}"></div>
+</header>
+<body>
+<div class="container mt-5">
+    <h1 th:unless="${frecuenciaList.isEmpty()}" class="text-center">Haga su donación</h1>
+    <div class="card-body">
+        <div th:if="${success}" class="alert alert-success text-center">
+            <p>Donacion Realizada Correctamente</p>
+        </div>
+    </div>
+
+    <form th:unless="${frecuenciaList.isEmpty()}" th:action="@{/colaboracion/donacionDinero}" method="post">
+        <div class="form-group">
+            <label for="dinero">Dinero</label>
+          <input type="number"  class="form-control" id="dinero" name="dinero" placeholder="Cantidad de dinero" required>
+        </div>
+        <div class="form-group">
+            <label for="frecuenciaSelect">Frecuencia con la que desea realizar la donacion</label>
+            <select class="form-control" id="frecuenciaSelect" name="frecuenciaSeleccionada">
+                <option th:each="frecuencia : ${frecuenciaList}"
+                            th:value="${frecuencia.name()}"
+                            th:text="${frecuencia.name()} ">
+                </option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Donar Dinero</button>
+    </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

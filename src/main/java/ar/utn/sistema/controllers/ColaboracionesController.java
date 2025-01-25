@@ -3,8 +3,10 @@ package ar.utn.sistema.controllers;
 import ar.utn.sistema.dto.RegisterDto;
 import ar.utn.sistema.entities.Coordenadas;
 import ar.utn.sistema.entities.Direccion;
+import ar.utn.sistema.entities.colaboracion.ColaboracionDinero;
 import ar.utn.sistema.entities.colaboracion.ColaboracionGestionHeladera;
 import ar.utn.sistema.entities.colaboracion.TipoColaboracionEnum;
+import ar.utn.sistema.entities.colaboracion.TipoFrecuencia;
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.heladera.ServicioDeUbicacionHeladera;
 import ar.utn.sistema.entities.usuarios.Usuario;
@@ -30,6 +32,7 @@ public class ColaboracionesController {
 
     @Autowired
     private ColaboracionRepository colaboracionRepository;
+
     @Autowired
     private UsuarioSesionService sesion;
     @Autowired
@@ -42,6 +45,7 @@ public class ColaboracionesController {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private CoeficientesColaboracionRepository coeficientesColaboracionRepository;
+
     @GetMapping("/colocarHeladera")
     public String cargarPaginaColocarHeladera(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException
     {
@@ -72,7 +76,9 @@ public class ColaboracionesController {
             Heladera nuevaHeladera = new Heladera(nombre, owner, direccion, tempMax, tempMin, maxViandas);
             heladeraRepository.save(nuevaHeladera);
             //crea la colaboracion y saca el coeficiente correspondiente por sql
-            ColaboracionGestionHeladera colaboracionGestionHeladera = new ColaboracionGestionHeladera(nuevaHeladera,coeficientesColaboracionRepository.findByTipoColaboracionEquals(String.valueOf(TipoColaboracionEnum.GESTION_HELADERA)).get(0).getCoeficientePuntos());
+            Double coeficientePuntos = coeficientesColaboracionRepository.findById(1).get().getCoeficientePuntos(); //pongo un coef cualquiera
+          //  Double coeficientePuntos = coeficientesColaboracionRepository.findByTipoColaboracion(TipoColaboracionEnum.GESTION_HELADERA).get(0).getCoeficientePuntos();
+            ColaboracionGestionHeladera colaboracionGestionHeladera = new ColaboracionGestionHeladera(nuevaHeladera,coeficientePuntos);
             colaboracionRepository.save(colaboracionGestionHeladera);
             return "redirect:/colaboracion/colocarHeladera?success=true";
         } catch (Exception e) {
@@ -93,6 +99,7 @@ public class ColaboracionesController {
         }
         return "colaboraciones/hacerseCargoHeladera";
     }
+
     @PostMapping("/hacerseCargoHeladera")
     public String guardarHacerseCargoHeladera(@RequestParam("direccionSeleccionada") Integer heladeraId, Model model) {
         try {
@@ -101,12 +108,44 @@ public class ColaboracionesController {
             System.out.println(owner.getId());
             heladera.setOwner(owner);
             heladeraRepository.save(heladera);
-            ColaboracionGestionHeladera colaboracionGestionHeladera = new ColaboracionGestionHeladera(heladera,coeficientesColaboracionRepository.findByTipoColaboracionEquals(String.valueOf(TipoColaboracionEnum.GESTION_HELADERA)).get(0).getCoeficientePuntos());
+           // Double coeficientePuntos = coeficientesColaboracionRepository.findByTipoColaboracion(TipoColaboracionEnum.GESTION_HELADERA).get(0).getCoeficientePuntos();
+            Double coeficientePuntos = coeficientesColaboracionRepository.findById(1).get().getCoeficientePuntos(); //pongo un coef cualquiera
+
+            ColaboracionGestionHeladera colaboracionGestionHeladera = new ColaboracionGestionHeladera(heladera, coeficientePuntos);
             colaboracionRepository.save(colaboracionGestionHeladera);
-            return "redirect:/colaboraciones/hacerseCargoHeladera?success=true";
+            return "redirect:/colaboracion/hacerseCargoHeladera?success=true";
         } catch (Exception e) {
             model.addAttribute("error", "Ocurrió un error al guardar la heladera: " + e.getMessage());
             return "error";
+        }
+    }
+
+    @GetMapping("/donacionDinero")
+    public String cargarPaginaHacerDonacionDinero(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException
+    {
+        List<TipoFrecuencia> frecuenciaList = List.of(TipoFrecuencia.values());
+        model.addAttribute("frecuenciaList", frecuenciaList);
+
+        if (success != null && success) {
+            model.addAttribute("success", true);
+        }
+        return "colaboraciones/donacionDinero";
+    }
+
+    @PostMapping("/donacionDinero")
+    public String guardarHacerDonacionDinero(@RequestParam("dinero") double dinero,@RequestParam("frecuenciaSeleccionada") String id_frecuencia, Model model) {
+       try {
+
+            //Double coeficientePuntos = coeficientesColaboracionRepository.findByTipoColaboracion(TipoColaboracionEnum.DINERO).get(0).getCoeficientePuntos();
+            Double coeficientePuntos = coeficientesColaboracionRepository.findById(1).get().getCoeficientePuntos(); //pongo un coef cualquiera
+            System.out.println(coeficientePuntos);
+            ColaboracionDinero colaboracionDinero = new ColaboracionDinero((float) dinero,TipoFrecuencia.valueOf(id_frecuencia),coeficientePuntos);
+            System.out.println(colaboracionDinero);
+            colaboracionRepository.save(colaboracionDinero);
+               return "redirect:/colaboracion/donacionDinero?success=true";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+           return "error";
         }
     }
 }
