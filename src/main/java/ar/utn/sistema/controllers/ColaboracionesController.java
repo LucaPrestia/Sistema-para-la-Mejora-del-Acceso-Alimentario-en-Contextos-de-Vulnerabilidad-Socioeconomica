@@ -3,14 +3,14 @@ package ar.utn.sistema.controllers;
 import ar.utn.sistema.dto.RegisterDto;
 import ar.utn.sistema.entities.Coordenadas;
 import ar.utn.sistema.entities.Direccion;
+import ar.utn.sistema.entities.colaboracion.ColaboracionGestionHeladera;
+import ar.utn.sistema.entities.colaboracion.TipoColaboracionEnum;
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.heladera.ServicioDeUbicacionHeladera;
 import ar.utn.sistema.entities.usuarios.Usuario;
-import ar.utn.sistema.repositories.CoordenadasRepository;
-import ar.utn.sistema.repositories.DireccionRepository;
-import ar.utn.sistema.repositories.UsuarioRepository;
+import ar.utn.sistema.repositories.*;
+import ar.utn.sistema.repositories.configuracion.CoeficientesColaboracionRepository;
 import ar.utn.sistema.services.UsuarioSesionService;
-import ar.utn.sistema.repositories.HeladeraRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,21 +27,21 @@ import java.util.List;
 @RequestMapping("/colaboracion")
 public class ColaboracionesController {
 
+
     @Autowired
-    private UsuarioSesionService servicio;
+    private ColaboracionRepository colaboracionRepository;
     @Autowired
     private UsuarioSesionService sesion;
     @Autowired
     private CoordenadasRepository coordenadasRepository;
-
     @Autowired
     private HeladeraRepository heladeraRepository;
-
     @Autowired
     private DireccionRepository direccionRepository;
     @Autowired
     private UsuarioRepository usuarioRepository;
-
+    @Autowired
+    private CoeficientesColaboracionRepository coeficientesColaboracionRepository;
     @GetMapping("/colocarHeladera")
     public String cargarPaginaColocarHeladera(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException
     {
@@ -71,7 +71,9 @@ public class ColaboracionesController {
             System.out.println(owner.getId());
             Heladera nuevaHeladera = new Heladera(nombre, owner, direccion, tempMax, tempMin, maxViandas);
             heladeraRepository.save(nuevaHeladera);
-
+            //crea la colaboracion y saca el coeficiente correspondiente por sql
+            ColaboracionGestionHeladera colaboracionGestionHeladera = new ColaboracionGestionHeladera(nuevaHeladera,coeficientesColaboracionRepository.findByTipoColaboracionEquals(String.valueOf(TipoColaboracionEnum.GESTION_HELADERA)).get(0).getCoeficientePuntos());
+            colaboracionRepository.save(colaboracionGestionHeladera);
             return "redirect:/colaboracion/colocarHeladera?success=true";
         } catch (Exception e) {
             model.addAttribute("error", "Ocurrió un error al guardar la heladera: " + e.getMessage());
@@ -99,7 +101,8 @@ public class ColaboracionesController {
             System.out.println(owner.getId());
             heladera.setOwner(owner);
             heladeraRepository.save(heladera);
-
+            ColaboracionGestionHeladera colaboracionGestionHeladera = new ColaboracionGestionHeladera(heladera,coeficientesColaboracionRepository.findByTipoColaboracionEquals(String.valueOf(TipoColaboracionEnum.GESTION_HELADERA)).get(0).getCoeficientePuntos());
+            colaboracionRepository.save(colaboracionGestionHeladera);
             return "redirect:/colaboraciones/hacerseCargoHeladera?success=true";
         } catch (Exception e) {
             model.addAttribute("error", "Ocurrió un error al guardar la heladera: " + e.getMessage());
