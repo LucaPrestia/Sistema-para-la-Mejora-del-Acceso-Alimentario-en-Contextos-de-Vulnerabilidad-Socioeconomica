@@ -20,7 +20,8 @@ import java.util.List;
 public class Heladera extends PersistenciaID {
 
     private String nombre;
-    @OneToOne()
+    @ManyToOne
+    @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
     private Usuario owner;
     private LocalDate fechaPuestaFuncionamiento;
 

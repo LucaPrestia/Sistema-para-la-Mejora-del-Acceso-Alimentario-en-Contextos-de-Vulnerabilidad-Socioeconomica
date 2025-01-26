@@ -12,11 +12,19 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item" th:if="${rol == 'COLABORADOR_FISICO'}">
-                    <a class="nav-link" th:href="@{/colaborador/dashboard}">Dashboard Colaborador FISICO </a>
-                    <a class="nav-link" href="#" onclick="cargarVista('opcion1')">Opción 1</a>
+                <!-- Grupo desplegable para colaborador físico -->
+                <li class="nav-item dropdown" th:if="${rol == 'COLABORADOR_FISICO'}">
+                    <a class="nav-link dropdown-toggle" href="#" id="colaborarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Colaborar
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="colaborarDropdown">
+                        <a class="dropdown-item" href="#" onclick="cargarVista('colocarHeladera')">Colocar Heladera</a>
+                        <a class="dropdown-item" href="#" onclick="cargarVista('hacerseCargoHeladera')">Hacerse Cargo Heladera</a>
+                        <a class="dropdown-item" href="#" onclick="cargarVista('donacionDinero')">Donación Dinero</a>
+                    </div>
                 </li>
                 <li class="nav-item" th:if="${rol == 'COLABORADOR_JURIDICO'}">
                     <a class="nav-link" th:href="@{/colaborador/dashboard}">Dashboard Colaborador JURIDICO</a>
@@ -29,9 +37,6 @@
                     <a class="nav-link" th:href="@{/admin/dashboard}">Dashboard Admin</a>
                     <a class="nav-link" href="#" onclick="cargarVista('opcion3')">Opción 3</a>
                 </li>
-
-
-
                 <!-- Mostrar el nombre del usuario para entrar al panel de sus datos -->
                 <li class="nav-item">
                     <a class="nav-link disabled" href="#"><span th:text="${username}"></span></a>

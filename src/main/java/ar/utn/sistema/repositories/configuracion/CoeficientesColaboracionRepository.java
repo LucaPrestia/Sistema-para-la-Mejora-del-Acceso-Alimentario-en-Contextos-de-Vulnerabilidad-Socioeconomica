@@ -9,9 +9,10 @@ import org.springframework.stereotype.Repository;
 
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CoeficientesColaboracionRepository extends JpaRepository<CoeficientesColaboracion, Integer> {
-   //TODO:  buscar por tipo colaboracion List<CoeficientesColaboracion> findByTipoColaboracion(TipoColaboracionEnum tipoColaboracion);
 
+    Optional<CoeficientesColaboracion> findByTipoColaboracion(TipoColaboracion tipoColaboracion);
 }

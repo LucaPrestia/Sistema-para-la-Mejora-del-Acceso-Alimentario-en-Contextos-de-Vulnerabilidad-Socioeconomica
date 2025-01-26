@@ -10,6 +10,16 @@
 <header>
     <!--TODO: según el rol pasado por parámetro cargar un menú distinto -->
     <div th:insert="~{fragments/menu :: menuprincipal(${username})}"></div>
+    <div class="card-body">
+        <div th:if="${success}" class="alert alert-success text-center">
+            <p>Operación Realizada Correctamente</p>
+        </div>
+    </div>
+    <div class="card-body">
+        <div th:if="${error}" class="alert alert-success text-center">
+            <p>Operación Realizada Correctamente</p>
+        </div>
+    </div>
 </header>
 <body>
     <div class="container mt-5" id="sector_central_vistas">

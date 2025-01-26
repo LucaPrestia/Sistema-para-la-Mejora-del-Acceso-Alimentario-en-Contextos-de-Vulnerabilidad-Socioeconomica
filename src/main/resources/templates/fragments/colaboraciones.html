@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<div th:fragment="colocarHeladera">
+  <div class="container mt-5">
+    <h1 class="text-center">Colocar una Heladera</h1>
+    <div class="card-body">
+      <div th:if="${success}" class="alert alert-success text-center">
+        <p>Heladera Colocada correctamente</p>
+      </div>
+      <form th:action="@{/colaboracion/colocarHeladera}" method="post">
+        <div class="form-group">
+          <label for="nombre">Nombre</label>
+          <input type="text"  class="form-control" id="nombre" name="nombre" placeholder="Nombre de la heladera" required>
+        </div>
+
+
+        <div class="form-group">
+          <label for="tempMin">Temperatura Mínima (&deg;C)</label>
+          <input type="number" step="0.1" class="form-control" id="tempMin" name="tempMin" placeholder="Ejemplo: -18.5" required>
+        </div>
+
+        <div class="form-group">
+          <label for="tempMax">Temperatura Máxima (&deg;C)</label>
+          <input type="number" step="0.1" class="form-control" id="tempMax" name="tempMax" placeholder="Ejemplo: 5.0" required>
+        </div>
+
+        <div class="form-group">
+          <label for="maxViandas">Capacidad Máxima de Viandas</label>
+          <input type="number" class="form-control" id="maxViandas" name="maxViandas" placeholder="Ejemplo: 100" required>
+        </div>
+
+        <h3 class="text-center">Seleccionar Dirección</h3>
+        <div class="form-group">
+          <label for="direccionSelect">Direcciones Sugeridas </label>
+          <select class="form-control" id="direccionSelect" name="direccionSeleccionada">
+            <option th:each="direccion : ${direccionesLista}"
+                    th:value="${direccion.id}"
+                    th:text="'Direccion: ' + ${direccion.calle} + ' ' + ${direccion.numero} + ', ' + ${direccion.localidad} + ' (' + ${direccion.coordenadas.latitud} + ', ' + ${direccion.coordenadas.longitud} + ')'">
+            </option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Crear Heladera</button>
+      </form>
+    </div>
+  </div>
+</div>
+<div th:fragment="hacerseCargoHeladera" class="container mt-5">
+  <h1 th:unless="${heladeraList.isEmpty()}" class="text-center">Hacerse cargo de una Heladera</h1>
+  <div class="card-body">
+    <div th:if="${success}" class="alert alert-success text-center">
+      <p>Heladera Tomada Correctamente</p>
+    </div>
+  </div>
+  <div th:if="${heladeraList.isEmpty()}">
+    <h1 class="text-center">No Hay heladeras Sin Dueño</h1>
+  </div>
+  <form th:unless="${heladeraList.isEmpty()}" th:action="@{/colaboraciones/hacerseCargoHeladera}" method="post">
+    <div class="form-group">
+      <label for="heladeraSelect">Heladeras</label>
+      <select class="form-control" id="heladeraSelect" name="heladeraSelect">
+        <option th:each="heladera : ${heladeraList}"
+                th:value="${heladera.id}"
+                th:text="${heladera.nombre} 'Coordenadas, Latitud: '+ ${heladera.direccion.coordenadas.latitud} + ', Altitud: ' + ${heladera.direccion.coordenadas.longitud} + ')'">
+        </option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Crear Heladera</button>
+  </form>
+</div>
+<div th:fragment="donacionDinero" class="container mt-5">
+  <h1 th:unless="${frecuenciaList.isEmpty()}" class="text-center">Haga su donación</h1>
+  <div class="card-body">
+    <div th:if="${success}" class="alert alert-success text-center">
+      <p>Donacion Realizada Correctamente</p>
+    </div>
+  </div>
+
+  <form th:unless="${frecuenciaList.isEmpty()}" th:action="@{/colaboracion/donacionDinero}" method="post">
+    <div class="form-group">
+      <label for="dinero">Dinero</label>
+      <input type="number"  class="form-control" id="dinero" name="dinero" placeholder="Cantidad de dinero" required>
+    </div>
+    <div class="form-group">
+      <label for="frecuenciaSelect">Frecuencia con la que desea realizar la donacion</label>
+      <select class="form-control" id="frecuenciaSelect" name="frecuenciaSeleccionada">
+        <option th:each="frecuencia : ${frecuenciaList}"
+                th:value="${frecuencia.name()}"
+                th:text="${frecuencia.name()} ">
+        </option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Donar Dinero</button>
+  </form>
+</div>
+</body>
+</html>
