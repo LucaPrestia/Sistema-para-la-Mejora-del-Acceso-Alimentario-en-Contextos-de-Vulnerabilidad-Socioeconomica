@@ -82,7 +82,7 @@
   <form th:unless="${frecuenciaList.isEmpty()}" th:action="@{/colaboracion/donacionDinero}" method="post">
     <div class="form-group">
       <label for="dinero">Dinero</label>
-      <input type="number"  class="form-control" id="dinero" name="dinero" placeholder="Cantidad de dinero" required>
+      <input type="number" step="0.01"  class="form-control" id="dinero" name="dinero" placeholder="Cantidad de dinero" required>
     </div>
     <div class="form-group">
       <label for="frecuenciaSelect">Frecuencia con la que desea realizar la donacion</label>
@@ -96,5 +96,127 @@
     <button type="submit" class="btn btn-primary">Donar Dinero</button>
   </form>
 </div>
+<div th:fragment="donacionVianda" class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+  <h2 class="text-2xl font-bold mb-6">Donar Viandas</h2>
+  <form action="/vianda/donar" method="POST" id="viandaForm" class="space-y-4">
+
+    <!-- Selección de Heladera -->
+    <div>
+      <label for="heladera" class="block text-sm font-medium text-gray-700">Heladera</label>
+      <select id="heladera" name="heladeraSeleccionada" required
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        <option th:each="heladera : ${heladeraList}"
+                th:value="${heladera.id()}"
+                th:text="${heladera.nombre()} ">
+        </option>
+        <!-- Los valores deben ser dinámicos basados en las heladeras disponibles -->
+      </select>
+    </div>
+
+    <div id="viandaContainer">
+      <!-- Contenedor dinámico para viandas -->
+      <div class="vianda-item border rounded-lg p-4 space-y-4 mb-4">
+        <h3 class="text-lg font-medium">Vianda 1</h3>
+        <!-- Comida -->
+        <div>
+          <label for="comida_0" class="block text-sm font-medium text-gray-700">Comida</label>
+          <input type="text" id="comida_0" name="viandas[0].comida" required
+                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        </div>
+
+        <!-- Fecha de Caducidad -->
+        <div>
+          <label for="fechaCaducidad_0" class="block text-sm font-medium text-gray-700">Fecha de Caducidad</label>
+          <input type="date" id="fechaCaducidad_0" name="viandas[0].fechaCaducidad" required
+                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        </div>
+
+        <!-- Calorías -->
+        <div>
+          <label for="calorias_0" class="block text-sm font-medium text-gray-700">Calorías</label>
+          <input type="number" id="calorias_0" name="viandas[0].calorias" step="0.01" required
+                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        </div>
+
+        <!-- Peso -->
+        <div>
+          <label for="peso_0" class="block text-sm font-medium text-gray-700">Peso (en gramos)</label>
+          <input type="number" id="peso_0" name="viandas[0].peso" step="0.01" required
+                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        </div>
+
+        <!-- Botón para eliminar vianda -->
+        <button type="button"
+                class="w-full inline-flex justify-center rounded-md border border-gray-300 bg-red-500 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-red-600"
+                onclick="removeVianda(this)">
+          Eliminar Vianda
+        </button>
+      </div>
+    </div>
+
+    <!-- Botón para agregar otra vianda -->
+    <div>
+      <button type="button" id="addVianda"
+              class="w-full inline-flex justify-center rounded-md border border-transparent bg-green-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+        Agregar Otra Vianda
+      </button>
+    </div>
+
+    <!-- Botón para enviar el formulario -->
+    <div>
+      <button type="submit"
+              class="w-full inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+        Donar Viandas
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+  let viandaCount = 1;
+
+  // Función para agregar otra vianda
+  document.getElementById('addVianda').addEventListener('click', () => {
+    const container = document.getElementById('viandaContainer');
+    const newVianda = document.createElement('div');
+    newVianda.classList.add('vianda-item', 'border', 'rounded-lg', 'p-4', 'space-y-4', 'mb-4');
+
+    newVianda.innerHTML = `
+                <h3 class="text-lg font-medium">Vianda ${viandaCount + 1}</h3>
+                <div>
+                    <label for="comida_${viandaCount}" class="block text-sm font-medium text-gray-700">Comida</label>
+                    <input type="text" id="comida_${viandaCount}" name="viandas[${viandaCount}].comida" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                </div>
+                <div>
+                    <label for="fechaCaducidad_${viandaCount}" class="block text-sm font-medium text-gray-700">Fecha de Caducidad</label>
+                    <input type="date" id="fechaCaducidad_${viandaCount}" name="viandas[${viandaCount}].fechaCaducidad" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                </div>
+                <div>
+                    <label for="calorias_${viandaCount}" class="block text-sm font-medium text-gray-700">Calorías</label>
+                    <input type="number" id="calorias_${viandaCount}" name="viandas[${viandaCount}].calorias" step="0.01" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                </div>
+                <div>
+                    <label for="peso_${viandaCount}" class="block text-sm font-medium text-gray-700">Peso (en gramos)</label>
+                    <input type="number" id="peso_${viandaCount}" name="viandas[${viandaCount}].peso" step="0.01" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                </div>
+                <button type="button"
+                    class="w-full inline-flex justify-center rounded-md border border-gray-300 bg-red-500 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-red-600"
+                    onclick="removeVianda(this)">
+                    Eliminar Vianda
+                </button>
+            `;
+    container.appendChild(newVianda);
+    viandaCount++;
+  });
+
+  // Función para eliminar una vianda
+  function removeVianda(button) {
+    button.parentElement.remove();
+  }
+</script>
 </body>
 </html>
