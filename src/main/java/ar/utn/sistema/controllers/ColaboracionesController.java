@@ -121,29 +121,32 @@ public class ColaboracionesController {
         }
     }
     @PostMapping("/donacionVianda")
-    public String guardardonacionViandaprocesarDonacion(@RequestParam("heladeraSeleccionada") Integer heladera_id,  @ModelAttribute("viandas") List<ViandaDTO> viandas,Model model) {
+    public String guardardonacionViandaprocesarDonacion(
+            @RequestParam("heladeraSeleccionada") Integer heladera_id,
+            @ModelAttribute("viandas") List<ViandaDTO> viandas,
+            Model model
+    ) {
         try {
-
+            // Lógica de procesamiento como la que ya tienes
             TipoColaboracion tpo = tipoColaboracionRepository.findByNombre(TipoColaboracionEnum.DONACION_VIANDAS.getValue()).get();
             Double coeficientePuntos = coeficientesColaboracionRepository.findByTipoColaboracion(tpo).get().getCoeficientePuntos();
             System.out.println(coeficientePuntos);
+
             List<Vianda> viandasNuevas = new ArrayList<>();
-            for(ViandaDTO vianda : viandas) {
+            for (ViandaDTO vianda : viandas) {
                 Heladera heladera = heladeraRepository.findById(heladera_id).get();
-                Vianda nuevaVianda = new Vianda(vianda.getComida(),vianda.getFechaCaducidad(),heladera,vianda.getCalorias(), vianda.getPeso());
+                Vianda nuevaVianda = new Vianda(vianda.getComida(), vianda.getFechaCaducidad(), heladera, vianda.getCalorias(), vianda.getPeso());
                 viandasNuevas.add(nuevaVianda);
             }
             viandaRepository.saveAll(viandasNuevas);
-            ColaboracionVianda colaboracionVianda = new ColaboracionVianda(viandasNuevas,viandasNuevas.size(),coeficientePuntos);
+            ColaboracionVianda colaboracionVianda = new ColaboracionVianda(viandasNuevas, viandasNuevas.size(), coeficientePuntos);
             System.out.println(colaboracionVianda);
             colaboracionRepository.save(colaboracionVianda);
             model.addAttribute("success", true);
             return "redirect:/home?success=true";
         } catch (Exception e) {
             model.addAttribute("error", true);
-
             return "redirect:/home?error=true";
         }
     }
-
 }
