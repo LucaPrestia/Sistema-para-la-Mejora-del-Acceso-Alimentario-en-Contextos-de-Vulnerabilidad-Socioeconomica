@@ -33,18 +33,7 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID") // borra las cookies de sesión
                         .invalidateHttpSession(true)// invalida la sesión
                         .permitAll()// permite acceso a todos para logout
-                ).headers(x-> @Configuration
-        public class CorsConfig implements WebMvcConfigurer {
-
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // Aplica a todas las rutas
-                        .allowedOrigins("http://tudominio.com") // Orígenes permitidos
-                        .allowedMethods("GET", "POST", "PUT", "DELETE") // Métodos permitidos
-                        .allowedHeaders("*") // Permite todos los encabezados
-                        .allowCredentials(true); // Permite el envío de cookies si es necesario
-            }
-        });
+                );
 
         return http.build();
     }
