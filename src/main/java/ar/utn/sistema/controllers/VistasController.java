@@ -91,5 +91,16 @@ public class VistasController {
         return "fragments/colaboraciones :: donacionDinero";
 
     }
+    @GetMapping("/donacionVianda")
+    public String cargarPaginaDonacionVianda(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException
+    {
+        List<Heladera> heladeras = heladeraRepository.findAll();
+        model.addAttribute("heladeraList", heladeras);
 
+
+        if (success != null && success) {
+            model.addAttribute("success", true);
+        }
+        return "fragments/colaboraciones :: donacionVianda";
+    }
 }

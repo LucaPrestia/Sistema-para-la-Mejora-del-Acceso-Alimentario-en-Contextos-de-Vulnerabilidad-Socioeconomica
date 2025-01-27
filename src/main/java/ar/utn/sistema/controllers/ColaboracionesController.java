@@ -1,29 +1,28 @@
 package ar.utn.sistema.controllers;
 
 import ar.utn.sistema.dto.RegisterDto;
+import ar.utn.sistema.dto.ViandaDTO;
 import ar.utn.sistema.entities.Coordenadas;
 import ar.utn.sistema.entities.Direccion;
-import ar.utn.sistema.entities.colaboracion.ColaboracionDinero;
-import ar.utn.sistema.entities.colaboracion.ColaboracionGestionHeladera;
-import ar.utn.sistema.entities.colaboracion.TipoColaboracionEnum;
-import ar.utn.sistema.entities.colaboracion.TipoFrecuencia;
+import ar.utn.sistema.entities.colaboracion.*;
 import ar.utn.sistema.entities.configuracion.TipoColaboracion;
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.heladera.ServicioDeUbicacionHeladera;
+import ar.utn.sistema.entities.heladera.Vianda;
 import ar.utn.sistema.entities.usuarios.Usuario;
 import ar.utn.sistema.repositories.*;
 import ar.utn.sistema.repositories.configuracion.CoeficientesColaboracionRepository;
 import ar.utn.sistema.repositories.configuracion.TipoColaboracionRepository;
 import ar.utn.sistema.services.UsuarioSesionService;
+import org.hibernate.event.internal.EvictVisitor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mapping.model.CamelCaseAbbreviatingFieldNamingStrategy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +48,8 @@ public class ColaboracionesController {
     private CoeficientesColaboracionRepository coeficientesColaboracionRepository;
     @Autowired
     private TipoColaboracionRepository tipoColaboracionRepository;
+    @Autowired
+    private ViandaRepository viandaRepository;
 
     @PostMapping("/colocarHeladera")
     public String guardarHeladeraColocar(
@@ -119,5 +120,33 @@ public class ColaboracionesController {
             return "redirect:/home?error=true";
         }
     }
+    @PostMapping("/donacionVianda")
+    public String guardardonacionViandaprocesarDonacion(
+            @RequestParam("heladeraSeleccionada") Integer heladera_id,
+            @ModelAttribute("viandas") List<ViandaDTO> viandas,
+            Model model
+    ) {
+        try {
+            // Lógica de procesamiento como la que ya tienes
+            TipoColaboracion tpo = tipoColaboracionRepository.findByNombre(TipoColaboracionEnum.DONACION_VIANDAS.getValue()).get();
+            Double coeficientePuntos = coeficientesColaboracionRepository.findByTipoColaboracion(tpo).get().getCoeficientePuntos();
+            System.out.println(coeficientePuntos);
 
+            List<Vianda> viandasNuevas = new ArrayList<>();
+            for (ViandaDTO vianda : viandas) {
+                Heladera heladera = heladeraRepository.findById(heladera_id).get();
+                Vianda nuevaVianda = new Vianda(vianda.getComida(), vianda.getFechaCaducidad(), heladera, vianda.getCalorias(), vianda.getPeso());
+                viandasNuevas.add(nuevaVianda);
+            }
+            viandaRepository.saveAll(viandasNuevas);
+            ColaboracionVianda colaboracionVianda = new ColaboracionVianda(viandasNuevas, viandasNuevas.size(), coeficientePuntos);
+            System.out.println(colaboracionVianda);
+            colaboracionRepository.save(colaboracionVianda);
+            model.addAttribute("success", true);
+            return "redirect:/home?success=true";
+        } catch (Exception e) {
+            model.addAttribute("error", true);
+            return "redirect:/home?error=true";
+        }
+    }
 }

@@ -32,6 +32,7 @@ public class AuthenticationManagerConfig {
         authenticationManagerBuilder
                 .userDetailsService(usuarioSesionService)
                 .passwordEncoder(passwordEncoder);
+
         return authenticationManagerBuilder.build();
     }
 }
