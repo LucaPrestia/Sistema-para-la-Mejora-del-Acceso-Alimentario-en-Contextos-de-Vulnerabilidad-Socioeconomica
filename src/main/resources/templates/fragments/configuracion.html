@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Vistas</title>
+</head>
+<body>
+
+<!-- Contenedor de Contactos -->
+<div th:fragment="contenedor-contactos" class="d-flex justify-content-center align-items-center vh-100">
+    <div class="container col-md-8">
+        <div class="card">
+            <div class="card-header text-center">
+                <h4>Gestión de Contactos</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="tipo" class="form-label">Tipo de Contacto</label>
+                        <select id="tipo" class="form-select">
+                            <option th:each="tipo : ${tipoContacto}"
+                                    th:value="${tipo}"
+                                    th:text="${tipo.value}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="contacto" class="form-label">Contacto</label>
+                        <input type="text" id="contacto" class="form-control" placeholder="Ingrese el contacto">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" id="btn-agregar" class="btn btn-primary w-100">Agregar</button>
+                    </div>
+                </div>
+
+                <h4 class="text-center">Contactos Agregados</h4>
+                <table class="table table-bordered" id="tabla-contactos">
+                    <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Contacto</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Se llenará dinámicamente con JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contenedor de Colaborador Jurídico -->
+<div th:fragment="contenedor-datos-colaborador-juridico" class="d-flex justify-content-center align-items-center vh-100">
+    <div class="container col-md-6">
+        <div class="card">
+            <div class="card-header text-center">
+                <h4>Datos del Colaborador Jurídico</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="cuit" class="form-label">CUIT</label>
+                    <input type="text" class="form-control" id="cuit" name="cuit" required>
+                </div>
+                <div class="mb-3">
+                    <label for="tipoJuridico" class="form-label">Tipo Jurídico</label>
+                    <select class="form-control" id="tipoJuridico" name="tipoJuridico" required>
+                        <option value="" disabled selected>Seleccionar...</option>
+                        <option th:each="tipoJuridico : ${tipoJuridico}"
+                                th:value="${tipoJuridico}"
+                                th:text="${tipoJuridico.value}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="razonSocial" class="form-label">Razón Social</label>
+                    <input type="text" class="form-control" id="razonSocial" name="razonSocial" required>
+                </div>
+                <div class="mb-3">
+                    <label for="rubro" class="form-label">Rubro</label>
+                    <input type="text" class="form-control" id="rubro" name="rubro" required>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contenedor de Colaborador Humano -->
+<div th:fragment="contenedor-datos-colaborador-humano" class="d-flex justify-content-center align-items-center vh-100">
+    <div class="container col-md-6">
+        <div class="card">
+            <div class="card-header text-center">
+                <h4>Datos del Colaborador Humano</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                </div>
+                <div class="mb-3">
+                    <label for="apellido" class="form-label">Apellido</label>
+                    <input type="text" class="form-control" id="apellido" name="apellido" required>
+                </div>
+                <div class="mb-3">
+                    <label for="tipoDocumento" class="form-label">Tipo de Documento</label>
+                    <select class="form-control" id="tipoDocumento" name="tipoDocumento" required>
+                        <option value="" disabled selected>Seleccionar...</option>
+                        <option th:each="tipoDoc : ${tipoDocumento}"
+                                th:value="${tipoDoc}"
+                                th:text="${tipoDoc.descripcion}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="documento" class="form-label">Documento</label>
+                    <input type="text" class="form-control" id="documento" name="documento" required>
+                </div>
+                <div class="mb-3">
+                    <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+                    <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contenedor de Dirección -->
+<div th:fragment="contenedor-direccion" class="d-flex justify-content-center align-items-center vh-100">
+    <div class="container col-md-6">
+        <div class="card">
+            <div class="card-header text-center">
+                <h4>Dirección</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="pais" class="form-label">País</label>
+                    <input type="text" class="form-control" id="pais" name="direccion.pais">
+                </div>
+                <div class="mb-3">
+                    <label for="provincia" class="form-label">Provincia</label>
+                    <input type="text" class="form-control" id="provincia" name="direccion.provincia">
+                </div>
+                <div class="mb-3">
+                    <label for="localidad" class="form-label">Localidad</label>
+                    <input type="text" class="form-control" id="localidad" name="direccion.localidad">
+                </div>
+                <div class="mb-3">
+                    <label for="calle" class="form-label">Calle</label>
+                    <input type="text" class="form-control" id="calle" name="direccion.calle">
+                </div>
+                <div class="mb-3">
+                    <label for="numero" class="form-label">Número</label>
+                    <input type="number" class="form-control" id="numero" name="direccion.numero">
+                </div>
+                <div class="mb-3">
+                    <label for="departamento" class="form-label">Departamento</label>
+                    <input type="text" class="form-control" id="departamento" name="direccion.departamento">
+                </div>
+                <div class="mb-3">
+                    <label for="codigo_postal" class="form-label">Código Postal</label>
+                    <input type="number" class="form-control" id="codigo_postal" name="direccion.codigo_postal">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

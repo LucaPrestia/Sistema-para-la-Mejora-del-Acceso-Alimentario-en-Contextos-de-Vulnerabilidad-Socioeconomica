@@ -59,6 +59,7 @@ public class UsuarioSesionService implements UserDetailsService {
         return new UsuarioSesionDetalle(
                 usuario.getId(),
                 usuario.getRol(),
+                usuario.getNuevo(),
                 rol,
                 usuario.getUsuario(),
                 usuario.getContrasena(),
@@ -85,6 +86,7 @@ public class UsuarioSesionService implements UserDetailsService {
             nuevoUsuario.setUsuario(user);
             nuevoUsuario.setContrasena(passwordEncoder.encode(pass));
             nuevoUsuario.setRol(rol);
+            nuevoUsuario.setNuevo(1);
             switch (rol) {
                 case "COLABORADOR_FISICO":
                     Colaborador rolClase = new ColaboradorFisico(nuevoUsuario);

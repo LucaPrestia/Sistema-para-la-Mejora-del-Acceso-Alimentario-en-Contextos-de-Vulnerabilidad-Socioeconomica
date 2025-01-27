@@ -13,7 +13,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationSuccessHandlerConfig successHandler) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/","/login", "/register", "/map","/img/**").permitAll() // sin autenticacion solo se puede entrar a estos dos templates, si se quisiera especificar por carpeta se podría hacer algo así: .requestMatchers("/public/**").permitAll()
@@ -23,7 +23,8 @@ public class SecurityConfig {
                 .formLogin(login -> login
                         .loginPage("/login") // página de login personalizada
                         .loginProcessingUrl("/login") // URL de procesamiento del login
-                        .defaultSuccessUrl("/home", true)// redirección tras éxito
+                        .successHandler(successHandler)
+                        // .defaultSuccessUrl("/home", true)// redirección tras éxito
                         .failureUrl("/login?error=true")// redirección tras fallo
                         .permitAll() // Permite acceso a todos para el login
                 )

@@ -97,6 +97,7 @@ public class InsertsIniciales {
 
                 // agrego usuarios por default
                 Usuario admin = new Usuario("admin",passwordEncoder.encode("admin123"),"ADMIN");
+                admin.setNuevo(0);
                 Ong ong = new Ong("ONG Sistema Mejora Acceso Alimentario", admin);
                 rAdmin.save(ong);
 

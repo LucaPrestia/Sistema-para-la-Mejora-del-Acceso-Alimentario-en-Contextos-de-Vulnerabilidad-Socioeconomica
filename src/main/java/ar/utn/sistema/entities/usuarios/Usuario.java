@@ -18,6 +18,9 @@ public class Usuario extends PersistenciaID {
     private String rol; // COLABORADOR_FISICO, COLABORADOR_JURIDICO, TECNICO, ADMIN, PERSONA_VULNERABLE
     private String usuario;
     private String contrasena;
+
+    private int nuevo; // true: logueado por primera vez => corresponde on bording de carga de datos según su rol; false: ya entro a la aplicación
+
     @Transient
     private List<Requisitos> requisitos;
 
@@ -32,8 +35,10 @@ public class Usuario extends PersistenciaID {
         this.usuario = username;
         this.contrasena = contrasena;
         this.rol = rol;
+        this.nuevo = 1;
         this.requisitos = new ArrayList<>();
         this.requisitos.add(new Tamanio());
         this.requisitos.add(new TOP10000());
     }
+
 }

@@ -15,6 +15,8 @@ public class UsuarioSesionDetalle implements UserDetails {
     private String rol; // "COLABORADOR_FISICO", "COLABORADOR_JURIDICO", "TECNICO", "ADMIN/ONG"
     @Getter
     private Rol usuario;  // se puede guardar un Colaborador, Técnico o Admin
+    @Getter
+    private int nuevoUsuario; // true: logueado por primera vez => corresponde on bording de carga de datos según su rol; false: ya entro a la aplicación
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
@@ -28,9 +30,10 @@ public class UsuarioSesionDetalle implements UserDetails {
         this.authorities = authorities;
     }
 
-    public UsuarioSesionDetalle(Integer id, String rol, Rol usuario, String username, String password, List<SimpleGrantedAuthority> authorities) {
+    public UsuarioSesionDetalle(Integer id, String rol, int nuevoUsuario, Rol usuario, String username, String password, List<SimpleGrantedAuthority> authorities) {
         this.id = id;
         this.rol = rol;
+        this.nuevoUsuario = nuevoUsuario;
         this.usuario = usuario;
         this.username = username;
         this.password = password;
@@ -72,4 +75,5 @@ public class UsuarioSesionDetalle implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

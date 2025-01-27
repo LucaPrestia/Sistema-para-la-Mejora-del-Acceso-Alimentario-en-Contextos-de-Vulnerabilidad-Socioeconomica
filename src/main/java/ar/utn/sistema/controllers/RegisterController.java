@@ -25,7 +25,6 @@ public class RegisterController {
 
     @PostMapping("/register")
     public String registerUser(@ModelAttribute("registerDTO") RegisterDto registerDTO, Model model){
-        // TODO: LOGICA DE REGISTRO
         if(servicio.registrarUsuario(registerDTO.getUsername(), registerDTO.getPassword(), registerDTO.getTipoColaborador()) != null) {
             System.out.println(registerDTO.getPassword());
             return "redirect:/login?success";

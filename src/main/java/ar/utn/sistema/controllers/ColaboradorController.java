@@ -33,6 +33,26 @@ public class ColaboradorController {
     @Autowired
     private ColaboracionService serviceColaboracion;
 
+    @PostMapping("/configuracion/humano")
+    public String cargarConfiguracionPersonaHumana(/* @ModelAttribute ColaboradorFisico colaborador,
+                                                   @ModelAttribute List<Contacto> contactos,
+                                                   @ModelAttribute Direccion direccion,
+                                                   // todo: lista de colaboraciones seleccionadas */
+                                                   Model model){
+        // todo: cargar TODO
+        return "redirect:/home";
+    }
+
+    @PostMapping("/configuracion/juridico")
+    public String cargarConfiguracionPersonaJuridica(/*@ModelAttribute ColaboradorJuridico colaborador,
+                                                   @ModelAttribute List<Contacto> contactos,
+                                                   @ModelAttribute Direccion direccion, */
+                                                   Model model){
+        // todo: cargar TODO
+        return "redirect:/home";
+    }
+
+    /* OBSOLETOOOO
     // Formulario de alta para el colaborador, filtrando por tipo (acá ya registró su usuario y se le preguntó por su tipo de colaborador)
     @GetMapping("/alta/{tipoColaborador}")
     public String obtenerFormulario(@PathVariable int tipoColaborador, Model model){
@@ -87,6 +107,7 @@ public class ColaboradorController {
         // TODO: persistir en la base de datos!!!
         return "redirect:/colaborador/confirmar"; // Redirigir a una página de confirmación o éxito
     }
+     */
 
     @GetMapping("/confirmar")
     public String mostrarConfirmacion(Model model) {
