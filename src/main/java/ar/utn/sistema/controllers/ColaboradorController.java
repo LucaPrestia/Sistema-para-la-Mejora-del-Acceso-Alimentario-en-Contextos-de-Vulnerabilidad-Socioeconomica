@@ -1,5 +1,6 @@
 package ar.utn.sistema.controllers;
 
+import ar.utn.sistema.dto.PerfilColaboradorDto;
 import ar.utn.sistema.entities.configuracion.ColaboradorColaboracion;
 import ar.utn.sistema.entities.Direccion;
 import ar.utn.sistema.entities.configuracion.TipoColaboracion;
@@ -10,8 +11,12 @@ import ar.utn.sistema.entities.usuarios.ColaboradorJuridico;
 import ar.utn.sistema.entities.usuarios.TipoDocumento;
 import ar.utn.sistema.entities.usuarios.TipoJuridico;
 import ar.utn.sistema.model.Formulario;
+import ar.utn.sistema.model.UsuarioSesionDetalle;
+import ar.utn.sistema.repositories.ColaboradorRepository;
+import ar.utn.sistema.repositories.configuracion.TipoColaboracionRepository;
 import ar.utn.sistema.services.ColaboracionService;
 import ar.utn.sistema.services.FormularioService;
+import ar.utn.sistema.services.UsuarioSesionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,24 +37,68 @@ public class ColaboradorController {
     private FormularioService serviceFormulario;
     @Autowired
     private ColaboracionService serviceColaboracion;
+    @Autowired
+    private UsuarioSesionService sesion;
+    @Autowired
+    private TipoColaboracionRepository rTipoColaboracion;
+    @Autowired
+    private ColaboradorRepository repository;
 
     @PostMapping("/configuracion/humano")
-    public String cargarConfiguracionPersonaHumana(/* @ModelAttribute ColaboradorFisico colaborador,
-                                                   @ModelAttribute List<Contacto> contactos,
-                                                   @ModelAttribute Direccion direccion,
-                                                   // todo: lista de colaboraciones seleccionadas */
+    public String cargarConfiguracionPersonaHumana(@ModelAttribute PerfilColaboradorDto datos,
+                                                   @RequestParam List<Integer> tiposColaboracionIds,
                                                    Model model){
-        // todo: cargar TODO
-        return "redirect:/home";
+        UsuarioSesionDetalle usuario = sesion.obtenerUsuarioAutenticado();
+        if(usuario.getRol().equals("COLABORADOR_FISICO")){
+            ColaboradorFisico colaborador = (ColaboradorFisico) repository.findById(usuario.getUsuario().getId()).get();
+            List<TipoColaboracion> tiposColaboracion = rTipoColaboracion.findAllById(tiposColaboracionIds);
+
+            colaborador.setNombre(datos.getNombre());
+            colaborador.setApellido(datos.getApellido());
+            colaborador.setFechaNacimiento(datos.getFechaNacimiento());
+            colaborador.setTipoDocumento(datos.getTipoDocumento());
+            colaborador.setDocumento(datos.getDocumento());
+
+            colaborador.setContactos(datos.getContactos());
+            colaborador.setDireccion(datos.getDireccion());
+            colaborador.setTiposColaboracion(tiposColaboracion);
+            colaborador.getUsuario().setNuevo(0);
+
+            repository.save(colaborador);
+
+            usuario.setNuevoUsuario(0);
+            sesion.actualizarUsuarioAutenticado(usuario);
+
+            return "redirect:/home";
+        } else return "redirect/:login";
     }
 
     @PostMapping("/configuracion/juridico")
-    public String cargarConfiguracionPersonaJuridica(/*@ModelAttribute ColaboradorJuridico colaborador,
-                                                   @ModelAttribute List<Contacto> contactos,
-                                                   @ModelAttribute Direccion direccion, */
+    public String cargarConfiguracionPersonaJuridica(@ModelAttribute PerfilColaboradorDto datos,
+                                                     @RequestParam List<Integer> tiposColaboracionIds,
                                                    Model model){
-        // todo: cargar TODO
-        return "redirect:/home";
+        UsuarioSesionDetalle usuario = sesion.obtenerUsuarioAutenticado();
+        if(usuario.getRol().equals("COLABORADOR_JURIDICO")){
+            ColaboradorJuridico colaborador = (ColaboradorJuridico) repository.findById(usuario.getUsuario().getId()).get();
+            List<TipoColaboracion> tiposColaboracion = rTipoColaboracion.findAllById(tiposColaboracionIds);
+
+            colaborador.setCuit(datos.getCuit());
+            colaborador.setRubro(datos.getRubro());
+            colaborador.setRazonSocial(datos.getRazonSocial());
+            colaborador.setTipoJuridico(datos.getTipoJuridico());
+
+            colaborador.setContactos(datos.getContactos());
+            colaborador.setDireccion(datos.getDireccion());
+            colaborador.setTiposColaboracion(tiposColaboracion);
+            colaborador.getUsuario().setNuevo(0);
+
+            repository.save(colaborador);
+
+            usuario.setNuevoUsuario(0);
+            sesion.actualizarUsuarioAutenticado(usuario);
+
+            return "redirect:/home";
+        } else return "redirect/:login";
     }
 
     /* OBSOLETOOOO

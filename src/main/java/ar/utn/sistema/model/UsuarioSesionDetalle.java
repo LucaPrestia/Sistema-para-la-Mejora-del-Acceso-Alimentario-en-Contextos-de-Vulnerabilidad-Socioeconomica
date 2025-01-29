@@ -2,21 +2,25 @@ package ar.utn.sistema.model;
 
 import ar.utn.sistema.entities.usuarios.Rol;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
 // esta clase es para guardar datos del usuario que se logueó para que puedan ser consultados desde distintos lados del código
-public class UsuarioSesionDetalle implements UserDetails {
+public class UsuarioSesionDetalle implements UserDetails, Serializable {
+    private static final long serialVersionUID = 7422990209392555927L;
+
     @Getter
     private String rol; // "COLABORADOR_FISICO", "COLABORADOR_JURIDICO", "TECNICO", "ADMIN/ONG"
     @Getter
     private Rol usuario;  // se puede guardar un Colaborador, Técnico o Admin
-    @Getter
-    private int nuevoUsuario; // true: logueado por primera vez => corresponde on bording de carga de datos según su rol; false: ya entro a la aplicación
+    @Getter @Setter
+    private int nuevoUsuario; // 1: logueado por primera vez => corresponde on bording de carga de datos según su rol; 0: ya entro a la aplicación
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;

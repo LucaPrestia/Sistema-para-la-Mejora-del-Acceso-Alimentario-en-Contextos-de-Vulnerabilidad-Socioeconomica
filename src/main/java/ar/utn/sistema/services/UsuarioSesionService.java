@@ -7,7 +7,9 @@ import ar.utn.sistema.repositories.ColaboradorRepository;
 import ar.utn.sistema.repositories.TecnicoRepository;
 import ar.utn.sistema.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -78,6 +81,27 @@ public class UsuarioSesionService implements UserDetailsService {
             return (UsuarioSesionDetalle) authentication.getPrincipal();
         }
         return null;
+    }
+
+    public void actualizarUsuarioAutenticado(UsuarioSesionDetalle nuevoUsuarioSesionDetalle) {
+        // Obtener el Authentication actual
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            // Obtener las credenciales y autoridades del Authentication actual
+            Object credentials = authentication.getCredentials();
+            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+
+            // Crear un nuevo Authentication con el nuevo UsuarioSesionDetalle
+            Authentication nuevaAuthentication = new UsernamePasswordAuthenticationToken(
+                    nuevoUsuarioSesionDetalle, // El nuevo UsuarioSesionDetalle
+                    credentials,                // Las mismas credenciales
+                    authorities                 // Las mismas autoridades
+            );
+
+            // Actualizar el contexto de seguridad con el nuevo Authentication
+            SecurityContextHolder.getContext().setAuthentication(nuevaAuthentication);
+        }
     }
 
     public Usuario registrarUsuario(String user, String pass, String rol) {

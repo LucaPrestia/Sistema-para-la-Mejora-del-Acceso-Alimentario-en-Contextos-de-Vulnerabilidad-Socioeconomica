@@ -12,6 +12,16 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        if (tipo === "EMAIL") {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(contacto)) {
+                        alert("Ingrese un correo electrónico válido.");
+                        return;
+                    }
+        }
+
+        const index = tablaContactos.children.length;
+
         // Crear fila en la tabla
         const fila = document.createElement("tr");
         fila.innerHTML = `
@@ -19,8 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <td>${contacto}</td>
             <td>
                 <button type="button" class="btn btn-danger btn-eliminar">Eliminar</button>
-                <input type="hidden" name="contactos[${tablaContactos.children.length}].medio" value="${tipo}">
-                <input type="hidden" name="contactos[${tablaContactos.children.length}].contacto" value="${contacto}">
+                <input type="hidden" name="contactos[${index}].medio" value="${tipo}">
+                <input type="hidden" name="contactos[${index}].contacto" value="${contacto}">
             </td>
         `;
         tablaContactos.appendChild(fila);
@@ -31,6 +41,12 @@ document.addEventListener("DOMContentLoaded", () => {
         // Agregar funcionalidad al botón eliminar
         fila.querySelector(".btn-eliminar").addEventListener("click", () => {
             fila.remove();
+
+             [...tablaContactos.children].forEach((row, newIndex) => {
+                const inputs = row.querySelectorAll("input[type='hidden']");
+                inputs[0].setAttribute("name", `contactos[${newIndex}].medio`);
+                inputs[1].setAttribute("name", `contactos[${newIndex}].contacto`);
+             });
         });
     });
 });

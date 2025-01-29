@@ -7,7 +7,7 @@
 <body>
 
 <!-- Contenedor de Contactos -->
-<div th:fragment="contenedor-contactos" class="d-flex justify-content-center align-items-center vh-100">
+<div th:fragment="contenedor-contactos" class="d-flex justify-content-center align-items-center my-3">
     <div class="container col-md-8">
         <div class="card">
             <div class="card-header text-center">
@@ -32,7 +32,6 @@
                         <button type="button" id="btn-agregar" class="btn btn-primary w-100">Agregar</button>
                     </div>
                 </div>
-
                 <h4 class="text-center">Contactos Agregados</h4>
                 <table class="table table-bordered" id="tabla-contactos">
                     <thead>
@@ -43,6 +42,17 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <!-- Valores ya cargados -->
+                    <tr th:if="${colaborador != null and colaborador?.contactos != null}"
+                        th:each="contacto, index : ${colaborador?.contactos}">
+                        <td th:text="${contacto.medio}"></td>
+                        <td th:text="${contacto.contacto}"></td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-eliminar">Eliminar</button>
+                            <input type="hidden" th:name="|contactos[${index.index}].medio|" th:value="${contacto.medio}">
+                            <input type="hidden" th:name="|contactos[${index.index}].contacto|" th:value="${contacto.contacto}">
+                        </td>
+                    </tr>
                     <!-- Se llenará dinámicamente con JavaScript -->
                     </tbody>
                 </table>
@@ -52,7 +62,7 @@
 </div>
 
 <!-- Contenedor de Colaborador Jurídico -->
-<div th:fragment="contenedor-datos-colaborador-juridico" class="d-flex justify-content-center align-items-center vh-100">
+<div th:fragment="contenedor-datos-colaborador-juridico" class="d-flex justify-content-center align-items-center my-3">
     <div class="container col-md-6">
         <div class="card">
             <div class="card-header text-center">
@@ -61,7 +71,8 @@
             <div class="card-body">
                 <div class="mb-3">
                     <label for="cuit" class="form-label">CUIT</label>
-                    <input type="text" class="form-control" id="cuit" name="cuit" required>
+                    <input type="text" class="form-control" id="cuit" name="cuit" required
+                           th:value="${colaborador?.cuit}">
                 </div>
                 <div class="mb-3">
                     <label for="tipoJuridico" class="form-label">Tipo Jurídico</label>
@@ -69,16 +80,20 @@
                         <option value="" disabled selected>Seleccionar...</option>
                         <option th:each="tipoJuridico : ${tipoJuridico}"
                                 th:value="${tipoJuridico}"
-                                th:text="${tipoJuridico.value}"></option>
+                                th:text="${tipoJuridico.value}"
+                                th:selected="${colaborador?.tipoJuridico != null and colaborador?.tipoJuridico == tipoJuridico}">
+                        </option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <label for="razonSocial" class="form-label">Razón Social</label>
-                    <input type="text" class="form-control" id="razonSocial" name="razonSocial" required>
+                    <input type="text" class="form-control" id="razonSocial" name="razonSocial" required
+                           th:value="${colaborador?.razonSocial}">
                 </div>
                 <div class="mb-3">
                     <label for="rubro" class="form-label">Rubro</label>
-                    <input type="text" class="form-control" id="rubro" name="rubro" required>
+                    <input type="text" class="form-control" id="rubro" name="rubro" required
+                           th:value="${colaborador?.rubro}">
                 </div>
             </div>
         </div>
@@ -86,7 +101,7 @@
 </div>
 
 <!-- Contenedor de Colaborador Humano -->
-<div th:fragment="contenedor-datos-colaborador-humano" class="d-flex justify-content-center align-items-center vh-100">
+<div th:fragment="contenedor-datos-colaborador-humano" class="d-flex justify-content-center align-items-center my-3">
     <div class="container col-md-6">
         <div class="card">
             <div class="card-header text-center">
@@ -95,11 +110,13 @@
             <div class="card-body">
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre</label>
-                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required
+                           th:value="${colaborador?.nombre}">
                 </div>
                 <div class="mb-3">
                     <label for="apellido" class="form-label">Apellido</label>
-                    <input type="text" class="form-control" id="apellido" name="apellido" required>
+                    <input type="text" class="form-control" id="apellido" name="apellido" required
+                           th:value="${colaborador?.apellido}">
                 </div>
                 <div class="mb-3">
                     <label for="tipoDocumento" class="form-label">Tipo de Documento</label>
@@ -107,16 +124,19 @@
                         <option value="" disabled selected>Seleccionar...</option>
                         <option th:each="tipoDoc : ${tipoDocumento}"
                                 th:value="${tipoDoc}"
-                                th:text="${tipoDoc.descripcion}"></option>
+                                th:text="${tipoDoc.descripcion}"
+                                th:selected="${colaborador?.tipoDocumento != null and colaborador?.tipoDocumento == tipoDoc}"></option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <label for="documento" class="form-label">Documento</label>
-                    <input type="text" class="form-control" id="documento" name="documento" required>
+                    <input type="text" class="form-control" id="documento" name="documento" required
+                           th:value="${colaborador?.documento}">
                 </div>
                 <div class="mb-3">
                     <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
-                    <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento">
+                    <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento"
+                           th:value="${colaborador?.fechaNacimiento}">
                 </div>
             </div>
         </div>
@@ -124,7 +144,7 @@
 </div>
 
 <!-- Contenedor de Dirección -->
-<div th:fragment="contenedor-direccion" class="d-flex justify-content-center align-items-center vh-100">
+<div th:fragment="contenedor-direccion" class="d-flex justify-content-center align-items-center my-3">
     <div class="container col-md-6">
         <div class="card">
             <div class="card-header text-center">
@@ -133,31 +153,66 @@
             <div class="card-body">
                 <div class="mb-3">
                     <label for="pais" class="form-label">País</label>
-                    <input type="text" class="form-control" id="pais" name="direccion.pais">
+                    <input type="text" class="form-control" id="pais" name="pais"
+                           th:value="${colaborador?.direccion?.pais}">
                 </div>
                 <div class="mb-3">
                     <label for="provincia" class="form-label">Provincia</label>
-                    <input type="text" class="form-control" id="provincia" name="direccion.provincia">
+                    <input type="text" class="form-control" id="provincia" name="provincia"
+                           th:value="${colaborador?.direccion?.provincia}">
                 </div>
                 <div class="mb-3">
                     <label for="localidad" class="form-label">Localidad</label>
-                    <input type="text" class="form-control" id="localidad" name="direccion.localidad">
+                    <input type="text" class="form-control" id="localidad" name="localidad"
+                           th:value="${colaborador?.direccion?.localidad}">
                 </div>
                 <div class="mb-3">
                     <label for="calle" class="form-label">Calle</label>
-                    <input type="text" class="form-control" id="calle" name="direccion.calle">
+                    <input type="text" class="form-control" id="calle" name="calle"
+                           th:value="${colaborador?.direccion?.calle}">
                 </div>
                 <div class="mb-3">
                     <label for="numero" class="form-label">Número</label>
-                    <input type="number" class="form-control" id="numero" name="direccion.numero">
+                    <input type="number" class="form-control" id="numero" name="numero"
+                           th:value="${colaborador?.direccion?.numero}">
                 </div>
                 <div class="mb-3">
                     <label for="departamento" class="form-label">Departamento</label>
-                    <input type="text" class="form-control" id="departamento" name="direccion.departamento">
+                    <input type="text" class="form-control" id="departamento" name="departamento"
+                           th:value="${colaborador?.direccion?.departamento}">
                 </div>
                 <div class="mb-3">
                     <label for="codigo_postal" class="form-label">Código Postal</label>
-                    <input type="number" class="form-control" id="codigo_postal" name="direccion.codigo_postal">
+                    <input type="number" class="form-control" id="codigo_postal" name="codigo_postal"
+                           th:value="${colaborador?.direccion?.codigo_postal}">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contenedor de Selección de Colaboraciones -->
+<div th:fragment="contenedor-seleccion-colaboracion" class="d-flex justify-content-center align-items-center my-3">
+    <div class="container col-md-6">
+        <div class="card">
+            <div class="card-header text-center">
+                <h4>Colaborar</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">Seleccionar formas de colaborar:</label>
+                    <div th:each="tipoColaboracion : ${colaboracionesHabilitadas}">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox"
+                                   th:id="'tipoColaboracion_' + ${tipoColaboracion.id}"
+                                   th:name="tiposColaboracionIds"
+                                   th:value="${tipoColaboracion.id}"
+                                   th:checked="${#lists.contains(colaborador?.tiposColaboracion, tipoColaboracion)}">
+                            <label class="form-check-label" th:for="'tipoColaboracion_' + ${tipoColaboracion.id}">
+                                <span th:text="${tipoColaboracion.nombre}"></span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
