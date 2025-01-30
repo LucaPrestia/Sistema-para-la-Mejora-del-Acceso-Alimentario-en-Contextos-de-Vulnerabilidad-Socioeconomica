@@ -5,79 +5,15 @@
     <title>Sistema de Gestión de Alimentos</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* Estilo para el círculo con la inicial */
-    .user-initial {
-        width: 40px;
-        height: 40px;
-        background-color: #007bff;
-        color: white;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        cursor: pointer;
-        position: relative;
-    }
-
-    /* Estilo para el menú desplegable */
-    .user-menu {
-        position: absolute;
-        top: 100%; /* Asegura que el menú aparezca debajo del botón */
-        right: 0;  /* Lo alinea a la derecha del icono */
-        display: none;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        min-width: 180px;
-        padding: 10px;
-        z-index: 1000;
-    }
-
-    .user-menu-container {
-    position: absolute;
-    right: 15px; /* Pegado al lado derecho */
-    top: 50%;
-    transform: translateY(-50%); /* Lo centra verticalmente */
-    display: flex;
-    align-items: center;
-    }
-
-    .user-menu-container:hover .user-menu {
-        display: block;
-    }
-
-    /* Estilo para los textos del menú */
-    .user-menu .dropdown-header {
-        font-weight: bold;
-    }
-
-    .user-menu .dropdown-item {
-        text-decoration: none;
-        display: block;
-        padding: 8px 12px;
-        color: black;
-    }
-
-    .user-menu .dropdown-item.text-muted {
-        color: gray;
-    }
-
-    .user-menu .dropdown-item:hover {
-        background: #f8f9fa;
-    }
-    </style>
+    <script src="/js/contenedor-contacto.js" defer></script>
 </head>
 <header>
     <!--TODO: según el rol pasado por parámetro cargar un menú distinto -->
     <div th:insert="~{fragments/menu :: menuprincipal(${username})}"></div>
-    <div class="card-body">
+    <div class="text-center mt-3">
         <div th:if="${success}" class="alert alert-success text-center">
             <p>Operación Realizada Correctamente</p>
         </div>
-    </div>
-    <div class="card-body">
         <div th:if="${error}" class="alert alert-success text-center">
             <p>Operación Realizada Correctamente</p>
         </div>
@@ -94,10 +30,96 @@
         <!--todo: analizar si va como vista preliminar el mapa = <div th:insert="~{fragments/map :: mapBody(lat=${lat}, lon=${lon})}"></div>-->
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        let viandaCount = 1; // Contador para las viandas
 
+        function agregarVianda() {
+            const viandaContainer = document.getElementById('viandaContainer');
+
+            // Crear un nuevo contenedor de vianda
+            const newVianda = document.createElement('div');
+            newVianda.classList.add('vianda-item', 'border', 'rounded-lg', 'p-4', 'space-y-4', 'mb-4');
+
+            // Agregar contenido de la nueva vianda
+            newVianda.innerHTML = `
+        <h3 class="text-lg font-medium">Vianda ${viandaCount + 1}</h3>
+        <div>
+          <label for="comida_${viandaCount}" class="block text-sm font-medium text-gray-700">Comida</label>
+          <input type="text" id="comida_${viandaCount}" name="viandas[${viandaCount}].comida" required
+                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        </div>
+        <div>
+          <label for="fechaCaducidad_${viandaCount}" class="block text-sm font-medium text-gray-700">Fecha de Caducidad</label>
+          <input type="date" id="fechaCaducidad_${viandaCount}" name="viandas[${viandaCount}].fechaCaducidad" required
+                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        </div>
+        <div>
+          <label for="calorias_${viandaCount}" class="block text-sm font-medium text-gray-700">Calorías</label>
+          <input type="number" id="calorias_${viandaCount}" name="viandas[${viandaCount}].calorias" step="0.01" required
+                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        </div>
+        <div>
+          <label for="peso_${viandaCount}" class="block text-sm font-medium text-gray-700">Peso (en gramos)</label>
+          <input type="number" id="peso_${viandaCount}" name="viandas[${viandaCount}].peso" step="0.01" required
+                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        </div>
+        <button type="button"
+                class="w-full inline-flex justify-center rounded-md border border-gray-300 bg-red-500 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-red-600"
+                onclick="removeVianda(this)">
+          Eliminar Vianda
+        </button>
+      `;
+
+            // Incrementar el contador
+            viandaCount++;
+
+            // Añadir el nuevo contenedor de vianda al contenedor de viandas
+            viandaContainer.appendChild(newVianda);
+        }
+
+        function removeVianda(button) {
+            const viandaItem = button.closest('.vianda-item');
+            viandaItem.remove();
+        }
+
+    </script>
+    <script>
+        function cargarVista(opcion) {
+            // URL del endpoint que devuelve la opcion seleccionada con los parámetros ya cargados para su renderizacion
+            const url = `/vistas/${opcion}`; // Responde el controller VistasController.java
+
+            // Realiza la solicitud fetch
+            fetch(url, { method: 'GET' })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error al cargar la vista: ${response.statusText}`);
+                    }
+                    return response.text(); // Obtiene el HTML como texto
+                })
+                .then(html => {
+                    // Inserta el contenido en el contenedor
+                    document.getElementById("sector_central_vistas").innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error al cargar la vista:', error);
+                });
+        }
+
+    function cambiarContenido(targetId) {
+        console.log("Estas ok");
+        const menuItems = document.querySelectorAll(".menu-item-miperfil");
+        const sections = document.querySelectorAll(".content-section-miperfil");
+
+        menuItems.forEach(item => item.classList.remove("active-miperfil"));
+        sections.forEach(section => section.classList.remove("active-miperfil"));
+
+        // Luego, agregar la clase active al menú clickeado y al contenedor correspondiente
+        document.querySelector(`[onclick="cambiarContenido('${targetId}')"]`).classList.add("active-miperfil");
+        document.getElementById(targetId).classList.add("active-miperfil");
+    }
+    </script>
 </body>
 </html>
 

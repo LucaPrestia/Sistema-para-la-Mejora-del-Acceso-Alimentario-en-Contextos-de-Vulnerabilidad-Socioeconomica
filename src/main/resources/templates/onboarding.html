@@ -27,10 +27,10 @@
 
     <div class="step active text-center" id="step1">
         <h3>Información Personal</h3>
-        <div th:if="${rol == 'COLABORADOR_FISICO'}">
+        <div style="width: 60%; margin:auto;" th:if="${rol == 'COLABORADOR_FISICO'}">
             <div th:insert="~{fragments/configuracion :: contenedor-datos-colaborador-humano}"></div>
         </div>
-        <div th:if="${rol == 'COLABORADOR_JURIDICO'}">
+        <div style="width: 60%; margin:auto;" th:if="${rol == 'COLABORADOR_JURIDICO'}">
             <div th:insert="~{fragments/configuracion :: contenedor-datos-colaborador-juridico}"></div>
         </div>
         <button type="button" class="btn btn-primary next-step">Siguiente</button>
@@ -38,7 +38,7 @@
 
     <div class="step d-none text-center" id="step2">
         <h3>Medios de Contacto</h3>
-        <div th:insert="~{fragments/configuracion :: contenedor-contactos}"></div>
+        <div style="width: 60%; margin:auto;"><div th:insert="~{fragments/configuracion :: contenedor-contactos}"></div></div>
         <button type="button" class="btn btn-secondary previous-step">Anterior</button>
         <button type="button" class="btn btn-primary next-step">Siguiente</button>
     </div>
@@ -46,7 +46,7 @@
     <div class="step d-none text-center" id="step3">
         <h3>Dirección</h3>
         <h2 class="text-muted fs-5 fw-normal">esta información es opcional</h2>
-        <div th:insert="~{fragments/configuracion :: contenedor-direccion}"></div>
+        <div style="width: 60%; margin:auto;"><div th:insert="~{fragments/configuracion :: contenedor-direccion}"></div></div>
         <button type="button" class="btn btn-secondary previous-step">Anterior</button>
         <button type="button" class="btn btn-primary next-step">Siguiente</button>
     </div>
@@ -54,7 +54,7 @@
     <div class="step d-none text-center" id="step4">
         <h3>Formas de colaborador</h3>
         <h2 class="text-muted fs-5 fw-normal">seleccionar las formas en las que desea colaborador</h2>
-        <div th:insert="~{fragments/configuracion :: contenedor-seleccion-colaboracion}"></div>
+        <div style="width: 60%; margin:auto;"><div th:insert="~{fragments/configuracion :: contenedor-seleccion-colaboracion}"></div></div>
         <button type="button" class="btn btn-secondary previous-step">Anterior</button>
         <button type="submit" class="btn btn-success">Finalizar</button>
     </div>
@@ -62,7 +62,6 @@
 </body>
 </html>
 <script>
-
     document.getElementById("multiStepForm").addEventListener('submit', function(e) {
     const pais = document.getElementById('pais').value;
     const provincia = document.getElementById('provincia').value;
@@ -71,11 +70,20 @@
     const numero = document.getElementById('numero').value;
     const codigoPostal = document.getElementById('codigo_postal').value;
 
+    const contactosTable = document.getElementById("tabla-contactos");
+    const contactoRows = contactosTable.querySelectorAll("tbody tr");
+    if (contactoRows.length === 0) {
+        e.preventDefault();
+        alert("Debes agregar al menos un contacto antes continuar");
+        return;
+    }
+
     // Si algún campo de dirección está completado, verificar que todos los campos obligatorios estén llenos
     if ((pais || provincia || localidad || calle) && (!numero || !codigoPostal)) {
         e.preventDefault();
         alert("Si decides completar la dirección, debes llenar todos los campos obligatorios.");
+        return;
     }
 
-});
+    });
 </script>
