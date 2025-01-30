@@ -1,5 +1,6 @@
 package ar.utn.sistema.controllers;
 
+import ar.utn.sistema.dto.DonacionViandaDTO;
 import ar.utn.sistema.dto.RegisterDto;
 import ar.utn.sistema.dto.ViandaDTO;
 import ar.utn.sistema.entities.Coordenadas;
@@ -13,6 +14,7 @@ import ar.utn.sistema.entities.usuarios.Usuario;
 import ar.utn.sistema.repositories.*;
 import ar.utn.sistema.repositories.configuracion.CoeficientesColaboracionRepository;
 import ar.utn.sistema.repositories.configuracion.TipoColaboracionRepository;
+import ar.utn.sistema.services.CoeficientesColaboracionService;
 import ar.utn.sistema.services.UsuarioSesionService;
 import org.hibernate.event.internal.EvictVisitor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +52,8 @@ public class ColaboracionesController {
     private TipoColaboracionRepository tipoColaboracionRepository;
     @Autowired
     private ViandaRepository viandaRepository;
+    @Autowired
+    private CoeficientesColaboracionService coeficientesColaboracionService;
 
     @PostMapping("/colocarHeladera")
     public String guardarHeladeraColocar(
@@ -67,8 +71,7 @@ public class ColaboracionesController {
             System.out.println(owner.getId());
             Heladera nuevaHeladera = new Heladera(nombre, owner, direccion, tempMax, tempMin, maxViandas);
             heladeraRepository.save(nuevaHeladera);
-            TipoColaboracion tpo = tipoColaboracionRepository.findByNombre(TipoColaboracionEnum.GESTION_HELADERA.getValue()).get();
-            Double coeficientePuntos = coeficientesColaboracionRepository.findByTipoColaboracion(tpo).get().getCoeficientePuntos();
+            Double coeficientePuntos = coeficientesColaboracionService.obtenerCoeficiente(TipoColaboracionEnum.GESTION_HELADERA.name());
             ColaboracionGestionHeladera colaboracionGestionHeladera = new ColaboracionGestionHeladera(nuevaHeladera,coeficientePuntos);
             colaboracionRepository.save(colaboracionGestionHeladera);
             model.addAttribute("success", true);
@@ -89,8 +92,7 @@ public class ColaboracionesController {
             System.out.println(owner.getId());
             heladera.setOwner(owner);
             heladeraRepository.save(heladera);
-            TipoColaboracion tpo = tipoColaboracionRepository.findByNombre(TipoColaboracionEnum.GESTION_HELADERA.getValue()).get();
-            Double coeficientePuntos = coeficientesColaboracionRepository.findByTipoColaboracion(tpo).get().getCoeficientePuntos();
+            Double coeficientePuntos = coeficientesColaboracionService.obtenerCoeficiente(TipoColaboracionEnum.GESTION_HELADERA.name());
             ColaboracionGestionHeladera colaboracionGestionHeladera = new ColaboracionGestionHeladera(heladera, coeficientePuntos);
             colaboracionRepository.save(colaboracionGestionHeladera);
             model.addAttribute("success", true);
@@ -106,8 +108,7 @@ public class ColaboracionesController {
     public String guardarHacerDonacionDinero(@RequestParam("dinero") double dinero,@RequestParam("frecuenciaSeleccionada") String id_frecuencia, Model model) {
         try {
 
-            TipoColaboracion tpo = tipoColaboracionRepository.findByNombre(TipoColaboracionEnum.DINERO.getValue()).get();
-            Double coeficientePuntos = coeficientesColaboracionRepository.findByTipoColaboracion(tpo).get().getCoeficientePuntos();
+            Double coeficientePuntos = coeficientesColaboracionService.obtenerCoeficiente(TipoColaboracionEnum.DINERO.name());
             System.out.println(coeficientePuntos);
             ColaboracionDinero colaboracionDinero = new ColaboracionDinero((float) dinero, TipoFrecuencia.valueOf(id_frecuencia), coeficientePuntos);
             System.out.println(colaboracionDinero);
@@ -121,20 +122,22 @@ public class ColaboracionesController {
         }
     }
     @PostMapping("/donacionVianda")
-    public String guardardonacionViandaprocesarDonacion(
-            @RequestParam("heladeraSeleccionada") Integer heladera_id,
-            @ModelAttribute("viandas") List<ViandaDTO> viandas,
-            Model model
-    ) {
+    public String recibirDonacion(@RequestBody DonacionViandaDTO donacion, Model model) {
+        System.out.println("Heladera Seleccionada: " + donacion.getHeladeraSeleccionada());
+        for (ViandaDTO vianda : donacion.getViandas()) {
+            System.out.println("Comida: " + vianda.getComida());
+            System.out.println("Fecha Caducidad: " + vianda.getFechaCaducidad());
+            System.out.println("Calorías: " + vianda.getCalorias());
+            System.out.println("Peso: " + vianda.getPeso());
+        }
         try {
             // Lógica de procesamiento como la que ya tienes
-            TipoColaboracion tpo = tipoColaboracionRepository.findByNombre(TipoColaboracionEnum.DONACION_VIANDAS.getValue()).get();
-            Double coeficientePuntos = coeficientesColaboracionRepository.findByTipoColaboracion(tpo).get().getCoeficientePuntos();
+            Double coeficientePuntos = coeficientesColaboracionService.obtenerCoeficiente(TipoColaboracionEnum.DONACION_VIANDAS.name());
             System.out.println(coeficientePuntos);
 
             List<Vianda> viandasNuevas = new ArrayList<>();
-            for (ViandaDTO vianda : viandas) {
-                Heladera heladera = heladeraRepository.findById(heladera_id).get();
+            for (ViandaDTO vianda : donacion.getViandas()) {
+                Heladera heladera = heladeraRepository.findById(donacion.getHeladeraSeleccionada()).get();
                 Vianda nuevaVianda = new Vianda(vianda.getComida(), vianda.getFechaCaducidad(), heladera, vianda.getCalorias(), vianda.getPeso());
                 viandasNuevas.add(nuevaVianda);
             }

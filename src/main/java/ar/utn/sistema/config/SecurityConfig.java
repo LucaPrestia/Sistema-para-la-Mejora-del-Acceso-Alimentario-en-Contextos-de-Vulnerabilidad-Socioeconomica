@@ -20,6 +20,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated() // a cualquier otro template no*/
                         // todo: agregado provisoriamente para las pruebas, pero despues descomentar las otras dos linea y borrar esta
                 )
+                .csrf(csrf -> csrf.disable())
                 .formLogin(login -> login
                         .loginPage("/login") // página de login personalizada
                         .loginProcessingUrl("/login") // URL de procesamiento del login

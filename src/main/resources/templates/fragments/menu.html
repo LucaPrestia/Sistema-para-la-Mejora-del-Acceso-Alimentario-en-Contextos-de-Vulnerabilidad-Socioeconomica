@@ -38,6 +38,10 @@
                 </li>
                 <li class="nav-item me-3" th:if="${rol == 'ADMIN'}">
                     <a class="nav-link" th:href="@{/admin/dashboard}">Dashboard Admin</a>
+                    <a class="dropdown-item" href="#" onclick="cargarVista('colocarHeladera')">Colocar Heladera</a>
+                    <a class="dropdown-item" href="#" onclick="cargarVista('hacerseCargoHeladera')">Hacerse Cargo Heladera</a>
+                    <a class="dropdown-item" href="#" onclick="cargarVista('donacionDinero')">Donación Dinero</a>
+                    <a class="dropdown-item" href="#" onclick="cargarVista('donacionVianda')">Donación Vianda</a>
                     <a class="nav-link" href="#" onclick="cargarVista('opcion3')">Opción 3</a>
                 </li>
             </ul>
