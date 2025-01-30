@@ -5,8 +5,15 @@ import ar.utn.sistema.entities.Direccion;
 import ar.utn.sistema.entities.colaboracion.TipoFrecuencia;
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.heladera.ServicioDeUbicacionHeladera;
+import ar.utn.sistema.entities.notificacion.MedioNotificacion;
+import ar.utn.sistema.entities.usuarios.ColaboradorFisico;
+import ar.utn.sistema.entities.usuarios.ColaboradorJuridico;
+import ar.utn.sistema.entities.usuarios.TipoDocumento;
+import ar.utn.sistema.entities.usuarios.TipoJuridico;
+import ar.utn.sistema.model.UsuarioSesionDetalle;
 import ar.utn.sistema.repositories.*;
 import ar.utn.sistema.repositories.configuracion.CoeficientesColaboracionRepository;
+import ar.utn.sistema.repositories.configuracion.TipoColaboracionRepository;
 import ar.utn.sistema.services.UsuarioSesionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,6 +44,10 @@ public class VistasController {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private CoeficientesColaboracionRepository coeficientesColaboracionRepository;
+    @Autowired
+    private ColaboradorRepository colaboradorRepository;
+    @Autowired
+    private TipoColaboracionRepository tipoColaboracionRepository;
 
     // para las vistas estáticas que no necesitan mucho pasaje de parámetro (una función carga muchas vistas estáticas, por su parámetro opcion que se carga de forma dinámica)
     @GetMapping("/{opcion}")
@@ -102,5 +113,29 @@ public class VistasController {
             model.addAttribute("success", true);
         }
         return "fragments/colaboraciones :: donacionVianda";
+    }
+
+    @GetMapping("/miperfil")
+    public String cargarPaginaMiPerfil(@RequestParam(value = "success", required = false) Boolean success, Model model){
+        UsuarioSesionDetalle usuario = sesion.obtenerUsuarioAutenticado();
+        model.addAttribute("rol", usuario.getRol());
+        model.addAttribute("tipoContacto", MedioNotificacion.values());
+        model.addAttribute("username", usuario.getUsername());
+        switch (usuario.getRol()) {
+            case "COLABORADOR_FISICO":
+                model.addAttribute("tipoDocumento", TipoDocumento.values());
+                model.addAttribute("colaboracionesHabilitadas", tipoColaboracionRepository.findByTipoColaborador("PERSONA_HUMANA"));
+                model.addAttribute("action", "colaborador/configuracion/humano");
+                model.addAttribute("colaborador", (ColaboradorFisico) colaboradorRepository.findById(usuario.getUsuario().getId()).get());
+                break;
+            case "COLABORADOR_JURIDICO":
+                model.addAttribute("tipoJuridico", TipoJuridico.values());
+                model.addAttribute("colaboracionesHabilitadas", tipoColaboracionRepository.findByTipoColaborador("PERSONA_JURIDICA"));
+                model.addAttribute("action", "colaborador/configuracion/juridico");
+                model.addAttribute("colaborador", (ColaboradorJuridico) colaboradorRepository.findById(usuario.getUsuario().getId()).get());
+                break;
+            default: break;
+        }
+        return "fragments/perfil :: perfil";
     }
 }

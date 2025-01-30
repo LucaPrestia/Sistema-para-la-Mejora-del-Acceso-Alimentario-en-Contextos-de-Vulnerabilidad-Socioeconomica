@@ -6,6 +6,69 @@
 </head>
 <body>
 <div th:fragment="menuprincipal(username)">
+    <style>
+        /* Estilo para el círculo con la inicial */
+        .user-initial {
+        width: 40px;
+        height: 40px;
+        background-color: #007bff;
+        color: white;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        cursor: pointer;
+        position: relative;
+        }
+
+        /* Estilo para el menú desplegable */
+        .user-menu {
+        position: absolute;
+        top: 100%; /* Asegura que el menú aparezca debajo del botón */
+        right: 0;  /* Lo alinea a la derecha del icono */
+        display: none;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        min-width: 180px;
+        padding: 10px;
+        z-index: 1000;
+        }
+
+        .user-menu-container {
+        position: absolute;
+        right: 15px; /* Pegado al lado derecho */
+        top: 50%;
+        transform: translateY(-50%); /* Lo centra verticalmente */
+        display: flex;
+        align-items: center;
+        }
+
+        .user-menu-container:hover .user-menu {
+        display: block;
+        }
+
+        /* Estilo para los textos del menú */
+        .user-menu .dropdown-header {
+        font-weight: bold;
+        }
+
+        .user-menu .dropdown-item {
+        text-decoration: none;
+        display: block;
+        padding: 8px 12px;
+        color: black;
+        }
+
+        .user-menu .dropdown-item.text-muted {
+        color: gray;
+        }
+
+        .user-menu .dropdown-item:hover {
+        background: #f8f9fa;
+        }
+    </style>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <!-- Opción común para todos los roles -->
         <a class="navbar-brand" th:href="@{/home}">Sistema de Gestión de Alimentos</a>
@@ -48,7 +111,8 @@
             <div th:text="${#strings.toUpperCase(username.substring(0,1))}" class="user-initial"></div>
             <div class="user-menu">
                 <div class="dropdown-header" th:text="${username}"></div>
-                <a class="dropdown-item" href="#">Mi Perfil</a>
+                <a class="dropdown-item" href="#" onclick="cargarVista('miperfil')"
+                   th:if="${#strings.startsWith(rol, 'COLABORADOR')}">Mi Perfil</a>
                 <a class="dropdown-item text-muted" th:href="@{/logout}">Cerrar sesión</a>
             </div>
         </div>

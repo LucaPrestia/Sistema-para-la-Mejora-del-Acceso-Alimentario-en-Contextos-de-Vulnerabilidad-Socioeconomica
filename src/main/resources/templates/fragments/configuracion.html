@@ -8,7 +8,7 @@
 
 <!-- Contenedor de Contactos -->
 <div th:fragment="contenedor-contactos" class="d-flex justify-content-center align-items-center my-3">
-    <div class="container col-md-8">
+    <div class="container">
         <div class="card">
             <div class="card-header text-center">
                 <h4>Gestión de Contactos</h4>
@@ -63,7 +63,7 @@
 
 <!-- Contenedor de Colaborador Jurídico -->
 <div th:fragment="contenedor-datos-colaborador-juridico" class="d-flex justify-content-center align-items-center my-3">
-    <div class="container col-md-6">
+    <div class="container">
         <div class="card">
             <div class="card-header text-center">
                 <h4>Datos del Colaborador Jurídico</h4>
@@ -102,7 +102,7 @@
 
 <!-- Contenedor de Colaborador Humano -->
 <div th:fragment="contenedor-datos-colaborador-humano" class="d-flex justify-content-center align-items-center my-3">
-    <div class="container col-md-6">
+    <div class="container">
         <div class="card">
             <div class="card-header text-center">
                 <h4>Datos del Colaborador Humano</h4>
@@ -145,7 +145,7 @@
 
 <!-- Contenedor de Dirección -->
 <div th:fragment="contenedor-direccion" class="d-flex justify-content-center align-items-center my-3">
-    <div class="container col-md-6">
+    <div class="container">
         <div class="card">
             <div class="card-header text-center">
                 <h4>Dirección</h4>
@@ -153,37 +153,37 @@
             <div class="card-body">
                 <div class="mb-3">
                     <label for="pais" class="form-label">País</label>
-                    <input type="text" class="form-control" id="pais" name="pais"
+                    <input type="text" class="form-control" id="pais" name="direccion.pais"
                            th:value="${colaborador?.direccion?.pais}">
                 </div>
                 <div class="mb-3">
                     <label for="provincia" class="form-label">Provincia</label>
-                    <input type="text" class="form-control" id="provincia" name="provincia"
+                    <input type="text" class="form-control" id="provincia" name="direccion.provincia"
                            th:value="${colaborador?.direccion?.provincia}">
                 </div>
                 <div class="mb-3">
                     <label for="localidad" class="form-label">Localidad</label>
-                    <input type="text" class="form-control" id="localidad" name="localidad"
+                    <input type="text" class="form-control" id="localidad" name="direccion.localidad"
                            th:value="${colaborador?.direccion?.localidad}">
                 </div>
                 <div class="mb-3">
                     <label for="calle" class="form-label">Calle</label>
-                    <input type="text" class="form-control" id="calle" name="calle"
+                    <input type="text" class="form-control" id="calle" name="direccion.calle"
                            th:value="${colaborador?.direccion?.calle}">
                 </div>
                 <div class="mb-3">
                     <label for="numero" class="form-label">Número</label>
-                    <input type="number" class="form-control" id="numero" name="numero"
+                    <input type="number" class="form-control" id="numero" name="direccion.numero"
                            th:value="${colaborador?.direccion?.numero}">
                 </div>
                 <div class="mb-3">
                     <label for="departamento" class="form-label">Departamento</label>
-                    <input type="text" class="form-control" id="departamento" name="departamento"
+                    <input type="text" class="form-control" id="departamento" name="direccion.departamento"
                            th:value="${colaborador?.direccion?.departamento}">
                 </div>
                 <div class="mb-3">
                     <label for="codigo_postal" class="form-label">Código Postal</label>
-                    <input type="number" class="form-control" id="codigo_postal" name="codigo_postal"
+                    <input type="number" class="form-control" id="codigo_postal" name="direccion.codigo_postal"
                            th:value="${colaborador?.direccion?.codigo_postal}">
                 </div>
             </div>
@@ -193,7 +193,7 @@
 
 <!-- Contenedor de Selección de Colaboraciones -->
 <div th:fragment="contenedor-seleccion-colaboracion" class="d-flex justify-content-center align-items-center my-3">
-    <div class="container col-md-6">
+    <div class="container">
         <div class="card">
             <div class="card-header text-center">
                 <h4>Colaborar</h4>
@@ -207,7 +207,7 @@
                                    th:id="'tipoColaboracion_' + ${tipoColaboracion.id}"
                                    th:name="tiposColaboracionIds"
                                    th:value="${tipoColaboracion.id}"
-                                   th:checked="${#lists.contains(colaborador?.tiposColaboracion, tipoColaboracion)}">
+                                   th:checked="${#lists.contains(colaborador != null ? colaborador.tiposColaboracion : new java.util.ArrayList(), tipoColaboracion)}">
                             <label class="form-check-label" th:for="'tipoColaboracion_' + ${tipoColaboracion.id}">
                                 <span th:text="${tipoColaboracion.nombre}"></span>
                             </label>
