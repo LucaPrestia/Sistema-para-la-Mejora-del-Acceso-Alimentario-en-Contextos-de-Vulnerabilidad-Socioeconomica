@@ -56,7 +56,7 @@ public class HomeController {
 
                 // pueden haber algunos datos ya ingresados por tratarse de un nuevo usuario registrado con carga masiva:
                 ColaboradorFisico colaborador = (ColaboradorFisico) usuario.getUsuario();
-                if(colaborador.getDocumento() != null && !colaborador.getDocumento().isEmpty()){
+                if(colaborador.getDocumento() != null) if( !colaborador.getDocumento().isEmpty()){
                    // no le paso el colaborador que obtuve de la sesión porque ese no tiene cargado los campos con LAZY EVALUATION!!
                    ColaboradorFisico colaboradorCompleto = (ColaboradorFisico) rColaborador.findById(colaborador.getId()).get();
                    model.addAttribute("colaborador", colaboradorCompleto);
