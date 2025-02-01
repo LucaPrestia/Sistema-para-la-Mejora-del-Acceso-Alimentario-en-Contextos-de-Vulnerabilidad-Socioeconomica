@@ -1,8 +1,6 @@
 package ar.utn.sistema.controllers;
 
-import ar.utn.sistema.dto.DonacionViandaDTO;
-import ar.utn.sistema.dto.RegisterDto;
-import ar.utn.sistema.dto.ViandaDTO;
+import ar.utn.sistema.dto.*;
 import ar.utn.sistema.entities.Coordenadas;
 import ar.utn.sistema.entities.Direccion;
 import ar.utn.sistema.entities.colaboracion.*;
@@ -10,6 +8,9 @@ import ar.utn.sistema.entities.configuracion.TipoColaboracion;
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.heladera.ServicioDeUbicacionHeladera;
 import ar.utn.sistema.entities.heladera.Vianda;
+import ar.utn.sistema.entities.tarjeta.TarjetaPersonaVulnerable;
+import ar.utn.sistema.entities.usuarios.PersonaVulnerable;
+import ar.utn.sistema.entities.usuarios.TipoDocumento;
 import ar.utn.sistema.entities.usuarios.Usuario;
 import ar.utn.sistema.repositories.*;
 import ar.utn.sistema.repositories.configuracion.CoeficientesColaboracionRepository;
@@ -19,6 +20,7 @@ import ar.utn.sistema.services.UsuarioSesionService;
 import org.hibernate.event.internal.EvictVisitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mapping.model.CamelCaseAbbreviatingFieldNamingStrategy;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +56,8 @@ public class ColaboracionesController {
     private ViandaRepository viandaRepository;
     @Autowired
     private CoeficientesColaboracionService coeficientesColaboracionService;
+    @Autowired
+    private PersonaVulnerableRespository personaVulnerableRespository;
 
     @PostMapping("/colocarHeladera")
     public String guardarHeladeraColocar(
@@ -105,7 +109,9 @@ public class ColaboracionesController {
     }
 
     @PostMapping("/donacionDinero")
-    public String guardarHacerDonacionDinero(@RequestParam("dinero") double dinero,@RequestParam("frecuenciaSeleccionada") String id_frecuencia, Model model) {
+    public String guardarHacerDonacionDinero(
+            @RequestParam("dinero") double dinero,
+            @RequestParam("frecuenciaSeleccionada") String id_frecuencia, Model model) {
         try {
 
             Double coeficientePuntos = coeficientesColaboracionService.obtenerCoeficiente(TipoColaboracionEnum.DINERO.name());
@@ -152,4 +158,48 @@ public class ColaboracionesController {
             return "redirect:/home?error=true";
         }
     }
+    @PostMapping("/donacionPersonaVulnerable")
+    public String recibirDonacion(@RequestBody DonacionPersonaVulnerableDTO donacion,Model model) {
+        for (PersonaVulnerableDTO personaVulnerableDTO : donacion.getPersonaVulnerable()) {
+            System.out.println("Nombre: " + personaVulnerableDTO.getNombre());
+            System.out.println("Fecha Nacimiento: " + personaVulnerableDTO.getFechaNacimiento());
+            System.out.println("Fecha Registro: " + personaVulnerableDTO.getFechaRegistro());
+            System.out.println("Situación de Calle: " + personaVulnerableDTO.getSituacionDeCalle());
+            System.out.println("Dirección: " + personaVulnerableDTO.getCalle() + " " + personaVulnerableDTO.getNumero() + ", " + personaVulnerableDTO.getLocalidad() + ", " + personaVulnerableDTO.getProvincia() + ", " + personaVulnerableDTO.getPais() + " - Código Postal: " + personaVulnerableDTO.getCodigoPostal());
+        }
+
+        try {
+            // Aquí va la lógica de procesamiento como guardado en la base de datos
+            List<PersonaVulnerable> personaVulnerableList = new ArrayList<>();
+            for (PersonaVulnerableDTO dto : donacion.getPersonaVulnerable()) {
+                PersonaVulnerable personaVulnerable = new PersonaVulnerable();
+                personaVulnerable.setNombre(dto.getNombre());
+                personaVulnerable.setFechaNacimiento(LocalDate.parse(dto.getFechaNacimiento()));
+                personaVulnerable.setFechaRegistro(LocalDate.parse(dto.getFechaRegistro()));
+                personaVulnerable.setSituacionDeCalle(dto.getSituacionDeCalle());
+
+                Direccion direccion = new Direccion();
+                direccion.setPais(dto.getPais());
+                direccion.setProvincia(dto.getProvincia());
+                direccion.setLocalidad(dto.getLocalidad());
+                direccion.setCalle(dto.getCalle());
+                direccion.setNumero(dto.getNumero());
+                direccion.setDepartamento(dto.getDepartamento());
+                direccion.setCodigo_postal(dto.getCodigoPostal());
+
+                personaVulnerable.setDireccion(direccion);
+
+                personaVulnerableList.add(personaVulnerable);
+            }
+
+            personaVulnerableRespository.saveAll(personaVulnerableList);
+            model.addAttribute("success", true);
+            return "redirect:/home?success=true";
+        } catch (Exception e) {
+            model.addAttribute("error", true);
+            return "redirect:/home?error=true";
+        }
+    }
+
+
 }

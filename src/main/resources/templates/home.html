@@ -233,3 +233,116 @@
     }
 
 </script>
+
+
+
+<script>
+    function agregarPersonaVulnerable() {
+        const container = document.getElementById("personaVulnerableContainer");
+        const personaVulnerableHTML = `
+        <div class="persona-vulnerable-item border rounded-lg p-4 space-y-4 mb-4">
+            <h3 class="text-lg font-medium">Persona Vulnerable</h3>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Nombre</label>
+                <input type="text" class="nombre mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Fecha de Nacimiento</label>
+                <input type="date" class="fechaNacimiento mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Fecha de Registro</label>
+                <input type="date" class="fechaRegistro mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Situación de Calle</label>
+                <input type="checkbox" class="situacionDeCalle mt-1 block">
+            </div>
+
+            <!-- Dirección -->
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="pais" class="form-label">País</label>
+                    <input type="text" class="form-control pais mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
+                </div>
+                <div class="mb-3">
+                    <label for="provincia" class="form-label">Provincia</label>
+                    <input type="text" class="form-control provincia mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
+                </div>
+                <div class="mb-3">
+                    <label for="localidad" class="form-label">Localidad</label>
+                    <input type="text" class="form-control localidad mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
+                </div>
+                <div class="mb-3">
+                    <label for="calle" class="form-label">Calle</label>
+                    <input type="text" class="form-control calle mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
+                </div>
+                <div class="mb-3">
+                    <label for="numero" class="form-label">Número</label>
+                    <input type="number" class="form-control numero mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
+                </div>
+                <div class="mb-3">
+                    <label for="departamento" class="form-label">Departamento</label>
+                    <input type="text" class="form-control departamento mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
+                </div>
+                <div class="mb-3">
+                    <label for="codigo_postal" class="form-label">Código Postal</label>
+                    <input type="number" class="form-control codigo_postal mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
+                </div>
+            </div>
+            <button type="button"
+                    class="w-full inline-flex justify-center rounded-md bg-red-500 py-2 px-4 text-sm font-medium text-black shadow-sm hover:bg-red-600"
+                    onclick="removePersonaVulnerable(this)">
+                Eliminar Persona Vulnerable
+            </button>
+        </div>`;
+        container.insertAdjacentHTML("beforeend", personaVulnerableHTML);
+    }
+
+    function removePersonaVulnerable(button) {
+        button.parentElement.remove();
+    }
+
+    function enviarDonacion() {
+        const personaVulnerable = [];
+        document.querySelectorAll(".persona-vulnerable-item").forEach(persona => {
+            const nombre = persona.querySelector(".nombre").value;
+            const fechaNacimiento = persona.querySelector(".fechaNacimiento").value;
+            const fechaRegistro = persona.querySelector(".fechaRegistro").value;
+            const situacionDeCalle = persona.querySelector(".situacionDeCalle").checked;
+            const pais = persona.querySelector(".pais").value;
+            const provincia = persona.querySelector(".provincia").value;
+            const localidad = persona.querySelector(".localidad").value;
+            const calle = persona.querySelector(".calle").value;
+            const numero = persona.querySelector(".numero").value;
+            const departamento = persona.querySelector(".departamento").value;
+            const codigoPostal = persona.querySelector(".codigo_postal").value;
+
+            if (nombre && fechaNacimiento && fechaRegistro && pais && provincia && localidad && calle && numero && departamento && codigoPostal !== "") {
+                personaVulnerable.push({ nombre, fechaNacimiento, fechaRegistro, situacionDeCalle, pais, provincia, localidad, calle, numero, departamento, codigoPostal });
+            }
+        });
+
+        if (personaVulnerable.length === 0) {
+            alert("Debe agregar al menos una persona vulnerable.");
+            return;
+        }
+
+        fetch("/colaboracion/donacionPersonaVulnerable", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ personaVulnerable })
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert("Donación realizada con éxito.");
+                    window.location.href = "/home?success=true";
+                } else {
+                    alert("Error al enviar la donación.");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+    }
+</script>
+
+

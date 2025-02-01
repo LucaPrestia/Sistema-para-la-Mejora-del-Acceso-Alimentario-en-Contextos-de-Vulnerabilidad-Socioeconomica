@@ -165,6 +165,94 @@
     </button>
   </div>
 </div>
+<div th:fragment="agregarPersonaVulnerable">
+  <h2 class="text-2xl font-bold mb-6">Registrar Persona Vulnerable</h2>
+  <div id="personaVulnerableContainer">
+
+  <!-- Datos Personales -->
+    <div class="persona-vulnerable-item border rounded-lg p-4 space-y-4 mb-4">
+      <h3 class="text-lg font-medium">Persona Vulnerable</h3>
+
+
+      <div class="card-body">
+        <div class="mb-3">
+          <label class="form-label">Nombre</label>
+          <input type="text" class="form-control nombre mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Fecha de Nacimiento</label>
+          <input type="date" class="form-control fechaNacimiento mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Fecha de Registro</label>
+          <input type="date" class="form-control fechaRegistro mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
+        </div>
+
+        <div class="mb-3 flex items-center">
+          <input type="checkbox" class="form-check-input situacionDeCalle rounded border-gray-300 shadow-sm sm:text-sm">
+          <label class="form-label ml-2">Situación de Calle</label>
+        </div>
+      <!-- Dirección -->
+      <div class="card-body">
+        <div class="mb-3">
+          <label class="form-label">País</label>
+          <input type="text" class="form-control pais mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Provincia</label>
+          <input type="text" class="form-control provincia mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Localidad</label>
+          <input type="text" class="form-control localidad mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
+        </div>
+        <div class="mb-3">
+          <label  class="form-label">Calle</label>
+          <input type="text" class="form-control calle mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
+        </div>
+        <div class="mb-3">
+          <label  class="form-label">Número</label>
+          <input type="number" class="form-control numero mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
+        </div>
+        <div class="mb-3">
+          <label  class="form-label">Departamento</label>
+          <input type="text" class="form-control departamento mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Código Postal</label>
+          <input type="number" class="form-control codigo_postal mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Botón para agregar otra persona vulnerable -->
+  <div class="mt-4">
+    <button type="button" onclick="agregarPersonaVulnerable()"
+            class="w-full inline-flex justify-center rounded-md bg-blue-500 py-2 px-4 text-sm font-medium text-black shadow-sm hover:bg-blue-600">
+      Añadir otra persona vulnerable
+    </button>
+  </div>
+
+  <!-- Botón para enviar -->
+  <div class="mt-4">
+    <button type="button" onclick="registrarPersonaVulnerable()"
+            class="w-full inline-flex justify-center rounded-md bg-blue-500 py-2 px-4 text-sm font-medium text-black shadow-sm hover:bg-blue-600">
+      Registrar Persona Vulnerable
+    </button>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
