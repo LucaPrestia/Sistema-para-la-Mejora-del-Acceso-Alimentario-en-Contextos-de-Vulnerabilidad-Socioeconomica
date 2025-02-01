@@ -2,20 +2,19 @@ package ar.utn.sistema.controllers;
 
 import ar.utn.sistema.entities.Coordenadas;
 import ar.utn.sistema.entities.Direccion;
+import ar.utn.sistema.entities.colaboracion.OfertaCanje;
 import ar.utn.sistema.entities.colaboracion.RubroServicio;
 import ar.utn.sistema.entities.colaboracion.TipoFrecuencia;
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.heladera.ServicioDeUbicacionHeladera;
 import ar.utn.sistema.entities.notificacion.MedioNotificacion;
-import ar.utn.sistema.entities.usuarios.ColaboradorFisico;
-import ar.utn.sistema.entities.usuarios.ColaboradorJuridico;
-import ar.utn.sistema.entities.usuarios.TipoDocumento;
-import ar.utn.sistema.entities.usuarios.TipoJuridico;
+import ar.utn.sistema.entities.usuarios.*;
 import ar.utn.sistema.model.UsuarioSesionDetalle;
 import ar.utn.sistema.repositories.*;
 import ar.utn.sistema.repositories.configuracion.CoeficientesColaboracionRepository;
 import ar.utn.sistema.repositories.configuracion.TipoColaboracionRepository;
 import ar.utn.sistema.services.UsuarioSesionService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +32,8 @@ import java.util.List;
 public class VistasController {
     @Autowired
     private ColaboracionRepository colaboracionRepository;
+    @Autowired
+    private OfertaCanjeRepository ofertaCanjeRepository;
 
     @Autowired
     private UsuarioSesionService sesion;
@@ -127,6 +128,24 @@ public class VistasController {
             model.addAttribute("success", true);
         }
         return "fragments/colaboraciones :: ofrecerServicio";
+    }
+    @GetMapping("/canjearPuntos")
+    public String cargarcanjearPuntos(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException
+    {
+        Colaborador colaborador = colaboradorRepository.findByUsuario_Id(sesion.obtenerUsuarioAutenticado().getId()).get();
+        //model.addAttribute("colaborador", );
+
+        if (colaborador != null) {
+            model.addAttribute("puntosDisponibles", colaborador.getPuntosDisponibles());
+        }
+
+        List<OfertaCanje> ofertas = ofertaCanjeRepository.findAll();
+        model.addAttribute("ofertasCanje", ofertas);
+
+        if (success != null && success) {
+            model.addAttribute("success", true);
+        }
+        return "fragments/canjePuntos :: canjearPuntos";
     }
     @GetMapping("/miperfil")
     public String cargarPaginaMiPerfil(@RequestParam(value = "success", required = false) Boolean success, Model model){

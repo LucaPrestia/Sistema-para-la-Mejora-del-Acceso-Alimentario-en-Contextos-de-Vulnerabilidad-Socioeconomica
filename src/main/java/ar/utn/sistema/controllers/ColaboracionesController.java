@@ -59,7 +59,12 @@ public class ColaboracionesController {
     private CoeficientesColaboracionService coeficientesColaboracionService;
     @Autowired
     private ColaboradorRepository colaboradorRepository;
-
+    private Colaborador obtenerColaborador(){
+        Colaborador colaborador = colaboradorRepository.findByUsuario_Id(sesion.obtenerUsuarioAutenticado().getId()).orElseThrow(
+                () -> new RuntimeException("Colaborador no encontrado")
+        );
+        return colaborador;
+    }
     @PostMapping("/colocarHeladera")
     public String guardarHeladeraColocar(
             @RequestParam("nombre") String nombre,
@@ -79,6 +84,10 @@ public class ColaboracionesController {
             Double coeficientePuntos = coeficientesColaboracionService.obtenerCoeficiente(TipoColaboracionEnum.GESTION_HELADERA.name());
             ColaboracionGestionHeladera colaboracionGestionHeladera = new ColaboracionGestionHeladera(nuevaHeladera,coeficientePuntos);
             colaboracionRepository.save(colaboracionGestionHeladera);
+            Colaborador colaborador = obtenerColaborador();
+            colaborador.agregarColaboracion(colaboracionGestionHeladera);
+            colaboradorRepository.save(colaborador);
+
             model.addAttribute("success", true);
             return "redirect:/home?success=true";
         } catch (Exception e) {
@@ -100,6 +109,11 @@ public class ColaboracionesController {
             Double coeficientePuntos = coeficientesColaboracionService.obtenerCoeficiente(TipoColaboracionEnum.GESTION_HELADERA.name());
             ColaboracionGestionHeladera colaboracionGestionHeladera = new ColaboracionGestionHeladera(heladera, coeficientePuntos);
             colaboracionRepository.save(colaboracionGestionHeladera);
+            obtenerColaborador().agregarColaboracion(colaboracionGestionHeladera);
+            Colaborador colaborador = obtenerColaborador();
+            colaborador.agregarColaboracion(colaboracionGestionHeladera);
+            colaboradorRepository.save(colaborador);
+
             model.addAttribute("success", true);
             return "redirect:/home?success=true";
         } catch (Exception e) {
@@ -118,6 +132,10 @@ public class ColaboracionesController {
             ColaboracionDinero colaboracionDinero = new ColaboracionDinero((float) dinero, TipoFrecuencia.valueOf(id_frecuencia), coeficientePuntos);
             System.out.println(colaboracionDinero);
             colaboracionRepository.save(colaboracionDinero);
+            Colaborador colaborador = obtenerColaborador();
+            colaborador.agregarColaboracion(colaboracionDinero);
+            colaboradorRepository.save(colaborador);
+
             model.addAttribute("success", true);
             return "redirect:/home?success=true";
         } catch (Exception e) {
@@ -150,6 +168,10 @@ public class ColaboracionesController {
             ColaboracionVianda colaboracionVianda = new ColaboracionVianda(viandasNuevas, viandasNuevas.size(), coeficientePuntos);
             System.out.println(colaboracionVianda);
             colaboracionRepository.save(colaboracionVianda);
+            Colaborador colaborador = obtenerColaborador();
+            colaborador.agregarColaboracion(colaboracionVianda);
+            colaboradorRepository.save(colaborador);
+
             model.addAttribute("success", true);
             return "redirect:/home?success=true";
         } catch (Exception e) {
@@ -176,17 +198,15 @@ public class ColaboracionesController {
 
         // Convertir la imagen a byte[]
         byte[] imagenBytes = imagen.getBytes();
-        System.out.println("Imagen convertida a byte[]: " + Arrays.toString(imagenBytes));
 
         // Crear la nueva colaboración
         ColaboracionOfertaServicio nuevaColaboracion = new ColaboracionOfertaServicio(
                 nombre, rubro, puntosRequeridos, imagenBytes, colaborador, coeficiente
         );
 
-        System.out.println("Intentando guardar la colaboración...");
         colaboracionRepository.save(nuevaColaboracion);
-        System.out.println("Colaboración guardada exitosamente.");
-
+        colaborador.agregarColaboracion(nuevaColaboracion);
+        colaboradorRepository.save(colaborador);
         return "redirect:/home?success=true";
     } catch (Exception e) {
         model.addAttribute("error", true);

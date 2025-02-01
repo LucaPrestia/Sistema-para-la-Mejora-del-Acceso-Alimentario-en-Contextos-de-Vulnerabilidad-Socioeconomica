@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Vistas</title>
+</head>
+<body>
+<div th:fragment="canjearPuntos">
+  <div class="container mt-5">
+    <h1 class="text-center">Canjear Puntos</h1>
+
+    <!-- Mostrar puntos disponibles -->
+    <div class="alert alert-info text-center">
+      <strong>Puntos Disponibles: </strong> <span th:text="${puntosDisponibles}"></span>
+    </div>
+
+    <div class="row">
+      <!-- Iterar sobre las ofertas disponibles -->
+      <div class="col-md-4 mb-4" th:each="oferta : ${ofertasCanje}">
+        <div class="card h-100">
+          <img th:src="@{'/imagenes/oferta/' + ${oferta.id}}" class="card-img-top" alt="Imagen de la oferta">
+
+          <div class="card-body">
+            <h5 class="card-title" th:text="${oferta.nombre}"></h5>
+            <p class="card-text">
+              <strong>Rubro: </strong> <span th:text="${oferta.rubro}"></span>
+            </p>
+            <p class="card-text">
+              <strong>Puntos requeridos: </strong> <span th:text="${oferta.puntosRequeridos}"></span>
+            </p>
+          </div>
+
+          <div class="card-footer text-center">
+            <form th:action="@{/canjear}" method="post">
+              <input type="hidden" name="idOferta" th:value="${oferta.id}">
+              <button type="submit" class="btn btn-primary"
+                      th:disabled="${puntosDisponibles < oferta.puntosRequeridos}">
+                Canjear
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
