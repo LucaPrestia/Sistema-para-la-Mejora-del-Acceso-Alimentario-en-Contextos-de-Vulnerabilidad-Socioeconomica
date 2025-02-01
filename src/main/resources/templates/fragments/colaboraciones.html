@@ -165,8 +165,45 @@
     </button>
   </div>
 </div>
+<div th:fragment="ofrecerServicio"
+>
+  <form action="/colaboracion/ofrecerServicio" method="post" enctype="multipart/form-data">
+    <div>
+      <label for="nombreServicio">Nombre de la oferta:</label>
+      <input type="text" id="nombreServicio" name="nombreServicio" required>
+    </div>
 
+    <div>
+      <label for="rubro">Rubro del servicio:</label>
+      <select name="rubro" id="rubro" required
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        <option th:each="rubroServicio : ${rubroServicioList}"
+                th:value="${rubroServicio.name()}"
+                th:text="${rubroServicio.name()}"></option>
+      </select>
+    </div>
 
+    <div>
+      <label for="puntosRequeridos">Puntos requeridos:</label>
+      <input type="number" step="0.1" id="puntosRequeridos" name="puntosRequeridos" required>
+    </div>
+
+    <div>
+      <label for="imagen">Seleccionar imagen:</label>
+      <input type="file" id="imagen" name="imagen" accept="image/*" required>
+    </div>
+
+    <div>
+      <label for="coeficienteServicio">Coeficiente:</label>
+      <input type="number" step="0.1" id="coeficienteServicio" name="coeficienteServicio" required>
+    </div>
+
+    <div>
+      <button type="submit">Ofrecer Servicio</button>
+    </div>
+  </form>
+
+</div>
 
 </body>
 </html>

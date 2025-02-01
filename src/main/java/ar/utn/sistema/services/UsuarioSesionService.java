@@ -33,6 +33,8 @@ public class UsuarioSesionService implements UserDetailsService {
     private TecnicoRepository rTecnico;
     @Autowired
     private AdminRepository rAdmin;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
 
     public UsuarioSesionService(UsuarioRepository repository, PasswordEncoder passwordEncoder) {
@@ -117,8 +119,8 @@ public class UsuarioSesionService implements UserDetailsService {
                     rColaborador.save(rolClase);
                     break;
                 case "COLABORADOR_JURIDICO":
-                /*    Colaborador rolClase = new ColaboradorJuridico(nuevoUsuario);
-                    rColaborador.save(rolClase);*/
+                   Colaborador rolClasea = new ColaboradorJuridico(nuevoUsuario);
+                    rColaborador.save(rolClasea);
                     break;
                 case "TECNICO":
                 /*    Tecnico rolClase = new Tecnico(nuevoUsuario);

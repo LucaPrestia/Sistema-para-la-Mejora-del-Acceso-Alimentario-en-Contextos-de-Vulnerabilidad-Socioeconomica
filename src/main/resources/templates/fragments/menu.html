@@ -94,7 +94,8 @@
                 </li>
                 <li class="nav-item me-3" th:if="${rol == 'COLABORADOR_JURIDICO'}">
                     <a class="nav-link" th:href="@{/colaborador/dashboard}">Dashboard Colaborador JURIDICO</a>
-                    <a class="nav-link" href="#" onclick="cargarVista('opcion2')">Opción 2</a>
+                    <a class="dropdown-item" href="#" onclick="cargarVista('ofrecerServicio')">Ofrecer Servicio</a>
+
                 </li>
                 <li class="nav-item me-3" th:if="${rol == 'TECNICO'}">
                     <a class="nav-link" th:href="@{/tecnico/dashboard}">Dashboard Técnico</a>
@@ -105,7 +106,6 @@
                     <a class="dropdown-item" href="#" onclick="cargarVista('hacerseCargoHeladera')">Hacerse Cargo Heladera</a>
                     <a class="dropdown-item" href="#" onclick="cargarVista('donacionDinero')">Donación Dinero</a>
                     <a class="dropdown-item" href="#" onclick="cargarVista('donacionVianda')">Donación Vianda</a>
-                    <a class="nav-link" href="#" onclick="cargarVista('opcion3')">Opción 3</a>
                 </li>
             </ul>
         </div>

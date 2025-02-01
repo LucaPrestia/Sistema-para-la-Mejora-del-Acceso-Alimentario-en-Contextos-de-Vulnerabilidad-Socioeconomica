@@ -26,4 +26,8 @@ public class ColaboradorJuridico extends Colaborador {
         this.cuit = cuit;
         this.tipoJuridico = tipoJuridico;
     }
+    public ColaboradorJuridico(Usuario usuario){
+        this.setUsuario(usuario);
+    }
+
 }
