@@ -11,6 +11,7 @@ import ar.utn.sistema.entities.heladera.Vianda;
 import ar.utn.sistema.entities.tarjeta.TarjetaPersonaVulnerable;
 import ar.utn.sistema.entities.usuarios.PersonaVulnerable;
 import ar.utn.sistema.entities.usuarios.TipoDocumento;
+import ar.utn.sistema.entities.usuarios.Colaborador;
 import ar.utn.sistema.entities.usuarios.Usuario;
 import ar.utn.sistema.repositories.*;
 import ar.utn.sistema.repositories.configuracion.CoeficientesColaboracionRepository;
@@ -24,10 +25,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller()
@@ -58,6 +61,7 @@ public class ColaboracionesController {
     private CoeficientesColaboracionService coeficientesColaboracionService;
     @Autowired
     private PersonaVulnerableRespository personaVulnerableRespository;
+    private ColaboradorRepository colaboradorRepository;
 
     @PostMapping("/colocarHeladera")
     public String guardarHeladeraColocar(
@@ -202,4 +206,40 @@ public class ColaboracionesController {
     }
 
 
+    @PostMapping("/ofrecerServicio")
+    public String procesarFormulario(
+            @RequestParam("nombreServicio") String nombre,
+            @RequestParam("rubro") RubroServicio rubro,
+            @RequestParam("puntosRequeridos") double puntosRequeridos,
+            @RequestParam("imagen") MultipartFile imagen,
+            @RequestParam("coeficienteServicio") double coeficiente,
+            Model model)
+            throws IOException {
+    try{
+
+        Colaborador colaborador = colaboradorRepository.findByUsuario_Id(sesion.obtenerUsuarioAutenticado().getId()).orElseThrow(
+                () -> new RuntimeException("Colaborador no encontrado")
+        );
+
+        System.out.println("Colaborador encontrado: " + colaborador);
+
+        // Convertir la imagen a byte[]
+        byte[] imagenBytes = imagen.getBytes();
+        System.out.println("Imagen convertida a byte[]: " + Arrays.toString(imagenBytes));
+
+        // Crear la nueva colaboración
+        ColaboracionOfertaServicio nuevaColaboracion = new ColaboracionOfertaServicio(
+                nombre, rubro, puntosRequeridos, imagenBytes, colaborador, coeficiente
+        );
+
+        System.out.println("Intentando guardar la colaboración...");
+        colaboracionRepository.save(nuevaColaboracion);
+        System.out.println("Colaboración guardada exitosamente.");
+
+        return "redirect:/home?success=true";
+    } catch (Exception e) {
+        model.addAttribute("error", true);
+        return "redirect:/home?error=true";
+    }
+}
 }

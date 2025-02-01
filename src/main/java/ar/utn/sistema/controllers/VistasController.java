@@ -2,6 +2,7 @@ package ar.utn.sistema.controllers;
 
 import ar.utn.sistema.entities.Coordenadas;
 import ar.utn.sistema.entities.Direccion;
+import ar.utn.sistema.entities.colaboracion.RubroServicio;
 import ar.utn.sistema.entities.colaboracion.TipoFrecuencia;
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.heladera.ServicioDeUbicacionHeladera;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -122,7 +124,18 @@ public class VistasController {
         }
         return "fragments/colaboraciones :: agregarPersonaVulnerable";
     }
+    @GetMapping("/ofrecerServicio")
+    public String cargarPaginaOfrecerServicio(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException
+    {
+        List<RubroServicio> rubroServicios = Arrays.stream(RubroServicio.values()).toList();
+        model.addAttribute("rubroServicioList", rubroServicios);
 
+
+        if (success != null && success) {
+            model.addAttribute("success", true);
+        }
+        return "fragments/colaboraciones :: ofrecerServicio";
+    }
     @GetMapping("/miperfil")
     public String cargarPaginaMiPerfil(@RequestParam(value = "success", required = false) Boolean success, Model model){
         UsuarioSesionDetalle usuario = sesion.obtenerUsuarioAutenticado();

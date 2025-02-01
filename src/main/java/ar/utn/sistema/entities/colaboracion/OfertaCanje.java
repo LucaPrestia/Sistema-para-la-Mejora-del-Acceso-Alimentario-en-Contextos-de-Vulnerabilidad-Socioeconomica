@@ -13,12 +13,14 @@ public class OfertaCanje extends PersistenciaID {
     @Enumerated(EnumType.STRING)
     private RubroServicio rubro;
     private double puntosRequeridos;
-    private String imagen;
+    @Lob // Define que este campo almacenará datos binarios grandes
+    @Column(columnDefinition = "VARBINARY(MAX)") // Compatible con SQL Server
+    private byte[] imagen;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn()
     private Colaborador colaborador;
 
-    public OfertaCanje(String nombre, RubroServicio rubro, double puntosRequeridos, String imagen, Colaborador colaborador) {
+    public OfertaCanje(String nombre, RubroServicio rubro, double puntosRequeridos, byte[] imagen, Colaborador colaborador) {
         this.nombre = nombre;
         this.rubro = rubro;
         this.puntosRequeridos = puntosRequeridos;
