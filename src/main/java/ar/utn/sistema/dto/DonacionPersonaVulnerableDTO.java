@@ -13,7 +13,6 @@ import java.util.List;
 public class DonacionPersonaVulnerableDTO {
     private List<PersonaVulnerableDTO> personaVulnerable;
 
-    //public DonacionPersonaVulnerableDTO() {}
 
     public List<PersonaVulnerableDTO> getPersonaVulnerable() {
         return personaVulnerable;

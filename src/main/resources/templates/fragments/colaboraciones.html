@@ -237,12 +237,13 @@
 
   <!-- Botón para enviar -->
   <div class="mt-4">
-    <button type="button" onclick="registrarPersonaVulnerable()"
+    <button type="button" onclick="enviarDonacionPersona()"
             class="w-full inline-flex justify-center rounded-md bg-blue-500 py-2 px-4 text-sm font-medium text-black shadow-sm hover:bg-blue-600">
       Registrar Persona Vulnerable
     </button>
   </div>
 
+  </div>
 
 
 
@@ -252,51 +253,50 @@
 
 
 
+</div>
+  <div th:fragment="ofrecerServicio">
+    <div class="container mt-5">
+      <h1 class="text-center">Ofrecer un Servicio</h1>
+      <div class="card-body">
+        <div th:if="${success}" class="alert alert-success text-center">
+          <p>Servicio ofrecido correctamente</p>
+        </div>
+        <form th:action="@{/colaboracion/ofrecerServicio}" method="post" enctype="multipart/form-data">
 
-<div th:fragment="ofrecerServicio"
->
-  <div class="container mt-5">
-    <h1 class="text-center">Ofrecer un Servicio</h1>
-    <div class="card-body">
-      <div th:if="${success}" class="alert alert-success text-center">
-        <p>Servicio ofrecido correctamente</p>
+          <div class="form-group">
+            <label for="nombreServicio">Nombre de la oferta:</label>
+            <input type="text" class="form-control" id="nombreServicio" name="nombreServicio" placeholder="Ingrese el nombre del servicio" required>
+          </div>
+
+          <div class="form-group">
+            <label for="rubro">Rubro del servicio:</label>
+            <select class="form-control" id="rubro" name="rubro" required>
+              <option th:each="rubroServicio : ${rubroServicioList}"
+                      th:value="${rubroServicio.name()}"
+                      th:text="${rubroServicio.name()}"></option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="puntosRequeridos">Puntos requeridos:</label>
+            <input type="number" step="0.1" class="form-control" id="puntosRequeridos" name="puntosRequeridos" placeholder="Ejemplo: 50.0" required>
+          </div>
+
+          <div class="form-group">
+            <label for="imagen">Seleccionar imagen:</label>
+            <input type="file" class="form-control-file" id="imagen" name="imagen" accept="image/*" required>
+          </div>
+
+          <div class="form-group">
+            <label for="coeficienteServicio">Coeficiente:</label>
+            <input type="number" step="0.1" class="form-control" id="coeficienteServicio" name="coeficienteServicio" placeholder="Ejemplo: 1.5" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Ofrecer Servicio</button>
+        </form>
       </div>
-      <form th:action="@{/colaboracion/ofrecerServicio}" method="post" enctype="multipart/form-data">
-
-        <div class="form-group">
-          <label for="nombreServicio">Nombre de la oferta:</label>
-          <input type="text" class="form-control" id="nombreServicio" name="nombreServicio" placeholder="Ingrese el nombre del servicio" required>
-        </div>
-
-        <div class="form-group">
-          <label for="rubro">Rubro del servicio:</label>
-          <select class="form-control" id="rubro" name="rubro" required>
-            <option th:each="rubroServicio : ${rubroServicioList}"
-                    th:value="${rubroServicio.name()}"
-                    th:text="${rubroServicio.name()}"></option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="puntosRequeridos">Puntos requeridos:</label>
-          <input type="number" step="0.1" class="form-control" id="puntosRequeridos" name="puntosRequeridos" placeholder="Ejemplo: 50.0" required>
-        </div>
-
-        <div class="form-group">
-          <label for="imagen">Seleccionar imagen:</label>
-          <input type="file" class="form-control-file" id="imagen" name="imagen" accept="image/*" required>
-        </div>
-
-        <div class="form-group">
-          <label for="coeficienteServicio">Coeficiente:</label>
-          <input type="number" step="0.1" class="form-control" id="coeficienteServicio" name="coeficienteServicio" placeholder="Ejemplo: 1.5" required>
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-block">Ofrecer Servicio</button>
-      </form>
     </div>
   </div>
-</div>
 
 </body>
 </html>

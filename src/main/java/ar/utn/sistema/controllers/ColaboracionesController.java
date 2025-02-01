@@ -9,10 +9,7 @@ import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.heladera.ServicioDeUbicacionHeladera;
 import ar.utn.sistema.entities.heladera.Vianda;
 import ar.utn.sistema.entities.tarjeta.TarjetaPersonaVulnerable;
-import ar.utn.sistema.entities.usuarios.PersonaVulnerable;
-import ar.utn.sistema.entities.usuarios.TipoDocumento;
-import ar.utn.sistema.entities.usuarios.Colaborador;
-import ar.utn.sistema.entities.usuarios.Usuario;
+import ar.utn.sistema.entities.usuarios.*;
 import ar.utn.sistema.repositories.*;
 import ar.utn.sistema.repositories.configuracion.CoeficientesColaboracionRepository;
 import ar.utn.sistema.repositories.configuracion.TipoColaboracionRepository;
@@ -61,6 +58,7 @@ public class ColaboracionesController {
     private CoeficientesColaboracionService coeficientesColaboracionService;
     @Autowired
     private PersonaVulnerableRespository personaVulnerableRespository;
+    @Autowired
     private ColaboradorRepository colaboradorRepository;
 
     @PostMapping("/colocarHeladera")
@@ -175,13 +173,15 @@ public class ColaboracionesController {
         try {
             // Aquí va la lógica de procesamiento como guardado en la base de datos
             List<PersonaVulnerable> personaVulnerableList = new ArrayList<>();
+            Double coeficientePuntos = coeficientesColaboracionService.obtenerCoeficiente(TipoColaboracionEnum.ENTREGA_TARJETAS.name());
+            ColaboracionTarjeta colaboracionTarjeta = new ColaboracionTarjeta(donacion.getPersonaVulnerable().size(),coeficientePuntos);
+            ColaboradorFisico colaborador = (ColaboradorFisico) colaboradorRepository.findByUsuario_Id(sesion.obtenerUsuarioAutenticado().getId()).get();
             for (PersonaVulnerableDTO dto : donacion.getPersonaVulnerable()) {
                 PersonaVulnerable personaVulnerable = new PersonaVulnerable();
                 personaVulnerable.setNombre(dto.getNombre());
                 personaVulnerable.setFechaNacimiento(LocalDate.parse(dto.getFechaNacimiento()));
                 personaVulnerable.setFechaRegistro(LocalDate.parse(dto.getFechaRegistro()));
                 personaVulnerable.setSituacionDeCalle(dto.getSituacionDeCalle());
-
                 Direccion direccion = new Direccion();
                 direccion.setPais(dto.getPais());
                 direccion.setProvincia(dto.getProvincia());
@@ -190,13 +190,15 @@ public class ColaboracionesController {
                 direccion.setNumero(dto.getNumero());
                 direccion.setDepartamento(dto.getDepartamento());
                 direccion.setCodigo_postal(dto.getCodigoPostal());
-
                 personaVulnerable.setDireccion(direccion);
-
+                direccionRepository.save(direccion);
                 personaVulnerableList.add(personaVulnerable);
+                colaboracionTarjeta.registrarPersonaVulnerable(personaVulnerable, colaborador);
             }
-
             personaVulnerableRespository.saveAll(personaVulnerableList);
+            colaboracionRepository.save(colaboracionTarjeta);
+            colaborador.agregarColaboracion(colaboracionTarjeta);
+            colaboradorRepository.save(colaborador);
             model.addAttribute("success", true);
             return "redirect:/home?success=true";
         } catch (Exception e) {
