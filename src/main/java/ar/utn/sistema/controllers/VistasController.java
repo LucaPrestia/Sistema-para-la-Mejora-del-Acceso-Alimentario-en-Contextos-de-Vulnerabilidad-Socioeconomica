@@ -117,6 +117,14 @@ public class VistasController {
         }
         return "fragments/colaboraciones :: donacionVianda";
     }
+    @GetMapping("/agregarPersonaVulnerable")
+    public String agregarPersonaVulnerable(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException
+    {
+        if (success != null && success) {
+            model.addAttribute("success", true);
+        }
+        return "fragments/colaboraciones :: agregarPersonaVulnerable";
+    }
     @GetMapping("/ofrecerServicio")
     public String cargarPaginaOfrecerServicio(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException
     {
