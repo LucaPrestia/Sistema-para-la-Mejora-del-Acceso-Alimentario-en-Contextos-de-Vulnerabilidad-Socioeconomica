@@ -167,42 +167,47 @@
 </div>
 <div th:fragment="ofrecerServicio"
 >
-  <form action="/colaboracion/ofrecerServicio" method="post" enctype="multipart/form-data">
-    <div>
-      <label for="nombreServicio">Nombre de la oferta:</label>
-      <input type="text" id="nombreServicio" name="nombreServicio" required>
-    </div>
+  <div class="container mt-5">
+    <h1 class="text-center">Ofrecer un Servicio</h1>
+    <div class="card-body">
+      <div th:if="${success}" class="alert alert-success text-center">
+        <p>Servicio ofrecido correctamente</p>
+      </div>
+      <form th:action="@{/colaboracion/ofrecerServicio}" method="post" enctype="multipart/form-data">
 
-    <div>
-      <label for="rubro">Rubro del servicio:</label>
-      <select name="rubro" id="rubro" required
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-        <option th:each="rubroServicio : ${rubroServicioList}"
-                th:value="${rubroServicio.name()}"
-                th:text="${rubroServicio.name()}"></option>
-      </select>
-    </div>
+        <div class="form-group">
+          <label for="nombreServicio">Nombre de la oferta:</label>
+          <input type="text" class="form-control" id="nombreServicio" name="nombreServicio" placeholder="Ingrese el nombre del servicio" required>
+        </div>
 
-    <div>
-      <label for="puntosRequeridos">Puntos requeridos:</label>
-      <input type="number" step="0.1" id="puntosRequeridos" name="puntosRequeridos" required>
-    </div>
+        <div class="form-group">
+          <label for="rubro">Rubro del servicio:</label>
+          <select class="form-control" id="rubro" name="rubro" required>
+            <option th:each="rubroServicio : ${rubroServicioList}"
+                    th:value="${rubroServicio.name()}"
+                    th:text="${rubroServicio.name()}"></option>
+          </select>
+        </div>
 
-    <div>
-      <label for="imagen">Seleccionar imagen:</label>
-      <input type="file" id="imagen" name="imagen" accept="image/*" required>
-    </div>
+        <div class="form-group">
+          <label for="puntosRequeridos">Puntos requeridos:</label>
+          <input type="number" step="0.1" class="form-control" id="puntosRequeridos" name="puntosRequeridos" placeholder="Ejemplo: 50.0" required>
+        </div>
 
-    <div>
-      <label for="coeficienteServicio">Coeficiente:</label>
-      <input type="number" step="0.1" id="coeficienteServicio" name="coeficienteServicio" required>
-    </div>
+        <div class="form-group">
+          <label for="imagen">Seleccionar imagen:</label>
+          <input type="file" class="form-control-file" id="imagen" name="imagen" accept="image/*" required>
+        </div>
 
-    <div>
-      <button type="submit">Ofrecer Servicio</button>
-    </div>
-  </form>
+        <div class="form-group">
+          <label for="coeficienteServicio">Coeficiente:</label>
+          <input type="number" step="0.1" class="form-control" id="coeficienteServicio" name="coeficienteServicio" placeholder="Ejemplo: 1.5" required>
+        </div>
 
+        <button type="submit" class="btn btn-primary btn-block">Ofrecer Servicio</button>
+      </form>
+    </div>
+  </div>
 </div>
 
 </body>
