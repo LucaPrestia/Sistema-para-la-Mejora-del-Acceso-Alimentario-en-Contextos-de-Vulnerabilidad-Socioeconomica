@@ -12,6 +12,7 @@ import ar.utn.sistema.entities.usuarios.*;
 import ar.utn.sistema.model.UsuarioSesionDetalle;
 import ar.utn.sistema.repositories.*;
 import ar.utn.sistema.repositories.configuracion.CoeficientesColaboracionRepository;
+import ar.utn.sistema.repositories.configuracion.ParametrosGeneralesRepository;
 import ar.utn.sistema.repositories.configuracion.TipoColaboracionRepository;
 import ar.utn.sistema.services.UsuarioSesionService;
 
@@ -51,6 +52,8 @@ public class VistasController {
     private ColaboradorRepository colaboradorRepository;
     @Autowired
     private TipoColaboracionRepository tipoColaboracionRepository;
+    @Autowired
+    private ParametrosGeneralesRepository parametrosGeneralesRepository;
 
     // para las vistas estáticas que no necesitan mucho pasaje de parámetro (una función carga muchas vistas estáticas, por su parámetro opcion que se carga de forma dinámica)
     @GetMapping("/{opcion}")
@@ -182,6 +185,12 @@ public class VistasController {
     // Menús administrador:
     @GetMapping("/configSistema")
     public String cargaConfigSistema(Model model){
+        model.addAttribute("colaboraciones", tipoColaboracionRepository.findAll());
+        model.addAttribute("colaboracionesHumano", tipoColaboracionRepository.findByTipoColaborador("PERSONA_HUMANA"));
+        model.addAttribute("colaboracionesJuridico", tipoColaboracionRepository.findByTipoColaborador("PERSONA_JURIDICA"));
+        model.addAttribute("action", "admin/configSistema");
+        model.addAttribute("parametros", parametrosGeneralesRepository.findAll());
+        model.addAttribute("coeficientes", coeficientesColaboracionRepository.findAll());
         // todo:
         return "fragments/administrador :: configSistema";
     }

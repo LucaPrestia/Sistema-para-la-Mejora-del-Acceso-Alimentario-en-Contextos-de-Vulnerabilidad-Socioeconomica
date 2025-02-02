@@ -18,9 +18,9 @@ public class Direccion extends PersistenciaID {
     private String provincia;
     private String localidad;
     private String calle;
-    private int numero;
+    private Integer numero;
     private String departamento;
-    private int codigo_postal;
+    private Integer codigo_postal;
 
     public Direccion(Coordenadas coordenadas, String pais, String provincia, String localidad, String calle, int numero, int codigo_postal, String departamento) {
         this.coordenadas = coordenadas;

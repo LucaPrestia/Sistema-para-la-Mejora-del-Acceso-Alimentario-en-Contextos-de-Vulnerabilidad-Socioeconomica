@@ -19,4 +19,7 @@ public interface TipoColaboracionRepository extends JpaRepository<TipoColaboraci
             "JOIN cc.tipoColaboracion tc " +
             "WHERE cc.tipoColaborador = :tipoColaborador")
     List<TipoColaboracion> findByTipoColaborador(@Param("tipoColaborador") String tipoColaborador);
+
+    List<TipoColaboracion> findByCodigoIn(List<String> codigos);
+
 }

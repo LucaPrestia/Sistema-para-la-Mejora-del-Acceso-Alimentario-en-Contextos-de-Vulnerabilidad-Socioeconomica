@@ -11,11 +11,11 @@
     <!--TODO: según el rol pasado por parámetro cargar un menú distinto -->
     <div th:insert="~{fragments/menu :: menuprincipal(${username})}"></div>
     <div class="text-center mt-3">
-        <div th:if="${success}" class="alert alert-success text-center">
+        <div th:if="${success}" class="alert alert-success text-center" style="width:600px;margin:auto;">
             <p>Operación Realizada Correctamente</p>
         </div>
-        <div th:if="${error}" class="alert alert-success text-center">
-            <p>Operación Realizada Correctamente</p>
+        <div th:if="${error}" class="alert alert-error text-center" style="width:600px;margin:auto;">
+            <p>Operación no realizada. Consultar con sistemas</p>
         </div>
     </div>
 </header>

@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -20,4 +21,7 @@ public interface ColaboradorRepository extends JpaRepository<Colaborador, Intege
     // dos formas distintas de buscarlo, ambas válidas:
     Optional<Colaborador> findByUsuario(Usuario usuario); // busqueda con el objeto usuario
     Optional<Colaborador> findByUsuario_Id(Integer id); // busqueda con id del usuario
+
+    @Query("SELECT c FROM Colaborador c WHERE TYPE(c) = :tipoColaborador")
+    List<Colaborador> findByTipoColaborador(@Param("tipoColaborador") Class<? extends Colaborador> tipo);
 }

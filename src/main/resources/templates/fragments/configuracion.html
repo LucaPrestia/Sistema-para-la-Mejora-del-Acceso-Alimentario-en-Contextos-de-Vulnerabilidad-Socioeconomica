@@ -17,7 +17,7 @@
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label for="tipo" class="form-label">Tipo de Contacto</label>
-                        <select id="tipo" class="form-select">
+                        <select id="tipo" class="form-select custom-select">
                             <option th:each="tipo : ${tipoContacto}"
                                     th:value="${tipo}"
                                     th:text="${tipo.value}">
@@ -29,7 +29,7 @@
                         <input type="text" id="contacto" class="form-control" placeholder="Ingrese el contacto">
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
-                        <button type="button" id="btn-agregar" class="btn btn-primary w-100">Agregar</button>
+                        <button type="button" id="btn-agregar" class="btn btn-primary w-100" onclick="agregarContacto()">Agregar</button>
                     </div>
                 </div>
                 <h4 class="text-center">Contactos Agregados</h4>
@@ -48,7 +48,7 @@
                         <td th:text="${contacto.medio}"></td>
                         <td th:text="${contacto.contacto}"></td>
                         <td>
-                            <button type="button" class="btn btn-danger btn-eliminar">Eliminar</button>
+                            <button type="button" class="btn btn-danger btn-eliminar" onclick="eliminarFila(this)">Eliminar</button>
                             <input type="hidden" th:name="|contactos[${index.index}].medio|" th:value="${contacto.medio}">
                             <input type="hidden" th:name="|contactos[${index.index}].contacto|" th:value="${contacto.contacto}">
                         </td>
