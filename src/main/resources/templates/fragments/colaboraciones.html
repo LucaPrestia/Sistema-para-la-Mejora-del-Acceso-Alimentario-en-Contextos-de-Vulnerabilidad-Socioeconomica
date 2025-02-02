@@ -152,7 +152,7 @@
   <!-- Botón para agregar otra vianda -->
   <div>
     <button type="button" id="addVianda" onclick="agregarVianda()"
-            class="w-full inline-flex justify-center btn btn-succes">
+            class="w-full inline-flex justify-center btn btn-success">
       Agregar Otra Vianda
     </button>
   </div>
@@ -227,10 +227,11 @@
       </div>
     </div>
   </div>
-  <!-- Botón para agregar otra persona vulnerable -->
+
+  </div>
   <div class="mt-4">
     <button type="button" onclick="agregarPersonaVulnerable()"
-            class="w-full inline-flex justify-center rounded-md bg-blue-500 py-2 px-4 text-sm font-medium text-black shadow-sm hover:bg-blue-600">
+            class="w-full inline-flex justify-center btn btn-success rounded-md bg-blue-500 py-2 px-4 text-sm font-medium text-black shadow-sm hover:bg-blue-600">
       Añadir otra persona vulnerable
     </button>
   </div>
@@ -238,11 +239,9 @@
   <!-- Botón para enviar -->
   <div class="mt-4">
     <button type="button" onclick="enviarDonacionPersona()"
-            class="w-full inline-flex justify-center rounded-md bg-blue-500 py-2 px-4 text-sm font-medium text-black shadow-sm hover:bg-blue-600">
+            class="w-full inline-flex justify-center rounded-md bg-blue-500 py-2 px-4 text-sm font-medium text-black shadow-sm btn btn-primary hover:bg-blue-600">
       Registrar Persona Vulnerable
     </button>
-  </div>
-
   </div>
 
 
@@ -254,7 +253,7 @@
 
 
 </div>
-  <div th:fragment="ofrecerServicio">
+<div th:fragment="ofrecerServicio">
     <div class="container mt-5">
       <h1 class="text-center">Ofrecer un Servicio</h1>
       <div class="card-body">
@@ -287,16 +286,53 @@
             <input type="file" class="form-control-file" id="imagen" name="imagen" accept="image/*" required>
           </div>
 
-          <div class="form-group">
-            <label for="coeficienteServicio">Coeficiente:</label>
-            <input type="number" step="0.1" class="form-control" id="coeficienteServicio" name="coeficienteServicio" placeholder="Ejemplo: 1.5" required>
-          </div>
 
           <button type="submit" class="btn btn-primary btn-block">Ofrecer Servicio</button>
         </form>
       </div>
     </div>
   </div>
+<div th:fragment="distribuirVianda" class="container mt-5">
+  <h1 class="text-center mb-4">Formulario de Distribución de Viandas</h1>
+  <form th:action="@{/colaboracion/distribuirVianda}" method="post" class="shadow p-4 rounded ">
+
+    <!-- Selección de Heladera de Origen -->
+    <div class="mb-3">
+      <label for="origenHeladera" class="form-label">Heladera de Origen:</label>
+      <select id="origenHeladera" name="origenHeladeraId" class="form-select" onchange="fetchViandas()" required>
+        <option value="" disabled selected>Seleccione una heladera</option>
+        <option th:each="heladera : ${heladeras}" th:value="${heladera.id}" th:text="${heladera.nombre}"></option>
+      </select>
+    </div>
+
+    <!-- Selección de Viandas -->
+    <div id="viandasContainer" class="mb-3" style="display:none;">
+      <label for="viandasList" class="form-label">Viandas a Distribuir:</label>
+      <div id="viandasList" class="form-check">
+        <!-- Las viandas se cargarán dinámicamente mediante JavaScript -->
+      </div>
+    </div>
+
+    <!-- Selección de Heladera de Destino -->
+    <div class="mb-3">
+      <label for="destinoHeladera" class="form-label">Heladera de Destino:</label>
+      <select id="destinoHeladera" name="destinoHeladeraId" class="form-select" required>
+        <option value="" disabled selected>Seleccione una heladera</option>
+        <option th:each="heladera : ${heladeras}" th:value="${heladera.id}" th:text="${heladera.nombre}"></option>
+      </select>
+    </div>
+
+    <!-- Motivo de Distribución -->
+    <div class="mb-3">
+      <label for="motivoDistribucion" class="form-label">Motivo de la Distribución:</label>
+      <input type="text" id="motivoDistribucion" name="motivoDistribucion" class="form-control" required>
+    </div>
+
+    <!-- Botón de Enviar -->
+    <button type="submit" class="btn btn-primary btn-lg w-100">Distribuir Viandas</button>
+  </form>
+</div>
+
 
 </body>
 </html>

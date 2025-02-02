@@ -1,6 +1,8 @@
 package ar.utn.sistema.entities.heladera;
 
 import ar.utn.sistema.entities.PersistenciaID;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +23,7 @@ public class Vianda extends PersistenciaID {
     private Float peso;
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "id_vianda",referencedColumnName = "id")
+    @JsonIgnore
     private List<MovimientoVianda> movimientos = new ArrayList<MovimientoVianda>();
 
     public Vianda(String comida, LocalDate fechaCaducidad, Heladera heladera, Float calorias, Float peso) {
@@ -33,13 +36,17 @@ public class Vianda extends PersistenciaID {
         agregarMovimientoVianda(movimiento);
         heladera.agregarVianda(this);
     }
+    public Vianda(String comida){
+        this.comida = comida;
+
+    }
     public void consumirVianda(Heladera heladera) {
         MovimientoVianda movimiento = new MovimientoVianda(TipoMovimientoVianda.CONSUMO, heladera, null, null);
         agregarMovimientoVianda(movimiento);
         heladera.sacarVianda(this);
     }
 
-    public void agregarMovimientoVianda(MovimientoVianda movimiento) {
+    public void     agregarMovimientoVianda(MovimientoVianda movimiento) {
         this.movimientos.add(movimiento);
     }
 }

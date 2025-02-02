@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -140,14 +141,21 @@ public class VistasController {
         }
         return "fragments/colaboraciones :: ofrecerServicio";
     }
+    @GetMapping("/distribuirVianda")
+    public String cargaDistribuirVianda(Model model){
+        List<Heladera> heladeras = heladeraRepository.findAll();
+        model.addAttribute("heladeras", heladeras);
+        return "fragments/colaboraciones :: distribuirVianda";
+    }
     @GetMapping("/canjearPuntos")
     public String cargarcanjearPuntos(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException
     {
         Colaborador colaborador = colaboradorRepository.findByUsuario_Id(sesion.obtenerUsuarioAutenticado().getId()).get();
         //model.addAttribute("colaborador", );
+        DecimalFormat df = new DecimalFormat("#.##");
 
         if (colaborador != null) {
-            model.addAttribute("puntosDisponibles", colaborador.getPuntosDisponibles());
+            model.addAttribute("puntosDisponibles",  df.format(colaborador.getPuntosDisponibles()));
         }
 
         List<OfertaCanje> ofertas = ofertaCanjeRepository.findAll();
