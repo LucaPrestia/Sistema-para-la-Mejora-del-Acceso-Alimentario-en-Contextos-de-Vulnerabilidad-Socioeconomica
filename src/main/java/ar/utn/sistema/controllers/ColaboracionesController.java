@@ -236,7 +236,6 @@ public class ColaboracionesController {
             @RequestParam("rubro") RubroServicio rubro,
             @RequestParam("puntosRequeridos") double puntosRequeridos,
             @RequestParam("imagen") MultipartFile imagen,
-            @RequestParam("coeficienteServicio") double coeficiente,
             Model model)
             throws IOException {
     try{
@@ -244,6 +243,7 @@ public class ColaboracionesController {
         Colaborador colaborador = colaboradorRepository.findByUsuario_Id(sesion.obtenerUsuarioAutenticado().getId()).orElseThrow(
                 () -> new RuntimeException("Colaborador no encontrado")
         );
+        Double coeficientePuntos = coeficientesColaboracionService.obtenerCoeficiente(TipoColaboracionEnum.OFERTA_SERVICIO.name());
 
         System.out.println("Colaborador encontrado: " + colaborador);
 
@@ -252,7 +252,7 @@ public class ColaboracionesController {
 
         // Crear la nueva colaboración
         ColaboracionOfertaServicio nuevaColaboracion = new ColaboracionOfertaServicio(
-                nombre, rubro, Math.round(puntosRequeridos * 100.0) / 100.0, imagenBytes, colaborador, coeficiente
+                nombre, rubro, Math.round(puntosRequeridos * 100.0) / 100.0, imagenBytes, colaborador, coeficientePuntos
         );
 
         colaboracionRepository.save(nuevaColaboracion);
@@ -263,5 +263,39 @@ public class ColaboracionesController {
         model.addAttribute("error", true);
         return "redirect:/home?error=true";
     }
-}
+    }
+    @PostMapping("/distribuirVianda")
+    public String distribuirViandas(
+            @RequestParam("origenHeladeraId") Integer origenHeladeraId,
+            @RequestParam("destinoHeladeraId") Integer destinoHeladeraId,
+            @RequestParam("viandasIds") List<Integer> viandasIds,
+            @RequestParam("motivoDistribucion") String motivoDistribucion, Model model
+    ) {
+        try {
+            Heladera heladeraOrigen = heladeraRepository.findById(origenHeladeraId).orElseThrow(() -> new RuntimeException("Origen de heladera no encontrado"));
+            Heladera heladeraDestino = heladeraRepository.findById(destinoHeladeraId).orElseThrow(() -> new RuntimeException("Origen de heladera no encontrado"));
+            List<Vianda> viandasList = new ArrayList<>();
+            for (Integer id : viandasIds) {
+                Vianda vianda = viandaRepository.findById(id).orElseThrow(() -> new RuntimeException("Vianda no encontrado"));
+                viandasList.add(vianda);
+            }
+            Double coeficientePuntos = coeficientesColaboracionService.obtenerCoeficiente(TipoColaboracionEnum.REDISTRIBUCION_VIANDAS.name());
+
+            Colaborador colaborador = colaboradorRepository.findByUsuario_Id(sesion.obtenerUsuarioAutenticado().getId()).orElseThrow(
+                    () -> new RuntimeException("Colaborador no encontrado")
+            );
+            ColaboracionDistribucionViandas nuevaColaboracion = new ColaboracionDistribucionViandas(heladeraOrigen, heladeraDestino, viandasList, motivoDistribucion, coeficientePuntos);
+            colaboracionRepository.save(nuevaColaboracion);
+            colaborador.agregarColaboracion(nuevaColaboracion);
+            colaboradorRepository.save(colaborador);
+            viandaRepository.saveAll(viandasList);
+            heladeraRepository.save(heladeraOrigen);
+            heladeraRepository.save(heladeraDestino);
+            return "redirect:/home?success=true";
+        } catch (Exception e) {
+            model.addAttribute("error", true);
+            return "redirect:/home?error=true";
+        }
+    }
+
 }

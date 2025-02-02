@@ -6,6 +6,7 @@ import ar.utn.sistema.entities.notificacion.PreferenciaNotificacion;
 import ar.utn.sistema.entities.usuarios.Colaborador;
 import ar.utn.sistema.entities.usuarios.Suscriptor;
 import ar.utn.sistema.entities.usuarios.Usuario;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

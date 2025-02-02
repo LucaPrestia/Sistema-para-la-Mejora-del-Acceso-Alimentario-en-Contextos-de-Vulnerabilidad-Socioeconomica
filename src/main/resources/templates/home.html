@@ -140,6 +140,39 @@
     }
 -->
 <script>
+    function fetchViandas() {
+        const origenHeladeraId = document.getElementById('origenHeladera').value;
+        if (origenHeladeraId) {
+            fetch(`/vianda?heladeraId=${origenHeladeraId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const viandasContainer = document.getElementById('viandasContainer');
+                    const viandasList = document.getElementById('viandasList');
+
+                    viandasList.innerHTML = '';
+                    data.forEach(vianda => {
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.name = 'viandasIds';
+                        checkbox.value = vianda.id;
+
+                        const label = document.createElement('label');
+                        label.textContent = vianda.comida;
+                        label.prepend(checkbox);
+
+                        const div = document.createElement('div');
+                        div.appendChild(label);
+
+                        viandasList.appendChild(div);
+                    });
+
+                    viandasContainer.style.display = 'block';
+                })
+                .catch(error => console.error('Error al cargar viandas:', error));
+        }
+    }
+</script>
+<script>
     function agregarVianda() {
         const container = document.getElementById("viandaContainer");
         const viandaHTML = `

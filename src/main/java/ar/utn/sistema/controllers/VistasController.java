@@ -138,6 +138,12 @@ public class VistasController {
         }
         return "fragments/colaboraciones :: ofrecerServicio";
     }
+    @GetMapping("/distribuirVianda")
+    public String cargaDistribuirVianda(Model model){
+        List<Heladera> heladeras = heladeraRepository.findAll();
+        model.addAttribute("heladeras", heladeras);
+        return "fragments/colaboraciones :: distribuirVianda";
+    }
     @GetMapping("/canjearPuntos")
     public String cargarcanjearPuntos(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException
     {

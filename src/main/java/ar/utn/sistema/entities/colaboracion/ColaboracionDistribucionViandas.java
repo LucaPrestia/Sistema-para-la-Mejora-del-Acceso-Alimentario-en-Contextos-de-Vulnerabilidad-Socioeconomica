@@ -17,16 +17,16 @@ import java.util.List;
 @Table(name = "colaboracion_distribucion_viandas")
 public class ColaboracionDistribucionViandas extends Colaboracion {
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "id_origen_heladera")
     private Heladera origenHeladera;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "id_destino_heladera")
     private Heladera destinoHeladera;
-
-    @Transient // --> esto se agrega para que no persista este artributo en la base de datos
-    private List<Vianda> viandas = new ArrayList<Vianda>(); // no interesa persistir
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   // @JoinColumn(name = "id_vianda")
+    private List<Vianda> viandas = new ArrayList<Vianda>();
 
     private int cantidad;
     private String motivoDistribucion;
@@ -42,6 +42,9 @@ public class ColaboracionDistribucionViandas extends Colaboracion {
         for (Vianda v: viandas){
             MovimientoVianda movimiento = new MovimientoVianda(TipoMovimientoVianda.REDISTRIBUCION,orgHeladera, destHeladera, motivo);
             v.agregarMovimientoVianda(movimiento);
+            destHeladera.agregarVianda(v);
+            orgHeladera.sacarVianda(v);
+
             // luego de registrar estos movimientos se genera el pedidoMovimientoTarjeta Colaborador (EGRESO e INGRESO VIANDA DISTRIBUCION) indicando la cantidad de viandas en total que se deban agregar o sacar en cada caso
             // las viandas luego se sacan de la heladera origen (el sistema le permitirá sacar sólo la cantidad indicada en el pedido de tarjeta)
             // las viandas luego se agregan de la heladera destino (el sistema le permitirá agregar sólo la cantidad indicada en el pedido de tarjeta)
