@@ -17,6 +17,7 @@ public class ColaboracionGestionHeladera extends Colaboracion{
         this.heladera = heladera;
     }
 
+    // todo: esto se debería actualizar EVALUAR COMO
     @Override
     public double sumarPuntos() {
         return this.heladera.mesesActiva() * this.getCoeficientePuntos();

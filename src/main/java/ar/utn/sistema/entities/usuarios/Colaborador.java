@@ -67,6 +67,7 @@ public abstract class Colaborador extends Suscriptor{
     public void agregarColaboracion(Colaboracion colaboracion){
         this.colaboraciones.add(colaboracion);
         double puntos = colaboracion.sumarPuntos();
+        System.out.println("estamos agregando puntos:" + puntos);
         actualizarPuntos(puntos);
     }
 

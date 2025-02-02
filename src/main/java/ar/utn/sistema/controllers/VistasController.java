@@ -178,4 +178,23 @@ public class VistasController {
         }
         return "fragments/perfil :: perfil";
     }
+
+    // Menús administrador:
+    @GetMapping("/configSistema")
+    public String cargaConfigSistema(Model model){
+        // todo:
+        return "fragments/administrador :: configSistema";
+    }
+
+    @GetMapping("/cargaMasiva")
+    public String cargaCargaMasiva(Model model){
+        // todo:
+        return "fragments/administrador :: cargaMasiva";
+    }
+
+    @GetMapping("/reportes")
+    public String cargaReportes(Model model){
+        // todo:
+        return "fragments/administrador :: reportes";
+    }
 }

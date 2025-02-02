@@ -94,28 +94,21 @@
                     </div>
                      <a class="nav-item " href="#" onclick="cargarVista('canjearPuntos')">Canjea tus Puntos</a>
                 </li>
-                <li class="nav-item me-3" th:if="${rol == 'COLABORADOR_JURIDICO'}">
-                    <a class="nav-link" th:href="@{/colaborador/dashboard}">Dashboard Colaborador JURIDICO</a>
-                <li class="nav-item dropdown" th:if="${rol == 'COLABORADOR_FISICO'}">
+                <li class="nav-item dropdown" th:if="${rol == 'COLABORADOR_JURIDICO'}">
                     <a class="nav-link dropdown-toggle" href="#" id="colaborarFisicoDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Colaborar
                     </a>
-                <div class="dropdown-menu" aria-labelledby="colaborarDropdown">
-                    <a class="dropdown-item" href="#" onclick="cargarVista('ofrecerServicio')">Ofrecer Servicio</a>
-                </div>
-
+                    <div class="dropdown-menu" aria-labelledby="colaborarDropdown">
+                        <a class="dropdown-item" href="#" onclick="cargarVista('ofrecerServicio')">Ofrecer Servicio</a>
+                    </div>
                 </li>
                 <li class="nav-item me-3" th:if="${rol == 'TECNICO'}">
                     <a class="nav-link" th:href="@{/tecnico/dashboard}">Dashboard Técnico</a>
                 </li>
                 <li class="nav-item me-3" th:if="${rol == 'ADMIN'}">
-                    <a class="nav-link" th:href="@{/admin/dashboard}">Dashboard Admin</a>
-                    <a class="dropdown-item" href="#" onclick="cargarVista('colocarHeladera')">Colocar Heladera</a>
-                    <a class="dropdown-item" href="#" onclick="cargarVista('hacerseCargoHeladera')">Hacerse Cargo Heladera</a>
-                    <a class="dropdown-item" href="#" onclick="cargarVista('donacionDinero')">Donación Dinero</a>
-                    <a class="dropdown-item" href="#" onclick="cargarVista('donacionVianda')">Donación Vianda</a>
-                    <a class="nav-link" href="#" onclick="cargarVista('opcion3')">Opción 3</a>
-
+                    <a class="nav-link" href="#" onclick="cargarVista('configSistema')">Configuracion Sistema</a>
+                    <a class="nav-link" href="#" onclick="cargarVista('cargaMasiva')">Carga Masiva</a>
+                    <a class="nav-link" href="#" onclick="cargarVista('reportes')">Reportes</a>
                 </li>
             </ul>
         </div>
