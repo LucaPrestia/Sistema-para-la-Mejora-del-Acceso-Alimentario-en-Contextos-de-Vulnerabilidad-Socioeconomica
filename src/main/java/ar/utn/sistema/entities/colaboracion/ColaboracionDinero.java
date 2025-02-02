@@ -35,6 +35,6 @@ public class ColaboracionDinero extends Colaboracion {
 
     @Override
     public double sumarPuntos() {
-        return this.frecuencia == TipoFrecuencia.UNICA ? this.monto * this.getCoeficientePuntos() : 0;
+        return this.monto * this.getCoeficientePuntos() ;
     }
 }

@@ -42,7 +42,7 @@ public abstract class Colaborador extends Suscriptor{
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "id_colaborador") // esto tiene que ir para que no haga una relación ManyToMany
     private List<Colaboracion> colaboraciones = new ArrayList<Colaboracion>();
-
+    @Column(name = "puntos_disponibles", precision = 3)
     private double puntosDisponibles;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})

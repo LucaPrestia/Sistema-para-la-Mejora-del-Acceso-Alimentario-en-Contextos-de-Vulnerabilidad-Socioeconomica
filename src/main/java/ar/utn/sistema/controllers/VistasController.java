@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -142,9 +143,10 @@ public class VistasController {
     {
         Colaborador colaborador = colaboradorRepository.findByUsuario_Id(sesion.obtenerUsuarioAutenticado().getId()).get();
         //model.addAttribute("colaborador", );
+        DecimalFormat df = new DecimalFormat("#.##");
 
         if (colaborador != null) {
-            model.addAttribute("puntosDisponibles", colaborador.getPuntosDisponibles());
+            model.addAttribute("puntosDisponibles",  df.format(colaborador.getPuntosDisponibles()));
         }
 
         List<OfertaCanje> ofertas = ofertaCanjeRepository.findAll();

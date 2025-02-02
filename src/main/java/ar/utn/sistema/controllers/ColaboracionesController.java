@@ -252,7 +252,7 @@ public class ColaboracionesController {
 
         // Crear la nueva colaboración
         ColaboracionOfertaServicio nuevaColaboracion = new ColaboracionOfertaServicio(
-                nombre, rubro, puntosRequeridos, imagenBytes, colaborador, coeficiente
+                nombre, rubro, Math.round(puntosRequeridos * 100.0) / 100.0, imagenBytes, colaborador, coeficiente
         );
 
         colaboracionRepository.save(nuevaColaboracion);
