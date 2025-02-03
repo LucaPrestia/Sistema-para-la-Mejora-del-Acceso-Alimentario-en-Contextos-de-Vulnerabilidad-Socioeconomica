@@ -19,10 +19,10 @@ public class ReporteFallasHeladera extends PersistenciaID {
     @JoinColumn(name = "id_heladera", referencedColumnName = "id")
     private Heladera heladera;
 
-    private int cantFallas;
+    private Long cantFallas;
     private LocalDate fechaReporte;
 
-    public ReporteFallasHeladera(Heladera heladera, int cantFallas) {
+    public ReporteFallasHeladera(Heladera heladera, Long cantFallas) {
         this.heladera = heladera;
         this.cantFallas = cantFallas;
         this.fechaReporte = LocalDate.now();

@@ -24,4 +24,11 @@ public interface ColaboradorRepository extends JpaRepository<Colaborador, Intege
 
     @Query("SELECT c FROM Colaborador c WHERE TYPE(c) = :tipoColaborador")
     List<Colaborador> findByTipoColaborador(@Param("tipoColaborador") Class<? extends Colaborador> tipo);
+
+    @Query("SELECT SUM(cv.cantidad) FROM Colaborador col " +
+            "JOIN col.colaboraciones c " +
+            "JOIN ColaboracionVianda cv ON c.id = cv.id " +
+            "WHERE col.id = :colaboradorId")
+    Long getTotalViandasPorColaborador(@Param("colaboradorId") Integer colaboradorId);
+
 }

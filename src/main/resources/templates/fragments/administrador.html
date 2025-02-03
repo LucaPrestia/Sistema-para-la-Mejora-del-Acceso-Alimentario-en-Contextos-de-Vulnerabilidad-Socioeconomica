@@ -223,7 +223,110 @@
 </div>
 
 <div th:fragment="reportes">
+    <style>
+        .menu-item-reportes {
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 5px;
+        }
+        .menu-item-reportes.active-reportes {
+        background-color: #007bff;
+        color: white;
+        }
+        .menu-item-reportes:hover {
+        background-color: #dedcff;
+        }
+        .content-section-reportes {
+        display: none;
+        }
+        .content-section-reportes.active-reportes {
+        display: block;
+        }
+    </style>
+    <div class="container mt-4">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#fallas">Reporte de Fallas</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#viandasColaborador">Viandas por Colaborador</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#viandasHeladera">Viandas por Heladera</a>
+            </li>
+        </ul>
 
+        <div class="tab-content mt-3">
+            <div id="fallas" class="tab-pane fade show active">
+                <h3>Reporte de Fallas en Heladeras</h3>
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Heladera</th>
+                        <th>Cantidad de Fallas</th>
+                        <th>Fecha del Reporte</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="reporte : ${reporteFallas}">
+                        <td th:text="${reporte.heladera.nombre}"></td>
+                        <td th:text="${reporte.cantFallas}"></td>
+                        <td th:text="${reporte.fechaReporte}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="viandasColaborador" class="tab-pane fade">
+                <h3>Reporte de Viandas por Colaborador</h3>
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Colaborador</th>
+                        <th>Cantidad de Viandas Donadas</th>
+                        <th>Fecha del Reporte</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="reporte : ${reporteViandasColaborador}">
+                        <td>
+                                <span th:if="${reporte.colaborador.nombre != null}"
+                                      th:text="${reporte.colaborador.nombre + ' ' + reporte.colaborador.apellido + ' (' + reporte.colaborador.tipoDocumento + ' ' + reporte.colaborador.documento + ')'}">
+                                </span>
+                            <span th:if="${reporte.colaborador.nombre == null}"
+                                  th:text="${reporte.colaborador.razonSocial + ' (' + reporte.colaborador.tipoJuridico + ')'}">
+                                </span>
+                        </td>
+                        <td th:text="${reporte.cantViandasDonadas}"></td>
+                        <td th:text="${reporte.fechaReporte}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="viandasHeladera" class="tab-pane fade">
+                <h3>Reporte de Viandas por Heladera</h3>
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Heladera</th>
+                        <th>Viandas Retiradas</th>
+                        <th>Viandas Colocadas</th>
+                        <th>Fecha del Reporte</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="reporte : ${reporteViandasHeladera}">
+                        <td th:text="${reporte.heladera.nombre}"></td>
+                        <td th:text="${reporte.cantViandasRetiradas}"></td>
+                        <td th:text="${reporte.cantViandasColocadas}"></td>
+                        <td th:text="${reporte.fechaReporte}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 </body>

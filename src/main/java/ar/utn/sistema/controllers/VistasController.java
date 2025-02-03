@@ -14,6 +14,9 @@ import ar.utn.sistema.repositories.*;
 import ar.utn.sistema.repositories.configuracion.CoeficientesColaboracionRepository;
 import ar.utn.sistema.repositories.configuracion.ParametrosGeneralesRepository;
 import ar.utn.sistema.repositories.configuracion.TipoColaboracionRepository;
+import ar.utn.sistema.repositories.reportes.ReporteFallasHeladeraRepository;
+import ar.utn.sistema.repositories.reportes.ReporteViandasColaboradorRepository;
+import ar.utn.sistema.repositories.reportes.ReporteViandasHeladeraRepository;
 import ar.utn.sistema.services.UsuarioSesionService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/vistas")
 public class VistasController {
+
+    // todo: en todas las vistas, por seguridad, tendríamos que verificar el rol del usuario logueado!!!
     @Autowired
     private ColaboracionRepository colaboracionRepository;
     @Autowired
@@ -55,6 +60,12 @@ public class VistasController {
     private TipoColaboracionRepository tipoColaboracionRepository;
     @Autowired
     private ParametrosGeneralesRepository parametrosGeneralesRepository;
+    @Autowired
+    private ReporteViandasColaboradorRepository rReporteViandasColaborador;
+    @Autowired
+    private ReporteFallasHeladeraRepository rReporteFallasHeladera;
+    @Autowired
+    private ReporteViandasHeladeraRepository rReporteViandasHeladera;
 
     // para las vistas estáticas que no necesitan mucho pasaje de parámetro (una función carga muchas vistas estáticas, por su parámetro opcion que se carga de forma dinámica)
     @GetMapping("/{opcion}")
@@ -199,7 +210,6 @@ public class VistasController {
         model.addAttribute("action", "admin/configSistema");
         model.addAttribute("parametros", parametrosGeneralesRepository.findAll());
         model.addAttribute("coeficientes", coeficientesColaboracionRepository.findAll());
-        // todo:
         return "fragments/administrador :: configSistema";
     }
 
@@ -211,7 +221,9 @@ public class VistasController {
 
     @GetMapping("/reportes")
     public String cargaReportes(Model model){
-        // todo:
+        model.addAttribute("reporteFallas", rReporteFallasHeladera.findAll());
+        model.addAttribute("reporteViandasColaborador", rReporteViandasColaborador.findAll());
+        model.addAttribute("reporteViandasHeladera", rReporteViandasHeladera.findAll());
         return "fragments/administrador :: reportes";
     }
 }

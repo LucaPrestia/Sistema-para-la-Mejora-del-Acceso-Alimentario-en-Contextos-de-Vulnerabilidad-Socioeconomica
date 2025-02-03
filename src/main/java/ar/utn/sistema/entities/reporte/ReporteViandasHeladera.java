@@ -22,11 +22,11 @@ public class ReporteViandasHeladera extends PersistenciaID {
     @JoinColumn(name = "id_heladera", referencedColumnName = "id")
     private Heladera heladera;
 
-    private int cantViandasRetiradas;
-    private int cantViandasColocadas;
+    private Long cantViandasRetiradas;
+    private Long cantViandasColocadas;
     private LocalDate fechaReporte;
 
-    public ReporteViandasHeladera(Heladera heladera, int cantViandasRetiradas, int cantViandasColocadas) {
+    public ReporteViandasHeladera(Heladera heladera, Long cantViandasRetiradas, Long cantViandasColocadas) {
         this.heladera = heladera;
         this.cantViandasRetiradas = cantViandasRetiradas;
         this.cantViandasColocadas = cantViandasColocadas;

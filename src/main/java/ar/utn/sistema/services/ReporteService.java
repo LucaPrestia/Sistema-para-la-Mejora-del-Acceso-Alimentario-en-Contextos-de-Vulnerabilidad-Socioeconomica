@@ -1,95 +1,104 @@
 package ar.utn.sistema.services;
 
-import ar.utn.sistema.entities.colaboracion.TipoColaboracionEnum;
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.heladera.TipoMovimientoVianda;
 import ar.utn.sistema.entities.reporte.ReporteFallasHeladera;
 import ar.utn.sistema.entities.reporte.ReporteViandasColaborador;
 import ar.utn.sistema.entities.reporte.ReporteViandasHeladera;
 import ar.utn.sistema.entities.usuarios.Colaborador;
+import ar.utn.sistema.repositories.*;
+import ar.utn.sistema.repositories.reportes.ReporteFallasHeladeraRepository;
+import ar.utn.sistema.repositories.reportes.ReporteViandasColaboradorRepository;
+import ar.utn.sistema.repositories.reportes.ReporteViandasHeladeraRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class ReporteService {
+
+    @Autowired
+    private ColaboradorRepository rColaborador;
+    @Autowired
+    private HeladeraRepository rHeladera;
+    @Autowired
+    private IncidenteRepository rIncidente;
+    @Autowired
+    private MovimientoViandaRepository rMovimientoVianda;
+    @Autowired
+    private ColaboracionRepository rColaboracion;
+    @Autowired
+    private ReporteViandasColaboradorRepository rReporteViandasColaborador;
+    @Autowired
+    private ReporteFallasHeladeraRepository rReporteFallasHeladera;
+    @Autowired
+    private ReporteViandasHeladeraRepository rReporteViandasHeladera;
+
     @Scheduled(cron = "0 0 0 * * SUN")  // define un job para generar los reportes que se ejecuta todos los domingos a la medianoche
     public void generarReportesSemanales() {
-        // todo: dropear tablas de reportes para liberar espacio y poder cargar los nuevos reportes de la ultima semana
-        // Lógica para generar los reportes
+        rReporteFallasHeladera.deleteAll();
+        rReporteViandasHeladera.deleteAll();
+        rReporteViandasColaborador.deleteAll();
         generarReporteFallasPorHeladera();
         generarReporteViandasPorHeladera();
         generarReporteViandasPorColaborador();
     }
 
     private void generarReporteViandasPorColaborador() {
-        List<Colaborador> colaboradores = new ArrayList<Colaborador>(); //todo: buscar en BD colaboradorRepository.findAll();
+        List<Colaborador> colaboradores = rColaborador.findAll();
         for (Colaborador colaborador : colaboradores) {
-            int viandasDonadas = 0; // todo: buscar en BD colaboracionRepository.countByColaboradorIdAndTipo(colaborador.getId(), TipoColaboracionEnum.DONACION_VIANDAS);
+            Long viandasDonadas = rColaborador.getTotalViandasPorColaborador(colaborador.getId());
 
-            ReporteViandasColaborador reporte = new ReporteViandasColaborador();
-            reporte.setColaborador(colaborador);
-            reporte.setCantViandasDonadas(viandasDonadas);
-            reporte.setFechaReporte(LocalDate.now());
+            ReporteViandasColaborador reporte = new ReporteViandasColaborador(colaborador,viandasDonadas);
 
-            // todo persistir:reporteViandasColaboradorRepository.save(reporte);
+            rReporteViandasColaborador.save(reporte);
         }
     }
 
     private void generarReporteViandasPorHeladera() {
-        List<Heladera> heladeras = new ArrayList<Heladera>(); //todo: buscar en BD heladeraRepository.findAll();
+        List<Heladera> heladeras = rHeladera.findAll();
         for (Heladera heladera : heladeras) {
-            int viandasRetiradas = 0;
-            /*= movimientoViandaRepository
-                .countByHeladeraOrigenAndFechaMovimientoBetweenAndTipoMovimientoIn (
+            Long viandasRetiradas = rMovimientoVianda
+                .countByOrigenHeladeraAndFechaHoraMovimientoBetweenAndTipoMovimientoIn (
                     heladera,
-                    LocalDate.now().minusWeeks(1),
-                    LocalDate.now(),
+                    LocalDateTime.now().minusWeeks(1),
+                    LocalDateTime.now(),
                     Arrays.asList(TipoMovimientoVianda.CONSUMO, TipoMovimientoVianda.REDISTRIBUCION)
-             ); */
-            int viandasColocadas = 0;
-            /*
-            = movimientoViandaRepository
-                .countByHeladeraOrigenAndFechaMovimientoBetweenAndTipoMovimiento (
+             );
+            Long viandasColocadas = rMovimientoVianda
+                .countByOrigenHeladeraAndFechaHoraMovimientoBetweenAndTipoMovimiento(
                     heladera,
-                    LocalDate.now().minusWeeks(1),
-                    LocalDate.now(),
+                    LocalDateTime.now().minusWeeks(1),
+                    LocalDateTime.now(),
                     TipoMovimientoVianda.DONACION
-             ) + movimientoViandaRepository
-                .countByHeladeraDestinoAndFechaMovimientoBetweenAndTipoMovimiento (
+             ) + rMovimientoVianda
+                .countByDestinoHeladeraAndFechaHoraMovimientoBetweenAndTipoMovimiento(
                     heladera,
-                    LocalDate.now().minusWeeks(1),
-                    LocalDate.now(),
+                    LocalDateTime.now().minusWeeks(1),
+                    LocalDateTime.now(),
                     TipoMovimientoVianda.REDISTRIBUCION
-             )
-            */
+             );
 
-            ReporteViandasHeladera reporte = new ReporteViandasHeladera();
-            reporte.setHeladera(heladera);
-            reporte.setCantViandasRetiradas(viandasRetiradas);
-            reporte.setCantViandasColocadas(viandasColocadas);
-            reporte.setFechaReporte(LocalDate.now());
+            ReporteViandasHeladera reporte = new ReporteViandasHeladera(heladera, viandasRetiradas, viandasColocadas);
 
-            // todo persistir: reporteViandasHeladeraRepository.save(reporte);
+            rReporteViandasHeladera.save(reporte);
         }
     }
 
     private void generarReporteFallasPorHeladera() {
-        List<Heladera> heladeras = new ArrayList<Heladera>(); //todo: buscar en BD heladeraRepository.findAll();
+        List<Heladera> heladeras = rHeladera.findAll();
         for (Heladera heladera : heladeras) {
-            int cantidadFallas = 0;  // todo: incidenteRepository.countByHeladeraIdAndFechaBetween(heladera.getId(), LocalDateTimeConverter.java.now().minusWeeks(1), LocalDateTimeConverter.java.now());
+            Long cantidadFallas = rIncidente.countByHeladeraAndFechaHoraBetween(heladera, LocalDateTime.now().minusWeeks(1), LocalDateTime.now());
 
-            ReporteFallasHeladera reporte = new ReporteFallasHeladera();
-            reporte.setHeladera(heladera);
-            reporte.setCantFallas(cantidadFallas);
-            reporte.setFechaReporte(LocalDate.now());
+            ReporteFallasHeladera reporte = new ReporteFallasHeladera(heladera, cantidadFallas);
 
-            // todo persistir: reporteFallasHeladeraRepository.save(reporte);
+            rReporteFallasHeladera.save(reporte);
         }
     }
 }

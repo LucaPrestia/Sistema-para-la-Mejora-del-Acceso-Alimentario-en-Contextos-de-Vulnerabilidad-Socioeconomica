@@ -20,10 +20,10 @@ public class ReporteViandasColaborador extends PersistenciaID {
     @JoinColumn(name = "id_colaborador", referencedColumnName = "id")
     private Colaborador colaborador;
 
-    private int cantViandasDonadas;
+    private Long cantViandasDonadas;
     private LocalDate fechaReporte;
 
-    public ReporteViandasColaborador(Colaborador colaborador, int cantViandasDonadas) {
+    public ReporteViandasColaborador(Colaborador colaborador, Long cantViandasDonadas) {
         this.colaborador = colaborador;
         this.cantViandasDonadas = cantViandasDonadas;
         this.fechaReporte = LocalDate.now();
