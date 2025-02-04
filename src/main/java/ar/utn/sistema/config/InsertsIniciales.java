@@ -12,6 +12,7 @@ import ar.utn.sistema.repositories.configuracion.CoeficientesColaboracionReposit
 import ar.utn.sistema.repositories.configuracion.ColaboradorColaboracionRepository;
 import ar.utn.sistema.repositories.configuracion.ParametrosGeneralesRepository;
 import ar.utn.sistema.repositories.configuracion.TipoColaboracionRepository;
+import ar.utn.sistema.services.ReporteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,9 @@ public class InsertsIniciales {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ReporteService reporteService;
 
     @Bean
     public CommandLineRunner initData() {
@@ -113,6 +117,7 @@ public class InsertsIniciales {
 
                 logger.info("todos los inserts iniciales fueron bien!!");
             }
+            reporteService.generarReportesSemanales();
         };
     }
 }

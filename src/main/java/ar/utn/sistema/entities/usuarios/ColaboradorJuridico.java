@@ -30,4 +30,8 @@ public class ColaboradorJuridico extends Colaborador {
         this.setUsuario(usuario);
     }
 
+    @Override
+    public String getNombreCompleto() {
+        return razonSocial + " (" + tipoJuridico.getValue() + ")";
+    }
 }
