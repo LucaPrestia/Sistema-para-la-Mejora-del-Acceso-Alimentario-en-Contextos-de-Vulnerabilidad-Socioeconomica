@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor
 public class Tecnico extends Rol {
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL) // Esto incluirá persistencia, actualización y eliminación
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
@@ -32,7 +32,7 @@ public class Tecnico extends Rol {
     private String areaCobertura;
 
     // agregamos la dirección para que se pueda identificar al técnico más cercano a una determinada heladera en caso de detectar algún incidente
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private Direccion direccion;
 
     public Tecnico(Usuario usuario, String nombre, String apellido, TipoDocumento tipoDocumento, Long documento, Long cuil, Contacto contacto, String areaCobertura, Direccion direccion) {

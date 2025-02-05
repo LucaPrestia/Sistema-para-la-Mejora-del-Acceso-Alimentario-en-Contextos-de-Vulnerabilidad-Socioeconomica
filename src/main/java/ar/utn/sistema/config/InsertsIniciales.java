@@ -1,13 +1,18 @@
 package ar.utn.sistema.config;
 
+import ar.utn.sistema.entities.Direccion;
 import ar.utn.sistema.entities.colaboracion.TipoColaboracionEnum;
 import ar.utn.sistema.entities.configuracion.CoeficientesColaboracion;
 import ar.utn.sistema.entities.configuracion.ColaboradorColaboracion;
 import ar.utn.sistema.entities.configuracion.ParametrosGenerales;
 import ar.utn.sistema.entities.configuracion.TipoColaboracion;
+import ar.utn.sistema.entities.notificacion.Contacto;
+import ar.utn.sistema.entities.notificacion.MedioNotificacion;
 import ar.utn.sistema.entities.usuarios.*;
 import ar.utn.sistema.repositories.AdminRepository;
 import ar.utn.sistema.repositories.ColaboradorRepository;
+import ar.utn.sistema.repositories.TecnicoRepository;
+import ar.utn.sistema.repositories.UsuarioRepository;
 import ar.utn.sistema.repositories.configuracion.CoeficientesColaboracionRepository;
 import ar.utn.sistema.repositories.configuracion.ColaboradorColaboracionRepository;
 import ar.utn.sistema.repositories.configuracion.ParametrosGeneralesRepository;
@@ -44,7 +49,10 @@ public class InsertsIniciales {
 
     @Autowired
     private AdminRepository rAdmin;
-
+    @Autowired
+    private TecnicoRepository rTecnico;
+    @Autowired
+    private UsuarioRepository rUsuario;
     @Autowired
     private ColaboradorRepository rColaborador;
 
@@ -94,8 +102,14 @@ public class InsertsIniciales {
                 CoeficientesColaboracion coef6 = new CoeficientesColaboracion(tipo6, 0.0);
 
                 rCoeficientes.saveAll(List.of(coef1, coef2, coef3, coef4, coef5, coef6));
+                Usuario tecnico = new Usuario("tecnico", passwordEncoder.encode("123123"), "TECNICO");
+                tecnico.setNuevo(0);
 
-                // agrego usuarios por default
+
+                Tecnico tecnico1 = new Tecnico(tecnico, "Juan Carlos", "Petrusa", TipoDocumento.DNI, 456131568L, 232521313L,
+                        new Contacto(MedioNotificacion.EMAIL, "lukeprestia@gmail.com"), "CongoUrbano", new Direccion());
+
+                rTecnico.save(tecnico1);
                 Usuario admin = new Usuario("admin",passwordEncoder.encode("admin123"),"ADMIN");
                 admin.setNuevo(0); // el administrador no necesita onboarding!!!!
                 Ong ong = new Ong("ONG Sistema Mejora Acceso Alimentario", admin);

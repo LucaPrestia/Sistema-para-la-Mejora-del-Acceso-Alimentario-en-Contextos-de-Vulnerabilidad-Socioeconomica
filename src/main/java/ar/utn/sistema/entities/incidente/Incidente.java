@@ -25,7 +25,7 @@ public abstract class Incidente extends PersistenciaID {
     private Heladera heladera;
 
     private String estado; // ("PENDIENTE", "EN_PROGRESO", "RESUELTO")
-
+    private String zona;
     public Incidente(LocalDateTime fechaHora, Heladera heladera, String tipoIncidente) {
         this.fechaHora = fechaHora;
         this.heladera = heladera;
@@ -37,5 +37,8 @@ public abstract class Incidente extends PersistenciaID {
         Direccion direccionHeladera = heladera.getDireccion();
         Tecnico tecnico = new Tecnico(); // obtenerTecnicoMasCercano(direccionHeladera); esto quizás debería estar en el service de tecnico!!
         tecnico.notificar(notificacion);
+    }
+    public String getTexto(){
+        return " Incidente ID: " +this.getId()+" De la Heladera:" +this.heladera.getNombre()+" Con ID: " + this.heladera.getId();
     }
 }
