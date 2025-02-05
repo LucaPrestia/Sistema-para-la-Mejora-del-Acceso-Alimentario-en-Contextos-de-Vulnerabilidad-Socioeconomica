@@ -119,4 +119,6 @@ public abstract class Colaborador extends Suscriptor{
         incidente.notificarTecnico(notificacion);
     }
 
+    public abstract String getNombreCompleto();
+
 }

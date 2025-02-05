@@ -38,4 +38,9 @@ public class ColaboradorFisico extends Colaborador{
         this.tipoDocumento = tipoDocumento;
         this.documento = documento;
     }
+
+    @Override
+    public String getNombreCompleto() {
+        return nombre + " " + apellido + " (" + tipoDocumento.toString() + ": " + documento + ")";
+    }
 }

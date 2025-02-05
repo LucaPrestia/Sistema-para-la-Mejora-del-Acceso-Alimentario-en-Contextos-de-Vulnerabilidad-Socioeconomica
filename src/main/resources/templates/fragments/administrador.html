@@ -246,13 +246,13 @@
     <div class="container mt-4">
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link active" href="#fallas">Reporte de Fallas</a>
+                <a class="nav-link active" data-toggle="tab" href="#fallas">Reporte de Fallas</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#viandasColaborador">Viandas por Colaborador</a>
+                <a class="nav-link" data-toggle="tab" href="#viandasColaborador">Viandas por Colaborador</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#viandasHeladera">Viandas por Heladera</a>
+                <a class="nav-link" data-toggle="tab" href="#viandasHeladera">Viandas por Heladera</a>
             </li>
         </ul>
 
@@ -289,14 +289,7 @@
                     </thead>
                     <tbody>
                     <tr th:each="reporte : ${reporteViandasColaborador}">
-                        <td>
-                                <span th:if="${reporte.colaborador.nombre != null}"
-                                      th:text="${reporte.colaborador.nombre + ' ' + reporte.colaborador.apellido + ' (' + reporte.colaborador.tipoDocumento + ' ' + reporte.colaborador.documento + ')'}">
-                                </span>
-                            <span th:if="${reporte.colaborador.nombre == null}"
-                                  th:text="${reporte.colaborador.razonSocial + ' (' + reporte.colaborador.tipoJuridico + ')'}">
-                                </span>
-                        </td>
+                        <td th:text="${reporte.colaborador.nombreCompleto}"></td>
                         <td th:text="${reporte.cantViandasDonadas}"></td>
                         <td th:text="${reporte.fechaReporte}"></td>
                     </tr>
