@@ -8,6 +8,7 @@ import ar.utn.sistema.entities.colaboracion.TipoFrecuencia;
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.heladera.ServicioDeUbicacionHeladera;
 import ar.utn.sistema.entities.notificacion.MedioNotificacion;
+import ar.utn.sistema.entities.notificacion.PreferenciaNotificacion;
 import ar.utn.sistema.entities.usuarios.*;
 import ar.utn.sistema.model.UsuarioSesionDetalle;
 import ar.utn.sistema.repositories.*;
@@ -215,7 +216,7 @@ public class VistasController {
 
     @GetMapping("/cargaMasiva")
     public String cargaCargaMasiva(Model model){
-        // todo:
+        // TODO OBLIGATORIO: hacer carga masiva!!
         return "fragments/administrador :: cargaMasiva";
     }
 
@@ -225,5 +226,12 @@ public class VistasController {
         model.addAttribute("reporteViandasColaborador", rReporteViandasColaborador.findAll());
         model.addAttribute("reporteViandasHeladera", rReporteViandasHeladera.findAll());
         return "fragments/administrador :: reportes";
+    }
+
+    @GetMapping("/suscripcion")
+    public String cargaSuscripcion(Model model){
+        model.addAttribute("heladeras", heladeraRepository.findAll());
+        model.addAttribute("preferenciasNoficacion", PreferenciaNotificacion.values());
+        return "fragments/vistas :: suscripcion";
     }
 }

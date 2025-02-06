@@ -95,6 +95,9 @@
                     </div>
 
                 </li>
+                <li class="nav-item dropdown" th:if="${rol == 'COLABORADOR_FISICO'}">
+                    <a class="dropdown-item" href="#" onclick="cargarVista('suscripcion')">Suscribir a Heladera</a>
+                </li>
                 <li class="nav-item dropdown" >
                     <a class="dropdown-item" href="#" onclick="cargarVista('canjearPuntos')">Canjea tus Puntos</a>
                 </li>

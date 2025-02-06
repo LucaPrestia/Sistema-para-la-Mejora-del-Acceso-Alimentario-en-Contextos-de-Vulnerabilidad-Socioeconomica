@@ -20,5 +20,58 @@
     <p class="text-center mt-3" th:text="${info}"></p>
 </div>
 
+<div th:fragment="suscripcion" class="d-flex justify-content-center align-items-center my-3">
+    <form action="colaborador/suscripcion" method="post" id="formSuscripcionHeladera" class="w-75">
+        <div class="container mt-4">
+            <div class="card shadow-sm">
+                <div class="card-header text-center bg-primary text-white">
+                    <h4 class="mb-0">Suscribirse a Heladeras</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Selección de Heladeras -->
+                    <div class="mb-4">
+                        <h5 class="text-secondary">Seleccionar heladeras para recibir notificaciones:</h5>
+                        <div th:each="heladera : ${heladeras}" class="form-check">
+                            <input class="form-check-input" type="checkbox"
+                                   th:id="'heladera_' + ${heladera.id}"
+                                   th:name="heladeras"
+                                   th:value="${heladera.id}">
+                            <label class="form-check-label" th:for="'heladera_' + ${heladera.id}">
+                                <strong th:text="${heladera.nombre}"></strong>
+                                <small class="text-muted" th:text="' (' + ${heladera.direccion.localidad} + ' - ' + ${heladera.direccion.provincia} + ', ' + ${heladera.direccion.calle} + ' ' + ${heladera.direccion.numero} + ')'" ></small>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Selección de Notificaciones -->
+                    <div class="mb-4">
+                        <h5 class="text-secondary">Seleccionar tipos de notificaciones:</h5>
+                        <div th:each="pref : ${preferenciasNoficacion}" class="mb-3 p-3 border rounded">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"
+                                       th:value="${pref}"
+                                       th:id="'pref_' + ${pref}"
+                                       th:name="preferencias">
+                                <label class="form-check-label font-weight-bold" th:for="'pref_' + ${pref}">
+                                    <span th:text="${pref.nombre}"></span>
+                                </label>
+                            </div>
+                            <small class="form-text text-muted" th:text="${pref.descripcion}"></small>
+
+                            <!-- Input adicional para POCAS_VIANDAS y HELADERA_LLENA -->
+                            <div th:if="${pref != T(ar.utn.sistema.entities.notificacion.PreferenciaNotificacion).DESPERFECTO}" class="mt-2">
+                                <label th:for="'cantidad_' + ${pref}" class="form-label font-weight-bold">Cantidad N:</label>
+                                <input type="number" class="form-control w-50" th:id="'cantidad_' + ${pref}"
+                                       th:name="'cantidad_' + ${pref}" min="1">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-lg w-100">Suscribirse a Heladeras</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
 </body>
 </html>

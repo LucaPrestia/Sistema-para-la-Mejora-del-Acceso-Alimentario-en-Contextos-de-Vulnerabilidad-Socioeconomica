@@ -6,6 +6,7 @@ import ar.utn.sistema.entities.Direccion;
 import ar.utn.sistema.entities.configuracion.TipoColaboracion;
 import ar.utn.sistema.entities.notificacion.Contacto;
 import ar.utn.sistema.entities.notificacion.MedioNotificacion;
+import ar.utn.sistema.entities.notificacion.PreferenciaNotificacion;
 import ar.utn.sistema.entities.usuarios.ColaboradorFisico;
 import ar.utn.sistema.entities.usuarios.ColaboradorJuridico;
 import ar.utn.sistema.entities.usuarios.TipoDocumento;
@@ -105,6 +106,16 @@ public class ColaboradorController {
 
             return "redirect:/home";
         } else return "redirect/:login";
+    }
+
+    @PostMapping("/suscripcion")
+    public String suscribirHeladera(@RequestParam("heladeras") List<Integer> heladeras,
+                                    @RequestParam(name = "preferencias", required = false) List<PreferenciaNotificacion> preferencias,
+                                    @RequestParam(name = "cantidad_POCAS_VIANDAS", required = false) Integer pocasViandas,
+                                    @RequestParam(name = "cantidad_HELADERA_LLENA", required = false) Integer heladeraLlena,
+                                    Model model){
+        // todo:
+        return "redirect:/home";
     }
 
     /* OBSOLETOOOO
