@@ -33,6 +33,9 @@ public class VisitaIncidente extends PersistenciaID {
         this.foto = foto;
         this.fechaVisita = LocalDate.now();
         this.solucionado = solucionado;
-        if (solucionado) incidente.getHeladera().setEstado(EstadoHeladera.ACTIVA); // si se soluciono la heladera vuelve a estar en funcionamiento
+        if (solucionado){
+            incidente.setEstado("RESUELTO");
+            incidente.getHeladera().setEstado(EstadoHeladera.ACTIVA); // si se soluciono la heladera vuelve a estar en funcionamiento
+        }
     }
 }
