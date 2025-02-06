@@ -1,5 +1,6 @@
 package ar.utn.sistema.controllers;
 
+import ar.utn.sistema.dto.DTOEsperaSesionIncidenteFoto;
 import ar.utn.sistema.dto.DTOSesionTelegram;
 import ar.utn.sistema.entities.incidente.Incidente;
 import ar.utn.sistema.entities.incidente.VisitaIncidente;
@@ -16,21 +17,18 @@ import com.github.kshashov.telegram.api.bind.annotation.BotController;
 import com.github.kshashov.telegram.api.bind.annotation.BotPathVariable;
 import com.github.kshashov.telegram.api.bind.annotation.BotRequest;
 import com.github.kshashov.telegram.api.bind.annotation.request.MessageRequest;
-import com.github.kshashov.telegram.config.TelegramBotGlobalProperties;
-import com.pengrad.telegrambot.Callback;
 import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.model.Chat;
-import com.pengrad.telegrambot.model.User;
+import com.pengrad.telegrambot.UpdatesListener;
+import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.request.BaseRequest;
+import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.request.SendMessage;
-import com.pengrad.telegrambot.response.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.*;
 /* PARA MANDAR MENSAJE DESDE CUALQUIER CLASE
 TelegramBotController bot = TelegramBotController.telegramBot;
@@ -54,15 +52,23 @@ public class TelegramBotController implements TelegramMvcController {
 
     public TelegramBotController() {
         // Asegurate de usar tu token correcto aquí
+
         telegramBot = new TelegramBot("7713772704:AAEfTB0uHPBWjx9NkclJjnK1UrmxzlGiUGE");
+
     }
     public void enviarMensaje(Integer id_usuario, String mensaje) {
-        long telegram_id = getTelegramIdByUsuarioId(id_usuario);
-        telegramBot.execute(new SendMessage(telegram_id, mensaje));
+        long chat_id = 0L;
+        for(DTOSesionTelegram dto :loggedInUsers.values()){
+            if(dto.id_telegram== id_usuario){
+                chat_id = dto.chat_id;
+            }
+        }
+        telegramBot.execute(new SendMessage(chat_id, mensaje));
 
 
     }
     // Lista para almacenar las sesiones activas de los usuarios
+    private List<DTOEsperaSesionIncidenteFoto> esperandoFoto = new ArrayList<>();
     private Map<Long, DTOSesionTelegram> loggedInUsers = new HashMap<>();
     private Map<Long, Long> lastActiveTimes = new HashMap<>();  // Mapa de actividad del usuario
     private static final long INACTIVITY_TIMEOUT = 5 * 60 * 1000;  // 5 minutos en milisegundos
@@ -73,6 +79,10 @@ public class TelegramBotController implements TelegramMvcController {
     public String getToken() {
         return token;
     }
+    @BotRequest(value = "/hello", type = {MessageType.CALLBACK_QUERY, MessageType.MESSAGE})
+    public BaseRequest hello(User user, Chat chat) {
+        return new SendMessage(chat.id(), "Hello, " + user.firstName() + "!");
+    }
     @MessageRequest("Registrar una visita a una heladera {incidenteID:[a-zA-Z0-9]+} solucionado: {solucionado:[a-zA-Z0-9]+} descripcion de trabajo: {trabajo:.+}")
     public String registrarVisita(@BotPathVariable("incidenteID") String incidente_id,
                                   @BotPathVariable("solucionado") String solucionado,
@@ -81,66 +91,46 @@ public class TelegramBotController implements TelegramMvcController {
                                   User user,
                                   Chat chat) {
 
-        if (loggedInUsers.containsKey(user.id())) {
-            try {
-                int usuarioMio_id = getIdUsuarioByTelegramId(user.id());
-                Usuario usuarioMio = usuarioRepository.findById(usuarioMio_id).orElse(null);
-
-                if (usuarioMio == null) {
-                    return "Error: No se encontró el usuario asociado.";
-                }
-
-                Tecnico tecnicoMio = tecnicoRepository.findByUsuario(usuarioMio).orElse(null);
-                if (tecnicoMio == null) {
-                    return "Error: No se encontró el técnico asociado al usuario.";
-                }
-
-                Optional<Incidente> incidenteOpt = incidenteRepository.findById(Integer.parseInt(incidente_id));
-
-                if (!incidenteOpt.isPresent()) {
-                    return "Error: No se encontró el incidente con el ID proporcionado.";
-                }
-
-                Incidente incidente = incidenteOpt.get();
-
-                // Configura el callback para esperar una imagen
-                request.setCallback(new Callback() {
-                    @Override
-                    public void onResponse(BaseRequest req, BaseResponse res) {
-                        if (req.getFileName() != null) {
-                            byte[] photoBytes = request.getMessage().photo()[0].fileId().getBytes();
-
-                            VisitaIncidente visitaIncidente;
-                            if(Objects.equals(solucionado, "si")){
-                               visitaIncidente = new VisitaIncidente(incidente,tecnicoMio,descripcionTrabajo,photoBytes,true);
-                            }else{
-                                visitaIncidente = new VisitaIncidente(incidente,tecnicoMio,descripcionTrabajo,photoBytes,false);
-                            }
-
-                            visitaIncidenteRepository.save(visitaIncidente);
-
-                            telegramBot.execute(new SendMessage(chat.id(), "La visita ha sido registrada exitosamente."));
-                        } else {
-                            telegramBot.execute(new SendMessage(chat.id(), "No se recibió ninguna foto. Por favor, intente de nuevo."));
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(BaseRequest req, IOException e) {
-                        telegramBot.execute(new SendMessage(user.id(), "Ocurrió un error al recibir la foto. Intente nuevamente."));
-                    }
-                });
-
-                return "Por favor, envíe una foto de cómo quedó el trabajo realizado.";
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return "Error al registrar la visita: " + e.getMessage();
-            }
-        } else {
+        if (!loggedInUsers.containsKey(user.id())) {
             return "Debe iniciar sesión primero enviando el siguiente mensaje: 'Iniciar sesion usuario contraseña'";
         }
+
+        try {
+            int usuarioMio_id = getIdUsuarioByTelegramId(user.id());
+            Usuario usuarioMio = usuarioRepository.findById(usuarioMio_id).orElse(null);
+
+            if (usuarioMio == null) {
+                return "Error: No se encontró el usuario asociado.";
+            }
+
+            Tecnico tecnicoMio = tecnicoRepository.findByUsuario(usuarioMio).orElse(null);
+            if (tecnicoMio == null) {
+                return "Error: No se encontró el técnico asociado al usuario.";
+            }
+
+            Optional<Incidente> incidenteOpt = incidenteRepository.findById(Integer.parseInt(incidente_id));
+            if (!incidenteOpt.isPresent()) {
+                return "Error: No se encontró el incidente con el ID proporcionado.";
+            }
+
+            Incidente incidente = incidenteOpt.get();
+            DTOEsperaSesionIncidenteFoto dto = new DTOEsperaSesionIncidenteFoto();
+            dto.setDescripcion(descripcionTrabajo);
+            dto.setId_telegram(user.id());
+            dto.setChat_id(chat.id());
+            dto.setIncidente(incidente);
+            dto.setTecnico(tecnicoMio);
+            dto.setSolucionado(solucionado.compareToIgnoreCase("si")==1);
+            esperandoFoto.add(dto);
+
+            return "Por favor, envíe una foto con el prefijo /foto con la evidencia del trabajo realizado.";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error al registrar la visita: " + e.getMessage();
+        }
     }
+
 
     @MessageRequest("Cambiar zona de trabajo {zona:[a-zA-Z0-9]+}")
     public String cambiarZonaTrabajo(@BotPathVariable("zona") String zona, User user) {
@@ -236,7 +226,7 @@ public class TelegramBotController implements TelegramMvcController {
                     DTOSesionTelegram sesion = new DTOSesionTelegram();
                     sesion.setId_telegram(user.id());
                     sesion.setId_usuario(usuario1.getId());
-
+                    sesion.setChat_id(chat.id());
                     loggedInUsers.put(user.id(), sesion);  // Guarda la sesión en el mapa
                     updateLastActiveTime(user.id());
                     return "Login exitoso. Bienvenido, " + username + ". ¿Qué deseas hacer?";
@@ -249,6 +239,69 @@ public class TelegramBotController implements TelegramMvcController {
         }
     }
 
+    @BotRequest(value = "")
+    public synchronized BaseRequest mandarFoto(User user, Chat chat, Message message) throws InterruptedException {
+        // Verifica si el usuario tiene una visita pendiente
+
+        DTOEsperaSesionIncidenteFoto dtoMio = esperandoFoto.stream()
+                .filter(dto -> dto.getId_telegram() == user.id())
+                .findFirst()
+                .orElse(null);
+
+        if (dtoMio == null) {
+            return new SendMessage(chat.id(), "No registraste la visita primero.");
+        }
+
+        // Verifica si el mensaje contiene una foto
+        if (message.photo() == null || message.photo().length == 0) {
+            return new SendMessage(chat.id(), "No se recibió ninguna foto. Por favor, envíe una imagen adjunta.");
+        }
+
+        // Obtiene la mejor calidad de la foto
+        String fileId = message.photo()[message.photo().length - 1].fileId();
+
+        // Descarga la imagen desde Telegram
+        byte[] photoBytes = descargarFotoTelegram(fileId);
+
+        if (photoBytes == null) {
+            return new SendMessage(chat.id(), "Error al descargar la imagen. Intente nuevamente.");
+        }
+
+        // Guarda la visita con la foto
+        VisitaIncidente visitaIncidente = new VisitaIncidente(
+                dtoMio.getIncidente(),
+                dtoMio.getTecnico(),
+                dtoMio.getDescripcion(),
+                photoBytes,
+                dtoMio.getSolucionado()
+        );
+
+        visitaIncidenteRepository.save(visitaIncidente);
+        esperandoFoto.remove(dtoMio); // Remueve la entrada después de guardar
+
+        return new SendMessage(chat.id(), "Visita registrada correctamente con la foto.");
+    }
+    private byte[] descargarFotoTelegram(String fileId) {
+        try {
+            GetFile getFile = new GetFile(fileId);
+            File file = telegramBot.execute(getFile).file();
+            if (file == null) {
+                return null;
+            }
+
+            // Construir la URL de descarga
+            String filePath = file.filePath();
+            String url = "https://api.telegram.org/file/bot" + token + "/" + filePath;
+
+            // Descargar la imagen
+            InputStream in = new URL(url).openStream();
+            System.out.println("casi la traje");
+            return in.readAllBytes();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     private boolean isInactive(Long userId) {
         Long lastActiveTime = lastActiveTimes.get(userId);

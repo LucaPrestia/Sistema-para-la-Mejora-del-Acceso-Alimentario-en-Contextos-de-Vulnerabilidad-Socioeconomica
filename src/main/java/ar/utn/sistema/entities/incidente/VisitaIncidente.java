@@ -23,6 +23,8 @@ public class VisitaIncidente extends PersistenciaID {
 
     private LocalDate fechaVisita;
     private String descripcionTrabajo;
+    @Lob // Define que este campo almacenará datos binarios grandes
+    @Column(columnDefinition = "VARBINARY(MAX)") // Compatible con SQL Server
     private byte[] foto;
     private boolean solucionado = false;
 

@@ -8,4 +8,5 @@ import lombok.Setter;
 public class DTOSesionTelegram {
     public long id_telegram;
     public int id_usuario;
+    public long chat_id;
 }
