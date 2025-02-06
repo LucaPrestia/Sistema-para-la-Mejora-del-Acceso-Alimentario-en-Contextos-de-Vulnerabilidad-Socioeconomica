@@ -2,11 +2,13 @@ package ar.utn.sistema.controllers;
 
 import ar.utn.sistema.dto.DTOSesionTelegram;
 import ar.utn.sistema.entities.incidente.Incidente;
+import ar.utn.sistema.entities.incidente.VisitaIncidente;
 import ar.utn.sistema.entities.usuarios.Tecnico;
 import ar.utn.sistema.entities.usuarios.Usuario;
 import ar.utn.sistema.repositories.IncidenteRepository;
 import ar.utn.sistema.repositories.TecnicoRepository;
 import ar.utn.sistema.repositories.UsuarioRepository;
+import ar.utn.sistema.repositories.VisitaIncidenteRepository;
 import com.github.kshashov.telegram.api.MessageType;
 import com.github.kshashov.telegram.api.TelegramMvcController;
 import com.github.kshashov.telegram.api.TelegramRequest;
@@ -29,26 +31,37 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+/* PARA MANDAR MENSAJE DESDE CUALQUIER CLASE
+TelegramBotController bot = TelegramBotController.telegramBot;
+bot.execute(new SendMessage(chatId, "message"));
+*/
 
 @BotController
 public class TelegramBotController implements TelegramMvcController {
 
     @Autowired
     public IncidenteRepository incidenteRepository;
-
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    public VisitaIncidenteRepository visitaIncidenteRepository;
     @Autowired
-    private TecnicoRepository tecnicoRepository;
+    public UsuarioRepository usuarioRepository;
+    @Autowired
+    public TecnicoRepository tecnicoRepository;
     @Value("${bot.token}")
     private String token;
-
     public static TelegramBot telegramBot;
 
+    public TelegramBotController() {
+        // Asegurate de usar tu token correcto aquí
+        telegramBot = new TelegramBot("7713772704:AAEfTB0uHPBWjx9NkclJjnK1UrmxzlGiUGE");
+    }
+    public void enviarMensaje(Integer id_usuario, String mensaje) {
+        long telegram_id = getTelegramIdByUsuarioId(id_usuario);
+        telegramBot.execute(new SendMessage(telegram_id, mensaje));
+
+
+    }
     // Lista para almacenar las sesiones activas de los usuarios
     private Map<Long, DTOSesionTelegram> loggedInUsers = new HashMap<>();
     private Map<Long, Long> lastActiveTimes = new HashMap<>();  // Mapa de actividad del usuario
@@ -60,26 +73,95 @@ public class TelegramBotController implements TelegramMvcController {
     public String getToken() {
         return token;
     }
-    @MessageRequest("cambiar\\s+zona\\s+de\\s+trabajo\\s+{zona:[a-zA-Z0-9]+}")
-    public String cambiarZonaTrabajo(@BotPathVariable("zona") String zona, User user) {
-        System.out.println(zona);
+    @MessageRequest("Registrar una visita a una heladera {incidenteID:[a-zA-Z0-9]+} solucionado: {solucionado:[a-zA-Z0-9]+} descripcion de trabajo: {trabajo:.+}")
+    public String registrarVisita(@BotPathVariable("incidenteID") String incidente_id,
+                                  @BotPathVariable("solucionado") String solucionado,
+                                  @BotPathVariable("trabajo") String descripcionTrabajo,
+                                  TelegramRequest request,
+                                  User user,
+                                  Chat chat) {
 
         if (loggedInUsers.containsKey(user.id())) {
-            updateLastActiveTime(user.id());
+            try {
+                int usuarioMio_id = getIdUsuarioByTelegramId(user.id());
+                Usuario usuarioMio = usuarioRepository.findById(usuarioMio_id).orElse(null);
+
+                if (usuarioMio == null) {
+                    return "Error: No se encontró el usuario asociado.";
+                }
+
+                Tecnico tecnicoMio = tecnicoRepository.findByUsuario(usuarioMio).orElse(null);
+                if (tecnicoMio == null) {
+                    return "Error: No se encontró el técnico asociado al usuario.";
+                }
+
+                Optional<Incidente> incidenteOpt = incidenteRepository.findById(Integer.parseInt(incidente_id));
+
+                if (!incidenteOpt.isPresent()) {
+                    return "Error: No se encontró el incidente con el ID proporcionado.";
+                }
+
+                Incidente incidente = incidenteOpt.get();
+
+                // Configura el callback para esperar una imagen
+                request.setCallback(new Callback() {
+                    @Override
+                    public void onResponse(BaseRequest req, BaseResponse res) {
+                        if (req.getFileName() != null) {
+                            byte[] photoBytes = request.getMessage().photo()[0].fileId().getBytes();
+
+                            VisitaIncidente visitaIncidente;
+                            if(Objects.equals(solucionado, "si")){
+                               visitaIncidente = new VisitaIncidente(incidente,tecnicoMio,descripcionTrabajo,photoBytes,true);
+                            }else{
+                                visitaIncidente = new VisitaIncidente(incidente,tecnicoMio,descripcionTrabajo,photoBytes,false);
+                            }
+
+                            visitaIncidenteRepository.save(visitaIncidente);
+
+                            telegramBot.execute(new SendMessage(chat.id(), "La visita ha sido registrada exitosamente."));
+                        } else {
+                            telegramBot.execute(new SendMessage(chat.id(), "No se recibió ninguna foto. Por favor, intente de nuevo."));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(BaseRequest req, IOException e) {
+                        telegramBot.execute(new SendMessage(user.id(), "Ocurrió un error al recibir la foto. Intente nuevamente."));
+                    }
+                });
+
+                return "Por favor, envíe una foto de cómo quedó el trabajo realizado.";
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "Error al registrar la visita: " + e.getMessage();
+            }
+        } else {
+            return "Debe iniciar sesión primero enviando el siguiente mensaje: 'Iniciar sesion usuario contraseña'";
+        }
+    }
+
+    @MessageRequest("Cambiar zona de trabajo {zona:[a-zA-Z0-9]+}")
+    public String cambiarZonaTrabajo(@BotPathVariable("zona") String zona, User user) {
+
+        if (loggedInUsers.containsKey(user.id())) {
             System.out.println(zona);
             try {
                 int usuarioMio_id = getIdUsuarioByTelegramId(user.id());
                 Usuario usuarioMio = usuarioRepository.findById(usuarioMio_id).get();
+                System.out.println(usuarioMio.getUsuario());
                 if (usuarioMio != null) {
                     Tecnico tecnicoMio = tecnicoRepository.findByUsuario(usuarioMio).get();
-
-                    if (tecnicoMio != null) tecnicoMio.setAreaCobertura(zona);
-                    else return "No se pudo actualizar la zona";
+                    System.out.println(tecnicoMio.getUsuario() + "");
+                    tecnicoMio.setAreaCobertura(zona) ;
+                    tecnicoRepository.save(tecnicoMio);
+                    return "Zona de trabajo actualizada correctamente";
                 } else return "No se pudo actualizar la zona";
             } catch (Exception e) {
+                System.out.println(e.getMessage());
                 return "No se pudo actualizar la zona";
             }
-            return "No se pudo actualizar la zona";
         }
         else{
             return  "Debe enviar primero el siguiente mensaje: iniciar sesion 'usuario' 'contraseña'";
@@ -88,7 +170,6 @@ public class TelegramBotController implements TelegramMvcController {
     @MessageRequest("Listar incidentes de mi zona")
     public String listarIncidentes(User user) {
         if (loggedInUsers.containsKey(user.id())) {
-            updateLastActiveTime(user.id());
             try {
                 int usuarioMio_id = getIdUsuarioByTelegramId(user.id());
                 Usuario usuarioMio = usuarioRepository.findById(usuarioMio_id).get();
@@ -99,9 +180,13 @@ public class TelegramBotController implements TelegramMvcController {
                     for (Incidente incidente : incidentes) {
                         respuesta = respuesta.concat(incidente.getTexto() + "\n");
                     }
-                    return respuesta;
+                    if(respuesta.length()>1){
+                        return respuesta;
+                    }
+                    else return "No hay incidentes en tu zona";
                 } else return "No se pudo devolver lista";
             } catch (Exception e) {
+                System.out.println(e.getMessage());
                 return "No se pudo devolver lista";
             }
         }
@@ -127,16 +212,14 @@ public class TelegramBotController implements TelegramMvcController {
     public BaseRequest loginOrAction(User user, Chat chat, String message) {
         // Verificar si el usuario está logueado
         if (loggedInUsers.containsKey(user.id())) {
-            updateLastActiveTime(user.id());  // Actualiza el tiempo de la última actividad
-            // Aquí va la lógica para las acciones del usuario
             return new SendMessage(chat.id(), "Puedes realizar las siguientes acciones:\n" +
                     "● Cambiar zona de trabajo 'ZonaDeTrabajoNueva'\n" +
-                    "● Registrar una visita a una heladera 'incidenteID'\n" +
+                    "● Registrar una visita a una heladera 'incidenteID' solucionado: 'si/no' descripcion de trabajo: 'descripcion' \n" +
                     "● Listar incidentes de mi zona");
         }
         else return new SendMessage(chat.id(),  "Debe enviar primero el siguiente mensaje: iniciar sesion 'usuario' 'contraseña'");
     }
-    @MessageRequest("iniciar sesion {usuario:[a-zA-Z0-9]+} {contrasena:[a-zA-Z0-9]+}")
+    @MessageRequest("Iniciar sesion {usuario:[a-zA-Z0-9]+} {contrasena:[a-zA-Z0-9]+}")
     public String iniciarSesion(@BotPathVariable("usuario") String usuario,@BotPathVariable("contrasena") String contrasena, User user,Chat chat) {
 
         String username = usuario;
@@ -183,5 +266,13 @@ public class TelegramBotController implements TelegramMvcController {
             // Retorna un valor predeterminado o lanza una excepción si no se encuentra el usuario
             throw new IllegalArgumentException("Usuario no encontrado para el id de Telegram: " + idTelegram);
         }
+    }
+    public long getTelegramIdByUsuarioId(int usuarioId) {
+        for (Map.Entry<Long, DTOSesionTelegram> entry : loggedInUsers.entrySet()) {
+            if (entry.getValue().getId_usuario() == usuarioId) {
+                return entry.getKey();  // Retorna el id de Telegram asociado al usuario
+            }
+        }
+        throw new IllegalArgumentException("Telegram ID no encontrado para el usuario ID: " + usuarioId);
     }
 }

@@ -109,9 +109,9 @@ public abstract class Colaborador extends Suscriptor{
         return false;
     }
 
-    public void registrarFalla(Heladera heladera, String descripcion, byte[] foto){
+    public void registrarFalla(Heladera heladera, String descripcion, byte[] foto, String zona){
         // TODO: PERSISTIR INCIDENTE + NOTIFICACION
-        IncidenteFallaTecnica incidente = new IncidenteFallaTecnica(LocalDateTime.now(), heladera, this, descripcion, foto );
+        IncidenteFallaTecnica incidente = new IncidenteFallaTecnica(LocalDateTime.now(), heladera, this, descripcion, foto, zona);
         String mensaje = "Un colaborador ha registrado una falla técnica en la heladera de nombre '" +
                 heladera.getNombre() + "' ubicada en la dirección " +
                 heladera.getDireccion().obtenerCadenaDireccion() + " indicando lo siguiente: " + descripcion;

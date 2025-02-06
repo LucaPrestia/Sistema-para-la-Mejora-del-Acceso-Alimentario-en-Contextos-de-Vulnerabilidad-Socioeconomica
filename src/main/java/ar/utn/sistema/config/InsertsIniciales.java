@@ -6,13 +6,12 @@ import ar.utn.sistema.entities.configuracion.CoeficientesColaboracion;
 import ar.utn.sistema.entities.configuracion.ColaboradorColaboracion;
 import ar.utn.sistema.entities.configuracion.ParametrosGenerales;
 import ar.utn.sistema.entities.configuracion.TipoColaboracion;
+import ar.utn.sistema.entities.heladera.Heladera;
+import ar.utn.sistema.entities.incidente.IncidenteFallaTecnica;
 import ar.utn.sistema.entities.notificacion.Contacto;
 import ar.utn.sistema.entities.notificacion.MedioNotificacion;
 import ar.utn.sistema.entities.usuarios.*;
-import ar.utn.sistema.repositories.AdminRepository;
-import ar.utn.sistema.repositories.ColaboradorRepository;
-import ar.utn.sistema.repositories.TecnicoRepository;
-import ar.utn.sistema.repositories.UsuarioRepository;
+import ar.utn.sistema.repositories.*;
 import ar.utn.sistema.repositories.configuracion.CoeficientesColaboracionRepository;
 import ar.utn.sistema.repositories.configuracion.ColaboradorColaboracionRepository;
 import ar.utn.sistema.repositories.configuracion.ParametrosGeneralesRepository;
@@ -28,6 +27,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Configuration
@@ -64,7 +64,7 @@ public class InsertsIniciales {
     private ReporteService reporteService;
 
     @Bean
-    public CommandLineRunner initData() {
+    public CommandLineRunner initData(HeladeraRepository heladeraRepository, DireccionRepository direccionRepository, IncidenteRepository incidenteRepository) {
         return (args) -> {
             // solo ejecutamos la inserción de datos si ddl-auto es create o create-drop (esto para evitar la duplicacion de datos)
             if ("create".equalsIgnoreCase(ddlAuto) || "create-drop".equalsIgnoreCase(ddlAuto)) {
@@ -128,6 +128,49 @@ public class InsertsIniciales {
                 colaboradorJ.setUsuario(colaboradorJrd);
 
                 rColaborador.saveAll(List.of(colaboradorP, colaboradorJ));
+
+
+                Direccion direccionHeladera = new Direccion();
+                direccionHeladera.setCalle("Av. Siempre Viva");
+                direccionHeladera.setNumero(1231);
+                direccionHeladera.setLocalidad("Springfield");
+                direccionHeladera.setCodigo_postal(123123);
+
+                // Crear un usuario dueño de la heladera
+                Usuario owner = new Usuario();
+                owner.setUsuario("Homer Simpson");
+                rUsuario.save(owner);
+                // Crear la heladera
+                Heladera heladera = new Heladera(
+                        "Heladera de Prueba",
+                        owner,
+                        direccionHeladera,
+                        5.0,  // Temperatura máxima
+                        0.0,  // Temperatura mínima
+                        20    // Capacidad máxima de viandas
+                );
+                heladeraRepository.save(heladera);
+
+
+                // Crear el incidente de falla técnica
+                IncidenteFallaTecnica incidente = new IncidenteFallaTecnica(
+                        LocalDateTime.now(),    // Fecha y hora actual
+                        heladera,               // Heladera donde ocurrió la falla
+                        null,            // Colaborador que notificó el incidente
+                        "La heladera no enfría correctamente.",  // Descripción del problema
+                        null,    // No se adjunta foto en este caso
+                        "SpringField"
+                );
+
+                // Ahora podrías guardar este incidente en la base de datos usando el repositorio correspondiente
+                 incidenteRepository.save(incidente);
+
+                // Para verificar que el incidente fue creado correctamente:
+                System.out.println("Incidente creado: " + incidente.getTexto());
+
+
+
+
 
                 logger.info("todos los inserts iniciales fueron bien!!");
             }

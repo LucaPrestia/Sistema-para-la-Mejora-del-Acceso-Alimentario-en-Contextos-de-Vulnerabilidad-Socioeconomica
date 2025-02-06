@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor
 public class Tecnico extends Rol {
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL) // Esto incluirá persistencia, actualización y eliminación
+    @OneToOne(fetch = FetchType.EAGER , cascade = CascadeType.ALL)
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 

@@ -18,10 +18,11 @@ public class IncidenteFallaTecnica extends Incidente{
     private String descripcion;
     private byte[] foto;
 
-    public IncidenteFallaTecnica(LocalDateTime fechaHora, Heladera heladera, Colaborador notificador, String descripcion, byte[] foto) {
+    public IncidenteFallaTecnica(LocalDateTime fechaHora, Heladera heladera, Colaborador notificador, String descripcion, byte[] foto,String zona) {
         super(fechaHora, heladera, "falla_tecnica");
         this.notificador = notificador;
         this.descripcion = descripcion;
         this.foto = foto;
+        this.setZona(zona);
     }
 }
