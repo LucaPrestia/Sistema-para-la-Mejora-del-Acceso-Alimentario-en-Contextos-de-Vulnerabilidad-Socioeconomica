@@ -97,3 +97,25 @@ function eliminarColaboracion(boton, tipo) {
         input.setAttribute("name", `colaboraciones${tipo.charAt(0).toUpperCase() + tipo.slice(1)}[${newIndex}]`);
     });
 }
+
+// suscripciones:
+function validarSuscripcion(event) {
+    let checkboxes = document.querySelectorAll("input[type='checkbox'][name='preferencias']");
+    let valid = true;
+    let mensaje = "Debes completar los siguientes campos:\n";
+
+    checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            let inputNumber = document.getElementById("cantidad_" + checkbox.value);
+            if (inputNumber && inputNumber.value.trim() === "") {
+                mensaje += `- Ingresar cantidad para ${checkbox.nextElementSibling.innerText}\n`;
+                valid = false;
+            }
+        }
+    });
+
+    if (!valid) {
+        alert(mensaje);
+        event.preventDefault(); // Evita el envío del formulario
+    }
+}

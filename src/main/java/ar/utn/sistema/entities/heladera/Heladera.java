@@ -42,8 +42,12 @@ public class Heladera extends PersistenciaID {
     private double tempMax;
     private double ultTempRegs;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "id_heladera",referencedColumnName = "id")
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "heladera_suscriptor", // Nombre de la tabla intermedia
+            joinColumns = @JoinColumn(name = "id_heladera"), // Columna que referencia a esta entidad
+            inverseJoinColumns = @JoinColumn(name = "id_suscriptor") // Columna que referencia a la entidad relacionada
+    )
     private List<Colaborador> suscriptores;
 
     // Constructor
@@ -120,6 +124,10 @@ public class Heladera extends PersistenciaID {
                 s.notificar(notificacion);
             }
         }
+    }
+
+    public void agregarSuscriptor(Colaborador colaborador){
+        this.suscriptores.add(colaborador);
     }
 
 

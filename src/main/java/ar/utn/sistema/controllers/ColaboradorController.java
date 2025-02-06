@@ -4,6 +4,7 @@ import ar.utn.sistema.dto.PerfilColaboradorDto;
 import ar.utn.sistema.entities.configuracion.ColaboradorColaboracion;
 import ar.utn.sistema.entities.Direccion;
 import ar.utn.sistema.entities.configuracion.TipoColaboracion;
+import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.notificacion.Contacto;
 import ar.utn.sistema.entities.notificacion.MedioNotificacion;
 import ar.utn.sistema.entities.notificacion.PreferenciaNotificacion;
@@ -14,6 +15,7 @@ import ar.utn.sistema.entities.usuarios.TipoJuridico;
 import ar.utn.sistema.model.Formulario;
 import ar.utn.sistema.model.UsuarioSesionDetalle;
 import ar.utn.sistema.repositories.ColaboradorRepository;
+import ar.utn.sistema.repositories.HeladeraRepository;
 import ar.utn.sistema.repositories.configuracion.TipoColaboracionRepository;
 import ar.utn.sistema.services.ColaboracionService;
 import ar.utn.sistema.services.FormularioService;
@@ -25,7 +27,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -44,6 +48,8 @@ public class ColaboradorController {
     private TipoColaboracionRepository rTipoColaboracion;
     @Autowired
     private ColaboradorRepository repository;
+    @Autowired
+    private HeladeraRepository heladeraRepository;
 
     @PostMapping("/configuracion/humano")
     public String cargarConfiguracionPersonaHumana(@ModelAttribute PerfilColaboradorDto datos,
@@ -81,31 +87,35 @@ public class ColaboradorController {
     public String cargarConfiguracionPersonaJuridica(@ModelAttribute PerfilColaboradorDto datos,
                                                      @RequestParam List<Integer> tiposColaboracionIds,
                                                    Model model){
-        UsuarioSesionDetalle usuario = sesion.obtenerUsuarioAutenticado();
-        if(usuario.getRol().equals("COLABORADOR_JURIDICO")){
-            ColaboradorJuridico colaborador = (ColaboradorJuridico) repository.findById(usuario.getUsuario().getId()).get();
-            List<TipoColaboracion> tiposColaboracion = rTipoColaboracion.findAllById(tiposColaboracionIds);
+        try {
+            UsuarioSesionDetalle usuario = sesion.obtenerUsuarioAutenticado();
+            if (usuario.getRol().equals("COLABORADOR_JURIDICO")) {
+                ColaboradorJuridico colaborador = (ColaboradorJuridico) repository.findById(usuario.getUsuario().getId()).get();
+                List<TipoColaboracion> tiposColaboracion = rTipoColaboracion.findAllById(tiposColaboracionIds);
 
-            colaborador.setCuit(datos.getCuit());
-            colaborador.setRubro(datos.getRubro());
-            colaborador.setRazonSocial(datos.getRazonSocial());
-            colaborador.setTipoJuridico(datos.getTipoJuridico());
+                colaborador.setCuit(datos.getCuit());
+                colaborador.setRubro(datos.getRubro());
+                colaborador.setRazonSocial(datos.getRazonSocial());
+                colaborador.setTipoJuridico(datos.getTipoJuridico());
 
-            colaborador.setContactos(datos.getContactos());
+                colaborador.setContactos(datos.getContactos());
 
-            if (datos.getDireccion() != null && datos.getDireccion().getCodigo_postal() != null)
-                colaborador.setDireccion(datos.getDireccion());
+                if (datos.getDireccion() != null && datos.getDireccion().getCodigo_postal() != null)
+                    colaborador.setDireccion(datos.getDireccion());
 
-            colaborador.setTiposColaboracion(tiposColaboracion);
-            colaborador.getUsuario().setNuevo(0);
+                colaborador.setTiposColaboracion(tiposColaboracion);
+                colaborador.getUsuario().setNuevo(0);
 
-            repository.save(colaborador);
+                repository.save(colaborador);
 
-            usuario.setNuevoUsuario(0);
-            sesion.actualizarUsuarioAutenticado(usuario);
+                usuario.setNuevoUsuario(0);
+                sesion.actualizarUsuarioAutenticado(usuario);
 
-            return "redirect:/home";
-        } else return "redirect/:login";
+                return "redirect:/home?success=true";
+            } else return "redirect/:login";
+        } catch (Exception e) {
+            return "redirect:/home?error=true";
+        }
     }
 
     @PostMapping("/suscripcion")
@@ -114,8 +124,43 @@ public class ColaboradorController {
                                     @RequestParam(name = "cantidad_POCAS_VIANDAS", required = false) Integer pocasViandas,
                                     @RequestParam(name = "cantidad_HELADERA_LLENA", required = false) Integer heladeraLlena,
                                     Model model){
-        // todo:
-        return "redirect:/home";
+        try {
+            UsuarioSesionDetalle usuario = sesion.obtenerUsuarioAutenticado();
+            ColaboradorFisico colaborador = (ColaboradorFisico) repository.findById(usuario.getUsuario().getId())
+                    .orElseThrow(() -> new RuntimeException("Colaborador no encontrado"));
+
+            List<Heladera> heladerasAnteriores = heladeraRepository.findBySuscriptoresContains(colaborador);
+            for (Heladera h : heladerasAnteriores) {
+                h.getSuscriptores().remove(colaborador);
+                heladeraRepository.save(h);
+            }
+
+            List<Heladera> heladerasEncontradas = heladeraRepository.findAllById(heladeras);
+
+            for (Heladera heladera : heladerasEncontradas) {
+                heladera.agregarSuscriptor(colaborador);
+                heladeraRepository.save(heladera);
+            }
+
+            // Procesar las preferencias de notificación
+            Map<PreferenciaNotificacion, Integer> nuevasPreferencias = new HashMap<>();
+            if (preferencias != null) {
+                for (PreferenciaNotificacion pref : preferencias) {
+                    int valor = switch (pref) {
+                        case POCAS_VIANDAS -> (pocasViandas != null) ? pocasViandas : 0;
+                        case HELADERA_LLENA -> (heladeraLlena != null) ? heladeraLlena : 0;
+                        default -> 0;
+                    };
+                    nuevasPreferencias.put(pref, valor);
+                }
+            }
+
+            colaborador.setPreferenciasNotif(nuevasPreferencias);
+            repository.save(colaborador);
+            return "redirect:/home?success=true";
+        } catch (Exception e) {
+            return "redirect:/home?error=true";
+        }
     }
 
     /* OBSOLETOOOO
