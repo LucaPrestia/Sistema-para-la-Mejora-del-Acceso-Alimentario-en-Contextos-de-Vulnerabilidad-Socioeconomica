@@ -68,14 +68,19 @@ public class ReporteController {
                     incidenteFallaTecnica.getHeladera().getDireccion().obtenerCadenaDireccion() + " indicando lo siguiente: " +  incidenteFallaTecnica.getDescripcion();
             List<Colaborador> colaboradores = heladera.getSuscriptores();
             for (Colaborador c : colaboradores) {
-                if(c.getPreferenciasNotif().containsValue(PreferenciaNotificacion.DESPERFECTO)){
+
+                if(c.correspondeVerificar(PreferenciaNotificacion.DESPERFECTO,0)){
+                    System.out.println("antes");
+
                     c.notificar(new Notificacion(mensaje));
+                    System.out.println(mensaje);
                 }
             }
             incidenteRepository.save(incidenteFallaTecnica);
             model.addAttribute("success", true);
             return "redirect:/home?success=true";
         } catch (Exception e) {
+            e.printStackTrace();
             model.addAttribute("error", true);
             return "redirect:/home?error=true";
         }

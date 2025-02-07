@@ -93,13 +93,14 @@ public abstract class Colaborador extends Suscriptor{
 
     public void notificar(Notificacion notificacion) {
         for (Contacto contacto : this.contactos) {
-            if (contacto.getMedio() == notificacion.getMedio()) {
-                notificacion.setContacto(contacto.getContacto());
-                notificacion.setUsuario(this.usuario);
-                contacto.notificar(notificacion);
-                break;
-            }
+            notificacion.setMedio(contacto.getMedio());
+            notificacion.setContacto(contacto.getContacto());
+            notificacion.setUsuario(this.usuario);
+            contacto.notificar(notificacion);
+            System.out.println(contacto.getMedio().getValue());
+
         }
+
     }
 
     public boolean correspondeVerificar(PreferenciaNotificacion preferencia, int cantidadViandas){
