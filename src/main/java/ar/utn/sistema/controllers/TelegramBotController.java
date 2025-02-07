@@ -49,12 +49,18 @@ public class TelegramBotController implements TelegramMvcController {
     @Value("${bot.token}")
     private String token;
     public static TelegramBot telegramBot;
-
+    public static TelegramBotController instancia;
     public TelegramBotController() {
         // Asegurate de usar tu token correcto aquí
 
         telegramBot = new TelegramBot("7713772704:AAEfTB0uHPBWjx9NkclJjnK1UrmxzlGiUGE");
 
+    }
+    public static TelegramBotController getInstance() {
+        if(instancia == null) {
+            instancia = new TelegramBotController();
+        }
+        return instancia;
     }
     public void enviarMensaje(Integer id_usuario, String mensaje) {
         long chat_id = 0L;

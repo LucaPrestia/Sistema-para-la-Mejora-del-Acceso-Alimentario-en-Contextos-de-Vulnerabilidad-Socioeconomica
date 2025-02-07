@@ -5,9 +5,11 @@ import ar.utn.sistema.entities.usuarios.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface TecnicoRepository extends JpaRepository<Tecnico, Integer> {
     Optional<Tecnico> findByUsuario(Usuario usuario);
+    List<Tecnico> findAllByAreaCoberturaEqualsIgnoreCase(String zona);
 }

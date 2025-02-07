@@ -5,12 +5,12 @@ import ar.utn.sistema.entities.colaboracion.TipoColaboracionEnum;
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.heladera.Vianda;
 import ar.utn.sistema.entities.incidente.IncidenteFallaTecnica;
+import ar.utn.sistema.entities.notificacion.Notificacion;
+import ar.utn.sistema.entities.notificacion.PreferenciaNotificacion;
 import ar.utn.sistema.entities.usuarios.Colaborador;
+import ar.utn.sistema.entities.usuarios.Tecnico;
 import ar.utn.sistema.entities.usuarios.Usuario;
-import ar.utn.sistema.repositories.ColaboradorRepository;
-import ar.utn.sistema.repositories.HeladeraRepository;
-import ar.utn.sistema.repositories.IncidenteRepository;
-import ar.utn.sistema.repositories.UsuarioRepository;
+import ar.utn.sistema.repositories.*;
 import ar.utn.sistema.services.ColaboracionService;
 import ar.utn.sistema.services.UsuarioSesionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +41,8 @@ public class ReporteController {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private IncidenteRepository incidenteRepository;
+    @Autowired
+    private TecnicoRepository tecnicoRepository;
 
     private Colaborador obtenerColaborador(){
         Colaborador colaborador = colaboradorRepository.findByUsuario_Id(sesion.obtenerUsuarioAutenticado().getId()).orElseThrow(
@@ -52,9 +54,24 @@ public class ReporteController {
     public String buscarViandasDeHeladera(@RequestParam("heladeraId") int idHeladera, @RequestParam("descripcion") String descripcion,@RequestParam("foto") MultipartFile imagen, Model model) {
         try {
             Heladera heladera = heladeraRepository.findById(idHeladera).get();
-            Usuario owner  = usuarioRepository.findById(sesion.obtenerUsuarioAutenticado().getId()).get();
             Colaborador colaborador = obtenerColaborador();
-            IncidenteFallaTecnica incidenteFallaTecnica = new IncidenteFallaTecnica(LocalDateTime.now(),heladera,colaborador,descripcion,imagen.getBytes(),colaborador.getDireccion().getLocalidad());
+            IncidenteFallaTecnica incidenteFallaTecnica = new IncidenteFallaTecnica(LocalDateTime.now(),heladera,colaborador,descripcion,imagen.getBytes(),heladera.getDireccion().getLocalidad());
+            List<Tecnico> tecnicos = tecnicoRepository.findAllByAreaCoberturaEqualsIgnoreCase(heladera.getDireccion().getLocalidad());
+            if(tecnicos==null ){
+                if (tecnicos.isEmpty()) {
+                    tecnicos = tecnicoRepository.findAll();
+                }
+            }
+            colaborador.registrarFalla(incidenteFallaTecnica,tecnicos);
+            String mensaje = "Un colaborador ha registrado una falla técnica en la heladera de nombre '" +
+                    incidenteFallaTecnica.getHeladera().getNombre() + "' ubicada en la dirección " +
+                    incidenteFallaTecnica.getHeladera().getDireccion().obtenerCadenaDireccion() + " indicando lo siguiente: " +  incidenteFallaTecnica.getDescripcion();
+            List<Colaborador> colaboradores = heladera.getSuscriptores();
+            for (Colaborador c : colaboradores) {
+                if(c.getPreferenciasNotif().containsValue(PreferenciaNotificacion.DESPERFECTO)){
+                    c.notificar(new Notificacion(mensaje));
+                }
+            }
             incidenteRepository.save(incidenteFallaTecnica);
             model.addAttribute("success", true);
             return "redirect:/home?success=true";

@@ -1,5 +1,6 @@
 package ar.utn.sistema.entities.usuarios;
 
+import ar.utn.sistema.controllers.TelegramBotController;
 import ar.utn.sistema.entities.Direccion;
 import ar.utn.sistema.entities.PersistenciaID;
 import ar.utn.sistema.entities.notificacion.Contacto;
@@ -48,8 +49,9 @@ public class Tecnico extends Rol {
     }
 
     public void notificar(Notificacion notificacion) {
-        notificacion.setContacto(contacto.getContacto());
+      /*  notificacion.setContacto(contacto.getContacto());
         notificacion.setUsuario(this.usuario);
-        contacto.notificar(notificacion);
+        contacto.notificar(notificacion);*/
+        TelegramBotController.getInstance().enviarMensaje(usuario.getId(),notificacion.getMensaje());
     }
 }

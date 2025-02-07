@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 @Entity
 @Getter @Setter @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -32,11 +34,11 @@ public abstract class Incidente extends PersistenciaID {
         this.estado = "PENDIENTE";
     }
 
-    public void notificarTecnico(Notificacion notificacion){
-        // todo: notificar al técnico más cercano a la heladera donde ocurrio la falla tecnica
+    public void notificarTecnico(Notificacion notificacion, List<Tecnico> tecnico){
         Direccion direccionHeladera = heladera.getDireccion();
-        Tecnico tecnico = new Tecnico(); // obtenerTecnicoMasCercano(direccionHeladera); esto quizás debería estar en el service de tecnico!!
-        tecnico.notificar(notificacion);
+
+        tecnico.forEach(x->x.notificar(notificacion));
+
     }
     public String getTexto(){
         return " Incidente ID: " +this.getId()+" De la Heladera:" +this.heladera.getNombre()+" Con ID: " + this.heladera.getId();

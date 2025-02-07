@@ -9,10 +9,12 @@ import ar.utn.sistema.entities.notificacion.Contacto;
 import ar.utn.sistema.entities.notificacion.Notificacion;
 import ar.utn.sistema.entities.Direccion;
 import ar.utn.sistema.entities.notificacion.PreferenciaNotificacion;
+import ar.utn.sistema.repositories.NotificacionRepository;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,6 +28,8 @@ import java.util.Map;
 @DiscriminatorColumn(name = "tipoColaborador")
 @Getter @Setter @NoArgsConstructor
 public abstract class Colaborador extends Suscriptor{
+
+
 
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "id_usuario")
@@ -88,7 +92,7 @@ public abstract class Colaborador extends Suscriptor{
     public void agregarContacto(Contacto contacto) {this.contactos.add(contacto);}
 
     public void notificar(Notificacion notificacion) {
-        for (Contacto contacto : contactos) {
+        for (Contacto contacto : this.contactos) {
             if (contacto.getMedio() == notificacion.getMedio()) {
                 notificacion.setContacto(contacto.getContacto());
                 notificacion.setUsuario(this.usuario);
@@ -109,14 +113,12 @@ public abstract class Colaborador extends Suscriptor{
         return false;
     }
 
-    public void registrarFalla(Heladera heladera, String descripcion, byte[] foto, String zona){
-        // TODO: PERSISTIR INCIDENTE + NOTIFICACION
-        IncidenteFallaTecnica incidente = new IncidenteFallaTecnica(LocalDateTime.now(), heladera, this, descripcion, foto, zona);
+    public void registrarFalla(IncidenteFallaTecnica incidente,List<Tecnico> tecnicosNotificar){
         String mensaje = "Un colaborador ha registrado una falla técnica en la heladera de nombre '" +
-                heladera.getNombre() + "' ubicada en la dirección " +
-                heladera.getDireccion().obtenerCadenaDireccion() + " indicando lo siguiente: " + descripcion;
+                incidente.getHeladera().getNombre() + "' ubicada en la dirección " +
+                incidente.getHeladera().getDireccion().obtenerCadenaDireccion() + " indicando lo siguiente: " +  incidente.getDescripcion();
         Notificacion notificacion = new Notificacion(mensaje);
-        incidente.notificarTecnico(notificacion);
+        incidente.notificarTecnico(notificacion,tecnicosNotificar);
     }
 
     public abstract String getNombreCompleto();
