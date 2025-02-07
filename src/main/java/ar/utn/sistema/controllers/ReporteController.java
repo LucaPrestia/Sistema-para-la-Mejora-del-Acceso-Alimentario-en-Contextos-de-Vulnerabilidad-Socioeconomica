@@ -58,9 +58,9 @@ public class ReporteController {
             IncidenteFallaTecnica incidenteFallaTecnica = new IncidenteFallaTecnica(LocalDateTime.now(),heladera,colaborador,descripcion,imagen.getBytes(),heladera.getDireccion().getLocalidad());
             List<Tecnico> tecnicos = tecnicoRepository.findAllByAreaCoberturaEqualsIgnoreCase(heladera.getDireccion().getLocalidad());
             if(tecnicos==null ){
-                if (tecnicos.isEmpty()) {
-                    tecnicos = tecnicoRepository.findAll();
-                }
+                tecnicos = tecnicoRepository.findAll();
+            } else if(tecnicos.isEmpty()) {
+                tecnicos = tecnicoRepository.findAll();
             }
             colaborador.registrarFalla(incidenteFallaTecnica,tecnicos);
             String mensaje = "Un colaborador ha registrado una falla técnica en la heladera de nombre '" +

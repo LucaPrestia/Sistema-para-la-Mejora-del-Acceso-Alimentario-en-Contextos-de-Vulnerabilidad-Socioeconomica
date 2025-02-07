@@ -67,7 +67,6 @@ public class HeladeraService {
         heladera.setEstado(EstadoHeladera.INACTIVA);
         Incidente incidente = new IncidenteAlerta(LocalDateTime.now(), heladera, motivo);
         Notificacion notificacion = new Notificacion(mensajeNotif);
-        incidente.notificarTecnico(notificacion);
         notificarDesperfecto(heladera, notificacion);
         incidenteRepository.save(incidente);
         heladeraRepository.save(heladera);
