@@ -63,42 +63,6 @@ public class Heladera extends PersistenciaID {
     }
 
     // Métodos
-    public void agregarVianda(Vianda vianda){
-        // todo: ¿¿ chequea si hay autorizacion de apertura ??
-        this.viandas.add(vianda);
-        int espacioViandasDisponibles = maxViandas - viandas.size();
-        StringBuilder mensaje = new StringBuilder();
-        mensaje.append("Queda espacio para ")
-                .append(espacioViandasDisponibles)
-                .append(" vianda/s en la heladera de nombre '")
-                .append(nombre)
-                .append("' ubicada en la dirección ")
-                .append(direccion.obtenerCadenaDireccion())
-                .append(".");
-        Notificacion notificacion = new Notificacion(mensaje.toString());
-        notificarSuscriptor(notificacion, PreferenciaNotificacion.HELADERA_LLENA, espacioViandasDisponibles);
-    }
-
-    public void sacarVianda(Vianda vianda){
-        // todo: ¿¿ chequea si hay autorizacion de apertura ??
-        this.viandas.remove(vianda);
-        int cantidadViandasDisponibles = viandas.size();
-        StringBuilder mensaje = new StringBuilder();
-        mensaje.append("Queda/n solamente ")
-                .append(cantidadViandasDisponibles)
-                .append(" vianda/s disponible/s en la heladera de nombre '")
-                .append(nombre)
-                .append("' ubicada en la dirección ")
-                .append(direccion.obtenerCadenaDireccion())
-                .append(".");
-        Notificacion notificacion = new Notificacion(mensaje.toString());
-        notificarSuscriptor(notificacion, PreferenciaNotificacion.POCAS_VIANDAS, cantidadViandasDisponibles);
-    }
-
-
-    public void notificarDesperfecto(Notificacion notificacion){
-        notificarSuscriptor(notificacion, PreferenciaNotificacion.DESPERFECTO, 0);
-    }
 
     public boolean llena(){
         return this.maxViandas == viandas.size();
@@ -116,14 +80,6 @@ public class Heladera extends PersistenciaID {
 
     public void  desuscribir(Colaborador s){
         this.suscriptores.remove(s);
-    }
-
-    private void notificarSuscriptor(Notificacion notificacion, PreferenciaNotificacion pref, int cantidadViandas){
-        for (Suscriptor s: suscriptores){
-            if (s.correspondeVerificar(pref, cantidadViandas)){
-                s.notificar(notificacion);
-            }
-        }
     }
 
     public void agregarSuscriptor(Colaborador colaborador){

@@ -34,17 +34,12 @@ public class Vianda extends PersistenciaID {
 
         MovimientoVianda movimiento = new MovimientoVianda(TipoMovimientoVianda.DONACION, heladera, null, null);
         agregarMovimientoVianda(movimiento);
-        heladera.agregarVianda(this);
     }
     public Vianda(String comida){
         this.comida = comida;
 
     }
-    public void consumirVianda(Heladera heladera) {
-        MovimientoVianda movimiento = new MovimientoVianda(TipoMovimientoVianda.CONSUMO, heladera, null, null);
-        agregarMovimientoVianda(movimiento);
-        heladera.sacarVianda(this);
-    }
+
 
     public void     agregarMovimientoVianda(MovimientoVianda movimiento) {
         this.movimientos.add(movimiento);

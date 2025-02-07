@@ -14,6 +14,7 @@ import ar.utn.sistema.repositories.*;
 import ar.utn.sistema.repositories.configuracion.CoeficientesColaboracionRepository;
 import ar.utn.sistema.repositories.configuracion.TipoColaboracionRepository;
 import ar.utn.sistema.services.CoeficientesColaboracionService;
+import ar.utn.sistema.services.HeladeraService;
 import ar.utn.sistema.services.UsuarioSesionService;
 import org.hibernate.event.internal.EvictVisitor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,10 @@ public class ColaboracionesController {
     private PersonaVulnerableRespository personaVulnerableRespository;
     @Autowired
     private ColaboradorRepository colaboradorRepository;
+
+    @Autowired
+    private HeladeraService heladeraService;
+
     private Colaborador obtenerColaborador(){
         Colaborador colaborador = colaboradorRepository.findByUsuario_Id(sesion.obtenerUsuarioAutenticado().getId()).orElseThrow(
                 () -> new RuntimeException("Colaborador no encontrado")
@@ -149,6 +154,7 @@ public class ColaboracionesController {
     }
     @PostMapping("/donacionVianda")
     public String recibirDonacion(@RequestBody DonacionViandaDTO donacion, Model model) {
+        // todo: verificar que hay espacio suficiente para guardar las viandas
         System.out.println("Heladera Seleccionada: " + donacion.getHeladeraSeleccionada());
         for (ViandaDTO vianda : donacion.getViandas()) {
             System.out.println("Comida: " + vianda.getComida());
@@ -162,12 +168,13 @@ public class ColaboracionesController {
             System.out.println(coeficientePuntos);
 
             List<Vianda> viandasNuevas = new ArrayList<>();
+            Heladera heladera = heladeraRepository.findById(donacion.getHeladeraSeleccionada()).get();
             for (ViandaDTO vianda : donacion.getViandas()) {
-                Heladera heladera = heladeraRepository.findById(donacion.getHeladeraSeleccionada()).get();
                 Vianda nuevaVianda = new Vianda(vianda.getComida(), vianda.getFechaCaducidad(), heladera, vianda.getCalorias(), vianda.getPeso());
                 viandasNuevas.add(nuevaVianda);
             }
-            viandaRepository.saveAll(viandasNuevas);
+            heladeraService.agregarViandas(heladera, viandasNuevas);
+            // viandaRepository.saveAll(viandasNuevas); // ya se graba desde la línea anterior, en agregarViandas, por relación cascada
             ColaboracionVianda colaboracionVianda = new ColaboracionVianda(viandasNuevas, viandasNuevas.size(), coeficientePuntos);
             System.out.println(colaboracionVianda);
             colaboracionRepository.save(colaboracionVianda);
@@ -285,12 +292,14 @@ public class ColaboracionesController {
                     () -> new RuntimeException("Colaborador no encontrado")
             );
             ColaboracionDistribucionViandas nuevaColaboracion = new ColaboracionDistribucionViandas(heladeraOrigen, heladeraDestino, viandasList, motivoDistribucion, coeficientePuntos);
+            heladeraService.sacarViandas(heladeraOrigen, viandasList);
+            heladeraService.agregarViandas(heladeraDestino, viandasList);
             colaboracionRepository.save(nuevaColaboracion);
             colaborador.agregarColaboracion(nuevaColaboracion);
             colaboradorRepository.save(colaborador);
-            viandaRepository.saveAll(viandasList);
+            /*viandaRepository.saveAll(viandasList);
             heladeraRepository.save(heladeraOrigen);
-            heladeraRepository.save(heladeraDestino);
+            heladeraRepository.save(heladeraDestino);*/ // ya se guardan con las funciones de sacarviandas y agregarviandas
             return "redirect:/home?success=true";
         } catch (Exception e) {
             model.addAttribute("error", true);

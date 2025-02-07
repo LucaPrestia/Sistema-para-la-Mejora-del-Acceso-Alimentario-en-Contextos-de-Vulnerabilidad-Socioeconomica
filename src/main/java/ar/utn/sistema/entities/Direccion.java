@@ -35,15 +35,25 @@ public class Direccion extends PersistenciaID {
 
     public String obtenerCadenaDireccion() {
         StringBuilder direccion = new StringBuilder();
-        direccion.append(calle).append(" ").append(numero);
+
+        direccion.append(calle != null ? calle : "").append(" ").append(numero);
+
         if (departamento != null && !departamento.isEmpty()) {
             direccion.append(" (Dto. ").append(departamento).append(")");
         }
-        direccion.append(" - ").append(codigo_postal)
-                .append(" ").append(localidad)
-                .append(", ").append(provincia)
-                .append(" ").append(pais.toUpperCase());
 
-        return direccion.toString();
+        direccion.append(" - ").append(codigo_postal);
+
+        if (localidad != null && !localidad.isEmpty()) {
+            direccion.append(" ").append(localidad);
+        }
+        if (provincia != null && !provincia.isEmpty()) {
+            direccion.append(", ").append(provincia);
+        }
+        if (pais != null && !pais.isEmpty()) {
+            direccion.append(" ").append(pais.toUpperCase());
+        }
+
+        return direccion.toString().trim();
     }
 }

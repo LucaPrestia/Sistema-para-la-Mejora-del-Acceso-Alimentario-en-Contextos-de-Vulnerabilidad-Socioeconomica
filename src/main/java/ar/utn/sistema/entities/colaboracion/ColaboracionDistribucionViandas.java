@@ -42,8 +42,6 @@ public class ColaboracionDistribucionViandas extends Colaboracion {
         for (Vianda v: viandas){
             MovimientoVianda movimiento = new MovimientoVianda(TipoMovimientoVianda.REDISTRIBUCION,orgHeladera, destHeladera, motivo);
             v.agregarMovimientoVianda(movimiento);
-            destHeladera.agregarVianda(v);
-            orgHeladera.sacarVianda(v);
 
             // luego de registrar estos movimientos se genera el pedidoMovimientoTarjeta Colaborador (EGRESO e INGRESO VIANDA DISTRIBUCION) indicando la cantidad de viandas en total que se deban agregar o sacar en cada caso
             // las viandas luego se sacan de la heladera origen (el sistema le permitirá sacar sólo la cantidad indicada en el pedido de tarjeta)
