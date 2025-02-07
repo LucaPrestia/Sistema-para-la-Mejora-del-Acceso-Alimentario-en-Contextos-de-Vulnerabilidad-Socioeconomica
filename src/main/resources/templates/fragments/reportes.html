@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Vistas</title>
+</head>
+<body>
+<div th:fragment="reportesIncidentesVer">
+  <div class="container mt-5">
+    <h1 class="text-center">Lista de Incidentes</h1>
+
+    <div class="row">
+      <div class="col-md-4 mb-4" th:each="incidente : ${incidentes}">
+        <div class="card h-100">
+          <div th:if="${incidente.fotoBase64 != null}">
+            <img th:src="'data:image/jpeg;base64,' + ${incidente.fotoBase64}" class="card-img-top" alt="Foto del incidente">
+          </div>
+
+          <div class="card-body">
+            <h5 class="card-title">Incidente #[[${incidente.id}]]</h5>
+            <p class="card-text"><strong>Fecha y Hora:</strong> <span th:text="${incidente.fechaHora}"></span></p>
+            <p class="card-text"><strong>Estado:</strong> <span th:text="${incidente.estado}"></span></p>
+            <p class="card-text"><strong>Heladera:</strong> <span th:text="${incidente.heladera.nombre}"></span></p>
+            <p class="card-text"><strong>Zona:</strong> <span th:text="${incidente.zona}"></span></p>
+            <p class="card-text"><strong>Descripción:</strong> <span th:text="${incidente.descripcion}"></span></p>
+          </div>
+
+          <div class="card-footer text-center">
+            <a href="#" class="btn btn-primary">Ver detalles</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div th:fragment="reportesAlerta">
+  <div class="container mt-5">
+    <h1 class="text-center">Lista de Alertas</h1>
+
+    <div class="row">
+      <div class="col-md-4 mb-4" th:each="incidente : ${incidentesAlerta}">
+        <div class="card h-100 border-warning">
+          <div class="card-body">
+            <h5 class="card-title text-warning">Alerta #[[${incidente.id}]]</h5>
+            <p class="card-text"><strong>Fecha y Hora:</strong> <span th:text="${incidente.fechaHora}"></span></p>
+            <p class="card-text"><strong>Estado:</strong> <span th:text="${incidente.estado}"></span></p>
+            <p class="card-text"><strong>Heladera:</strong> <span th:text="${incidente.heladera.nombre}"></span></p>
+            <p class="card-text"><strong>Zona:</strong> <span th:text="${incidente.zona}"></span></p>
+            <p class="card-text"><strong>Tipo de Alerta:</strong> <span th:text="${incidente.tipoAlerta}"></span></p>
+          </div>
+
+          <div class="card-footer text-center">
+            <a href="#" class="btn btn-warning">Ver detalles</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div th:fragment="reportesIncidentesReportar">
+  <div class="container mt-5">
+    <h1 class="text-center mb-4">Reporte de Incidente</h1>
+    <div th:if="${success}" class="alert alert-success text-center">
+      <p>Reporte enviado correctamente</p>
+    </div>
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <form id="reporteIncidenteForm" action="/reporte/incidenteAlta" method="POST" enctype="multipart/form-data">
+
+          <div class="form-group">
+            <label for="heladera" class="form-label">Heladera:</label>
+            <select id="heladera" name="heladeraId" class="form-select"  required>
+              <option value="" disabled selected>Seleccione una heladera</option>
+              <option th:each="heladera : ${heladeraList}" th:value="${heladera.id}" th:text="${heladera.nombre}"></option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="foto">Sube una foto del incidente</label>
+            <input type="file" class="form-control-file" id="foto" name="foto" accept="image/*" required>
+          </div>
+
+          <div class="form-group">
+            <label for="descripcion">Descripción del incidente</label>
+            <textarea class="form-control" id="descripcion" name="descripcion" rows="4" placeholder="Describe el incidente..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Enviar Reporte</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

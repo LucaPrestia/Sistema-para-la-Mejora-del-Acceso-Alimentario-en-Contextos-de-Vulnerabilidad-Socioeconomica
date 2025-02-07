@@ -67,6 +67,10 @@ public class VistasController {
     private ReporteFallasHeladeraRepository rReporteFallasHeladera;
     @Autowired
     private ReporteViandasHeladeraRepository rReporteViandasHeladera;
+    @Autowired
+    private IncidenteFallaTecnicaRepository incidenteFallaTecnicaRepository;
+    @Autowired
+    private IncidenteAlertaRepository incidenteAlertaRepository;
 
     // para las vistas estáticas que no necesitan mucho pasaje de parámetro (una función carga muchas vistas estáticas, por su parámetro opcion que se carga de forma dinámica)
     @GetMapping("/{opcion}")
@@ -227,7 +231,27 @@ public class VistasController {
         model.addAttribute("reporteViandasHeladera", rReporteViandasHeladera.findAll());
         return "fragments/administrador :: reportes";
     }
+    @GetMapping("/reportesIncidentesVer")
+    public String cargaReportesIncidentesVer(Model model){
+        // TODO: OBTENER HELADERAS A LAS QUE ESTAS SUSCRIPTAS
+        //model.addAttribute("reporteFallas", incidenteFallaTecnicaRepository.findAllByHeladeraIsIn(new Heladera()));//FALTA PONER LAS HELADERAS CORRECTAS
 
+        return "fragments/reportes :: reportesIncidentesVer";
+    }
+    @GetMapping("/reportesIncidentesReportar")
+    public String cargaReportesIncidentesReportar(Model model){
+
+        model.addAttribute("heladeraList", heladeraRepository.findAll());
+
+        return "fragments/reportes :: reportesIncidentesReportar";
+    }
+    @GetMapping("/reportesAlerta")
+    public String menuReportesAlertas(Model model){
+        // TODO: OBTENER HELADERAS A LAS QUE ESTAS SUSCRIPTAS
+
+        //model.addAttribute("reporteFallas", incidenteAlertaRepository.findAllByHeladeraIsIn(new Heladera()));//FALTA PONER LAS HELADERAS CORRECTAS
+        return "fragments/reportes :: reportesAlerta";
+    }
     @GetMapping("/suscripcion")
     public String cargaSuscripcion(Model model){
         model.addAttribute("heladeras", heladeraRepository.findAll());

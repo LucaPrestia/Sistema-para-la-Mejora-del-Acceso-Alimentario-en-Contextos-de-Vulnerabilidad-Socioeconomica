@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public abstract class Incidente extends PersistenciaID {
     private LocalDateTime fechaHora;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "id_heladera")
     private Heladera heladera;
 

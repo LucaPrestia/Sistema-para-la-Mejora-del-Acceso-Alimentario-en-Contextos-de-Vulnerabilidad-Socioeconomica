@@ -92,9 +92,25 @@
                         <a class="dropdown-item" href="#" onclick="cargarVista('donacionVianda')">Donación Vianda</a>
                         <a class="dropdown-item" href="#" onclick="cargarVista('agregarPersonaVulnerable')">Inscribir persona vulnerable</a>
                         <a class="dropdown-item" href="#" onclick="cargarVista('distribuirVianda')">Distribuir una Vianda</a>
+
                     </div>
 
+
                 </li>
+                <li class="nav-item dropdown" th:if="${rol == 'COLABORADOR_FISICO' || rol == 'COLABORADOR_JURIDICO'}">
+                    <a class="nav-link dropdown-toggle" href="#" id="reportesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Reportes Incidentes
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="reportesDropdown">
+                            <a class="nav-link" href="#" onclick="cargarVista('reportesIncidentesVer')">Ver Incidentes</a>
+                            <a class="nav-link" href="#" onclick="cargarVista('reportesIncidentesReportar')">Reportar Incidente</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown" th:if="${rol == 'COLABORADOR_FISICO' || rol == 'COLABORADOR_JURIDICO'}">
+                     <a class="nav-link" href="#" onclick="cargarVista('reportesAlerta')">Reportes de Alertas</a>
+                </li>
+
+
                 <li class="nav-item dropdown" th:if="${rol == 'COLABORADOR_FISICO'}">
                     <a class="dropdown-item" href="#" onclick="cargarVista('suscripcion')">Suscribir a Heladera</a>
                 </li>

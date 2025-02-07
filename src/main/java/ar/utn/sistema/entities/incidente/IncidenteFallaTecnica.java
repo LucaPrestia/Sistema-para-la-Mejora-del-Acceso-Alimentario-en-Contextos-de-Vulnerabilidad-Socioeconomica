@@ -12,10 +12,12 @@ import java.time.LocalDateTime;
 @DiscriminatorValue("fallaTecnica")
 @Getter @Setter @NoArgsConstructor
 public class IncidenteFallaTecnica extends Incidente{
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_colaborador_notificador")
     private Colaborador notificador;
     private String descripcion;
+    @Lob // Define que este campo almacenará datos binarios grandes
+    @Column(columnDefinition = "VARBINARY(MAX)") // Compatible con SQL Server
     private byte[] foto;
 
     public IncidenteFallaTecnica(LocalDateTime fechaHora, Heladera heladera, Colaborador notificador, String descripcion, byte[] foto,String zona) {
