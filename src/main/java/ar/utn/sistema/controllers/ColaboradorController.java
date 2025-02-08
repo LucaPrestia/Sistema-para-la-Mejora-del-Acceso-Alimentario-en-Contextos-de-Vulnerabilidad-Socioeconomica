@@ -67,7 +67,7 @@ public class ColaboradorController {
             colaborador.setDocumento(datos.getDocumento());
 
             colaborador.setContactos(datos.getContactos());
-
+            colaborador.getContactos().forEach(x->x.llenarContacto());
             if (datos.getDireccion() != null && datos.getDireccion().getCodigo_postal() != null)
                 colaborador.setDireccion(datos.getDireccion());
 

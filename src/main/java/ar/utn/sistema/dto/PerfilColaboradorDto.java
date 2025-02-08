@@ -27,4 +27,6 @@ public class PerfilColaboradorDto {
 
     private List<Contacto> contactos;
     private Direccion direccion;
+
+
 }

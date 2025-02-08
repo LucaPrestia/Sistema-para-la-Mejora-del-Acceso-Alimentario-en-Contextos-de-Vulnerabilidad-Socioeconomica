@@ -10,6 +10,9 @@ import ar.utn.sistema.utils.medioNotificacion.MedioContactoEmail;
 import ar.utn.sistema.utils.medioNotificacion.MedioContactoWhatsApp;
 import ar.utn.sistema.utils.medioNotificacion.adapters.AdapterEmail;
 import ar.utn.sistema.utils.medioNotificacion.adapters.AdapterWhatsApp;
+
+import java.io.IOException;
+
 @Entity
 @Getter @Setter @NoArgsConstructor
 public class Contacto extends PersistenciaID {
@@ -24,7 +27,7 @@ public class Contacto extends PersistenciaID {
         this.contacto = contacto;
     }
 
-    public void notificar(Notificacion notificacion) {
+    public void notificar(Notificacion notificacion) throws IOException {
         medioDeContacto.notificar(notificacion);
     }
 
@@ -39,6 +42,19 @@ public class Contacto extends PersistenciaID {
     }
 
     public void initializarMedioDeContacto() {
+        switch (this.medio) {
+            case EMAIL:
+                this.medioDeContacto = new MedioContactoEmail(new AdapterEmail());
+                break;
+            case TELEFONO:
+                // Inicializar medioDeContacto para teléfono
+                break;
+            case WHATSAPP:
+                this.medioDeContacto = new MedioContactoWhatsApp(new AdapterWhatsApp());
+                break;
+        }
+    }
+    public void llenarContacto() {
         switch (this.medio) {
             case EMAIL:
                 this.medioDeContacto = new MedioContactoEmail(new AdapterEmail());

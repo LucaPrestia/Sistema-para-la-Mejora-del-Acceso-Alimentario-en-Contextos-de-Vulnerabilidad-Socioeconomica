@@ -16,6 +16,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class HeladeraService {
 
     // Receive temperature sensor messages
     // @RabbitListener(queues = "temperatura.heladera")
-    public void registrarTemperatura(MensajeTemperatura mensaje) {
+    public void registrarTemperatura(MensajeTemperatura mensaje) throws IOException {
         Heladera heladera = heladeraRepository.findById(mensaje.getHeladeraId()).get();
         double temperatura = mensaje.getTemperatura();
         heladera.setUltTempRegs(temperatura);
@@ -56,14 +57,14 @@ public class HeladeraService {
 
     // Receive movement sensor messages
     // @RabbitListener(queues = "movimiento.heladera", priority = "10") // higher priority
-    public void registrarMovimiento(Integer heladeraId) {
+    public void registrarMovimiento(Integer heladeraId) throws IOException {
         Heladera heladera = heladeraRepository.findById(heladeraId).get();
         String mensajeNotificacion = "Alerta de movimiento, posible fraude en la heladera '" + heladera.getNombre() +
                 "' ubicada en la dirección " + heladera.getDireccion().obtenerCadenaDireccion() + ".";
         registrarAlerta(heladera, TipoAlerta.FRAUDE, mensajeNotificacion);
     }
 
-    private void registrarAlerta(Heladera heladera, TipoAlerta motivo, String mensajeNotif) {
+    private void registrarAlerta(Heladera heladera, TipoAlerta motivo, String mensajeNotif) throws IOException {
         heladera.setEstado(EstadoHeladera.INACTIVA);
         Incidente incidente = new IncidenteAlerta(LocalDateTime.now(), heladera, motivo);
         Notificacion notificacion = new Notificacion(mensajeNotif);
@@ -73,7 +74,7 @@ public class HeladeraService {
         notificacionRepository.save(notificacion);
     }
 
-    public void agregarViandas(Heladera heladera, List<Vianda> viandasNuevas) {
+    public void agregarViandas(Heladera heladera, List<Vianda> viandasNuevas) throws IOException {
         // todo: ¿¿ chequea si hay autorizacion de apertura ??
         heladera.getViandas().addAll(viandasNuevas);
         int espacioViandasDisponibles = heladera.getMaxViandas() - heladera.getViandas().size();
@@ -90,7 +91,7 @@ public class HeladeraService {
         heladeraRepository.save(heladera); // guarda heladera y viandas registradas
     }
 
-    public void sacarViandas(Heladera heladera, List<Vianda> viandas){
+    public void sacarViandas(Heladera heladera, List<Vianda> viandas) throws IOException {
         // todo: ¿¿ chequea si hay autorizacion de apertura ??
         heladera.getViandas().removeAll(viandas);
         int cantidadViandasDisponibles = heladera.getViandas().size();
@@ -107,17 +108,17 @@ public class HeladeraService {
         heladeraRepository.save(heladera);
     }
 
-    public void consumirVianda(Heladera heladera, Vianda vianda) {
+    public void consumirVianda(Heladera heladera, Vianda vianda) throws IOException {
         MovimientoVianda movimiento = new MovimientoVianda(TipoMovimientoVianda.CONSUMO, heladera, null, null);
         vianda.agregarMovimientoVianda(movimiento);
         sacarViandas(heladera, List.of(vianda));
     }
 
-    public void notificarDesperfecto(Heladera heladera, Notificacion notificacion){
+    public void notificarDesperfecto(Heladera heladera, Notificacion notificacion) throws IOException {
         notificarSuscriptor(heladera, notificacion, PreferenciaNotificacion.DESPERFECTO, 0);
     }
 
-    private void notificarSuscriptor(Heladera heladera, Notificacion notificacion, PreferenciaNotificacion pref, int cantidadViandas){
+    private void notificarSuscriptor(Heladera heladera, Notificacion notificacion, PreferenciaNotificacion pref, int cantidadViandas) throws IOException {
         for (Suscriptor s: heladera.getSuscriptores()){
             if (s.correspondeVerificar(pref, cantidadViandas)){
                 // todo: agregar el medio de seleccion de preferencia para las notificaciones (falta hacerlo y agregarlo a la vista de suscripcion)

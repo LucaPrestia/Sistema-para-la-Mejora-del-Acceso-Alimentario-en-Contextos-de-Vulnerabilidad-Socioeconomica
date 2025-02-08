@@ -7,9 +7,11 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.MappedSuperclass;
 
+import java.io.IOException;
+
 @MappedSuperclass
 public abstract class Suscriptor extends Rol{
-    public void notificar(Notificacion notificacion) {
+    public void notificar(Notificacion notificacion) throws IOException {
 
     }
 

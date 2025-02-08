@@ -5,6 +5,8 @@ import ar.utn.sistema.utils.medioNotificacion.adapters.AdapterEmail;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.IOException;
+
 @Getter @Setter
 public class MedioContactoEmail implements IMedioDeContacto{
     private AdapterEmail adapter;
@@ -14,7 +16,7 @@ public class MedioContactoEmail implements IMedioDeContacto{
     }
 
     @Override
-    public void notificar(Notificacion notificacion) {
+    public void notificar(Notificacion notificacion) throws IOException {
         this.adapter.enviar(notificacion);
     }
 }

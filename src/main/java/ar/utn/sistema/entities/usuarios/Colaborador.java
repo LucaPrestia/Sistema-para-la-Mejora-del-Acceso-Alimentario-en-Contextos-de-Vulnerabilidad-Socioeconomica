@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,8 +92,11 @@ public abstract class Colaborador extends Suscriptor{
 
     public void agregarContacto(Contacto contacto) {this.contactos.add(contacto);}
 
-    public void notificar(Notificacion notificacion) {
+    public void notificar(Notificacion notificacion) throws IOException {
+        contactos.forEach(x->x.llenarContacto());
         for (Contacto contacto : this.contactos) {
+
+
             notificacion.setMedio(contacto.getMedio());
             notificacion.setContacto(contacto.getContacto());
             notificacion.setUsuario(this.usuario);
