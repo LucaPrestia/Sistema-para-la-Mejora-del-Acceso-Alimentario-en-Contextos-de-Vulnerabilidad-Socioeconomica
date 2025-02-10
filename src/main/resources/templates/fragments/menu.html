@@ -128,11 +128,10 @@
                 <li class="nav-item me-3" th:if="${rol == 'TECNICO'}">
                     <a class="nav-link" th:href="@{/tecnico/dashboard}">Dashboard Técnico</a>
                 </li>
-                <li class="nav-item me-3" th:if="${rol == 'ADMIN'}">
-                    <a class="nav-link" href="#" onclick="cargarVista('configSistema')">Configuracion Sistema</a>
-                    <a class="nav-link" href="#" onclick="cargarVista('cargaMasiva')">Carga Masiva</a>
-                    <a class="nav-link" href="#" onclick="cargarVista('reportes')">Reportes</a>
-                </li>
+                <a th:if="${rol == 'ADMIN'}" class="nav-link" href="#" onclick="cargarVista('configSistema')">Configuracion Sistema</a>
+                <a th:if="${rol == 'ADMIN'}" class="nav-link" href="#" onclick="cargarVista('cargaMasiva')">Carga Masiva</a>
+                <a th:if="${rol == 'ADMIN'}" class="nav-link" href="#" onclick="cargarVista('reportes')">Reportes</a>
+                <a th:if="${rol == 'ADMIN'}" class="nav-link" href="#" onclick="cargarVista('registrarTecnico')">Registrar Técnico</a>
             </ul>
         </div>
 

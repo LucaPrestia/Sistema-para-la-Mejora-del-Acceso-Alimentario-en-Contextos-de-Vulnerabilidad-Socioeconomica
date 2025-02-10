@@ -30,8 +30,6 @@ import java.util.Map;
 @Getter @Setter @NoArgsConstructor
 public abstract class Colaborador extends Suscriptor{
 
-
-
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "id_usuario")
     private Usuario usuario; // id_usuario: 5
@@ -47,6 +45,7 @@ public abstract class Colaborador extends Suscriptor{
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "id_colaborador") // esto tiene que ir para que no haga una relación ManyToMany
     private List<Colaboracion> colaboraciones = new ArrayList<Colaboracion>();
+
     @Column(name = "puntos_disponibles", precision = 3)
     private double puntosDisponibles;
 
@@ -95,8 +94,6 @@ public abstract class Colaborador extends Suscriptor{
     public void notificar(Notificacion notificacion) throws IOException {
         contactos.forEach(x->x.llenarContacto());
         for (Contacto contacto : this.contactos) {
-
-
             notificacion.setMedio(contacto.getMedio());
             notificacion.setContacto(contacto.getContacto());
             notificacion.setUsuario(this.usuario);
@@ -104,7 +101,6 @@ public abstract class Colaborador extends Suscriptor{
             System.out.println(contacto.getMedio().getValue());
 
         }
-
     }
 
     public boolean correspondeVerificar(PreferenciaNotificacion preferencia, int cantidadViandas){

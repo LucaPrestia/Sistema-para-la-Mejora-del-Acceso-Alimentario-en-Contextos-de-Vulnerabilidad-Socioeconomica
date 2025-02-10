@@ -34,7 +34,7 @@ public class HeladeraService {
     private NotificacionRepository notificacionRepository;
 
     public List<Heladera> obtenerTodasLasHeladeras() {
-       return heladeraRepository.findAll();
+       return heladeraRepository.findByEstado(EstadoHeladera.ACTIVA);
     }
 
     // Receive temperature sensor messages

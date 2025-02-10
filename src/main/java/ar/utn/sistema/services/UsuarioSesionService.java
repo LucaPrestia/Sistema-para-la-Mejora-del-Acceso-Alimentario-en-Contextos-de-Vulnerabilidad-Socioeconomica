@@ -1,6 +1,7 @@
 package ar.utn.sistema.services;
 
 import ar.utn.sistema.entities.usuarios.*;
+import ar.utn.sistema.entities.usuarios.requisitosContrasena.Requisitos;
 import ar.utn.sistema.model.UsuarioSesionDetalle;
 import ar.utn.sistema.repositories.AdminRepository;
 import ar.utn.sistema.repositories.ColaboradorRepository;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsuarioSesionService implements UserDetailsService {
@@ -71,11 +73,13 @@ public class UsuarioSesionService implements UserDetailsService {
                 List.of(new SimpleGrantedAuthority("ROLE_" + usuario.getRol())));
     }
 
-    public boolean controlarRequisitosContrasenia(String pass){
+    public Optional<String> controlarRequisitosContrasenia(String pass) {
         Usuario nuevoUsuario = new Usuario();
-        return nuevoUsuario.getRequisitos().stream().allMatch(x-> x.evaluarContrasena(pass));
+        return nuevoUsuario.getRequisitos().stream()
+                .filter(req -> !req.evaluarContrasena(pass))
+                .map(Requisitos::getMensajeError)
+                .findFirst();
     }
-
     public UsuarioSesionDetalle obtenerUsuarioAutenticado() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -107,33 +111,62 @@ public class UsuarioSesionService implements UserDetailsService {
     }
 
     public Usuario registrarUsuario(String user, String pass, String rol) {
-        if(this.controlarRequisitosContrasenia(pass)){
-            Usuario nuevoUsuario = new Usuario();
-            nuevoUsuario.setUsuario(user);
-            nuevoUsuario.setContrasena(passwordEncoder.encode(pass));
-            nuevoUsuario.setRol(rol);
-            nuevoUsuario.setNuevo(1);
-            switch (rol) {
-                case "COLABORADOR_FISICO":
-                    Colaborador rolClase = new ColaboradorFisico(nuevoUsuario);
-                    rColaborador.save(rolClase);
-                    break;
-                case "COLABORADOR_JURIDICO":
-                   Colaborador rolClasea = new ColaboradorJuridico(nuevoUsuario);
-                    rColaborador.save(rolClasea);
-                    break;
-                case "TECNICO":
+        if (usuarioRepository.findByUsuario(user).isPresent()) {
+            throw new IllegalArgumentException("Nombre de usuario ya existente. Seleccione otro.");
+        }
+
+        Optional<String> error = this.controlarRequisitosContrasenia(pass);
+        if (error.isPresent()) {
+            throw new IllegalArgumentException(error.get());
+        }
+
+        Usuario nuevoUsuario = new Usuario();
+        nuevoUsuario.setUsuario(user);
+        nuevoUsuario.setContrasena(passwordEncoder.encode(pass));
+        nuevoUsuario.setRol(rol);
+        nuevoUsuario.setNuevo(1);
+        switch (rol) {
+            case "COLABORADOR_FISICO":
+                Colaborador rolClase = new ColaboradorFisico(nuevoUsuario);
+                rColaborador.save(rolClase);
+                break;
+            case "COLABORADOR_JURIDICO":
+                Colaborador rolClasea = new ColaboradorJuridico(nuevoUsuario);
+                rColaborador.save(rolClasea);
+                break;
+            case "TECNICO":
                 /*    Tecnico rolClase = new Tecnico(nuevoUsuario);
                     rColaborador.save(rolClase);*/
-                    break;
-                case "ADMIN":
-                   // rolClase = new Ong();
-                    break;
-                default:
-                    throw new IllegalArgumentException("Rol no válido");
-            }
-            // repository.save(nuevoUsuario); -> por cascada en las clases de roles ya se guarda el usuario automaticamente, no hace falta persistir de vuelta
-            return nuevoUsuario;
-        } else return null;
+                break;
+            case "ADMIN":
+                // rolClase = new Ong();
+                break;
+            default:
+                throw new IllegalArgumentException("Rol no válido");
+        }
+        return nuevoUsuario;
+    }
+
+    public void cambiarContrasenia(String username, String passwordVieja, String password) {
+        Optional<Usuario> usuario = usuarioRepository.findByUsuario(username);
+
+        if (usuario.isPresent()) {
+            Usuario usuarioLogueado = usuario.get();
+
+            if (passwordEncoder.matches(passwordVieja, usuarioLogueado.getContrasena())) {
+                Optional<String> error = this.controlarRequisitosContrasenia(password);
+                if (error.isPresent()) {
+                    throw new IllegalArgumentException(error.get());
+                }
+
+            usuarioLogueado.setContrasena(passwordEncoder.encode(password));
+            usuarioLogueado.setNuevo(0);
+            usuarioRepository.save(usuarioLogueado);
+        } else {
+            throw new IllegalArgumentException("Contraseña actual inválida. Por favor, vuelva a ingresar los datos");
+        }
+        } else {
+            throw new IllegalArgumentException("Usuario no encontrado");
+        }
     }
 }

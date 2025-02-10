@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,8 @@ public interface ColaboradorRepository extends JpaRepository<Colaborador, Intege
     @Query("SELECT SUM(cv.cantidad) FROM Colaborador col " +
             "JOIN col.colaboraciones c " +
             "JOIN ColaboracionVianda cv ON c.id = cv.id " +
-            "WHERE col.id = :colaboradorId")
-    Long getTotalViandasPorColaborador(@Param("colaboradorId") Integer colaboradorId);
+            "WHERE col.id = :colaboradorId " +
+            "AND c.fechaColaboracion BETWEEN :fechaDesde AND :fechaHasta")
+    Long getTotalViandasPorColaborador(@Param("colaboradorId") Integer colaboradorId, @Param("fechaHasta")LocalDate fechaHasta, @Param("fechaDesde")LocalDate fechaDesde );
 
 }

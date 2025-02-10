@@ -30,8 +30,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/colaborador")
@@ -50,10 +48,9 @@ public class ColaboradorController {
     private ColaboradorRepository repository;
     @Autowired
     private HeladeraRepository heladeraRepository;
-
     @PostMapping("/configuracion/humano")
     public String cargarConfiguracionPersonaHumana(@ModelAttribute PerfilColaboradorDto datos,
-                                                   @RequestParam List<Integer> tiposColaboracionIds,
+                                                   @RequestParam("tiposColaboracionIds") List<Integer> tiposColaboracionIds,
                                                    Model model){
         UsuarioSesionDetalle usuario = sesion.obtenerUsuarioAutenticado();
         if(usuario.getRol().equals("COLABORADOR_FISICO")){
@@ -99,6 +96,7 @@ public class ColaboradorController {
                 colaborador.setTipoJuridico(datos.getTipoJuridico());
 
                 colaborador.setContactos(datos.getContactos());
+                colaborador.getContactos().forEach(x->x.llenarContacto());
 
                 if (datos.getDireccion() != null && datos.getDireccion().getCodigo_postal() != null)
                     colaborador.setDireccion(datos.getDireccion());
@@ -197,8 +195,7 @@ public class ColaboradorController {
                 .collect(Collectors.toList());
         colaborador.agregarContacto(contacto);
         colaborador.setTiposColaboracion(colaboracionesSeleccionadas);
-        colaborador.setDireccion(direccion); // TODO: corroborar que tenga datos y que estén bien cargados!!
-        // TODO: persistir en la base de datos!!!
+        colaborador.setDireccion(direccion);
         return "redirect:/colaborador/confirmar"; // Redirigir a una página de confirmación o éxito
     }
 
@@ -214,8 +211,7 @@ public class ColaboradorController {
                 .collect(Collectors.toList());
         colaborador.agregarContacto(contacto);
         colaborador.setTiposColaboracion(colaboracionesSeleccionadas);
-        colaborador.setDireccion(direccion); // TODO: corroborar que tenga datos y que estén bien cargados!!
-        // TODO: persistir en la base de datos!!!
+        colaborador.setDireccion(direccion);
         return "redirect:/colaborador/confirmar"; // Redirigir a una página de confirmación o éxito
     }
      */

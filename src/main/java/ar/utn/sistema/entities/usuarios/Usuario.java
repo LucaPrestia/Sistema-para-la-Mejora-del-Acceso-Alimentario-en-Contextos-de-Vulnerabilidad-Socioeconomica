@@ -19,7 +19,7 @@ public class Usuario extends PersistenciaID {
     private String usuario;
     private String contrasena;
 
-    private int nuevo; // true: logueado por primera vez => corresponde on bording de carga de datos según su rol; false: ya entro a la aplicación
+    private int nuevo; // 1: logueado por primera vez => corresponde on bording de carga de datos según su rol; 0: ya entro a la aplicación; 2:corresponde cambiar contrasenia
 
     @Transient
     private List<Requisitos> requisitos;

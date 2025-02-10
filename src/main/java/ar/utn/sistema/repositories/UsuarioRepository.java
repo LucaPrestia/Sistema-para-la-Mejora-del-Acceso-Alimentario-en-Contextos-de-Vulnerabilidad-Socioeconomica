@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
    Optional<Usuario> findByUsuario(String username);
 
-    Optional<Usuario> findByUsuarioAndContrasena(String username, String encode);
-
     Optional<List<Usuario>> findAllByUsuario(String username);
+
+    Optional<Usuario> findByUsuarioAndContrasena(String username, String contrasena);
 }

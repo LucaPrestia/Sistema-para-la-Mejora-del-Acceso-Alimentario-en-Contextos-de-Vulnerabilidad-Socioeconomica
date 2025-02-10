@@ -8,25 +8,26 @@
     <script src="/js/contenedor-contacto.js" defer></script>
 </head>
 <header>
-    <!--TODO: según el rol pasado por parámetro cargar un menú distinto -->
     <div th:insert="~{fragments/menu :: menuprincipal(${username})}"></div>
     <div class="text-center mt-3">
         <div th:if="${success}" class="alert alert-success text-center" style="width:600px;margin:auto;">
-            <p>Operación Realizada Correctamente</p>
+            <p th:text="${successMessage != null ? successMessage : 'Operación Realizada Correctamente'}"></p>
         </div>
         <div th:if="${error}" class="alert alert-danger text-center" style="width:600px;margin:auto;">
-            <p>Operación no realizada. Consultar con sistemas</p>
+            <p th:text="${errorMessage != null ? errorMessage : 'Operación no realizada. Consultar con sistemas'}"></p>
         </div>
     </div>
 </header>
 <body>
     <div class="container mt-5" id="sector_central_vistas">
-        <!-- Centrar texto usando las clases text-center y mt-5 para margen superior -->
-        <h1 class="text-center">Bienvenido/a al Sistema de Gestión de Alimentos</h1>
-        <p class="text-center mt-3">Este es el contenido compartido que se muestra a todos los usuarios
-            (podría ser un mapa de las heladeras informando ubicación, capacidad, viandas, estado, etc.)
-        </p>
-        <h2>Selecciona una opción para ver su contenido</h2>
+        <div th:if="${sectorCentral != null}">
+            <div th:insert="~{${sectorCentral}}"></div>
+        </div>
+        <div th:unless="${sectorCentral != null}">
+            <h1 class="text-center">Bienvenido/a al Sistema de Gestión de Alimentos</h1>
+            <p class="text-center mt-3">Seleccione una opción del menú para ver su contenido</p>
+            <h2></h2>
+        </div>
         <!--todo: analizar si va como vista preliminar el mapa = <div th:insert="~{fragments/map :: mapBody(lat=${lat}, lon=${lon})}"></div>-->
     </div>
 

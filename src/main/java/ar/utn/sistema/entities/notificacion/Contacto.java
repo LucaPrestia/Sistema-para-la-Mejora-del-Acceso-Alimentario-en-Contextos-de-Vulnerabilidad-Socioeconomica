@@ -46,10 +46,7 @@ public class Contacto extends PersistenciaID {
             case EMAIL:
                 this.medioDeContacto = new MedioContactoEmail(new AdapterEmail());
                 break;
-            case TELEFONO:
-                // Inicializar medioDeContacto para teléfono
-                break;
-            case WHATSAPP:
+            case TELEFONO: WHATSAPP:
                 this.medioDeContacto = new MedioContactoWhatsApp(new AdapterWhatsApp());
                 break;
         }
@@ -59,10 +56,7 @@ public class Contacto extends PersistenciaID {
             case EMAIL:
                 this.medioDeContacto = new MedioContactoEmail(new AdapterEmail());
                 break;
-            case TELEFONO:
-                // Inicializar medioDeContacto para teléfono
-                break;
-            case WHATSAPP:
+            case TELEFONO: WHATSAPP:
                 this.medioDeContacto = new MedioContactoWhatsApp(new AdapterWhatsApp());
                 break;
         }

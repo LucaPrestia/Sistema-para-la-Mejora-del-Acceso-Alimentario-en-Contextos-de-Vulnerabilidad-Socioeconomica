@@ -17,7 +17,7 @@
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label for="tipo" class="form-label">Tipo de Contacto</label>
-                        <select id="tipo"  name="medio" class="form-select custom-select">
+                        <select id="tipo" class="form-select custom-select">
                             <option th:each="tipo : ${tipoContacto}"
                                     th:value="${tipo}"
                                     th:text="${tipo.value}">
@@ -213,6 +213,47 @@
                             </label>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="contenedor-datos-tecnico" class="d-flex justify-content-center align-items-center my-3">
+    <div class="container">
+        <div class="card">
+            <div class="card-header text-center">
+                <h4>Datos personales Técnico</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                </div>
+                <div class="mb-3">
+                    <label for="apellido" class="form-label">Apellido</label>
+                    <input type="text" class="form-control" id="apellido" name="apellido" required>
+                </div>
+                <div class="mb-3">
+                    <label for="tipoDocumento" class="form-label">Tipo de Documento</label>
+                    <select class="form-control" id="tipoDocumento" name="tipoDocumento" required>
+                        <option value="" disabled selected>Seleccionar...</option>
+                        <option th:each="tipoDoc : ${tipoDocumento}"
+                                th:value="${tipoDoc}"
+                                th:text="${tipoDoc.descripcion}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="documento" class="form-label">Documento</label>
+                    <input type="text" class="form-control" id="documento" name="documento" required>
+                </div>
+                <div class="mb-3">
+                    <label for="cuil" class="form-label">Cuil</label>
+                    <input type="text" class="form-control" id="cuil" name="cuil" required>
                 </div>
             </div>
         </div>

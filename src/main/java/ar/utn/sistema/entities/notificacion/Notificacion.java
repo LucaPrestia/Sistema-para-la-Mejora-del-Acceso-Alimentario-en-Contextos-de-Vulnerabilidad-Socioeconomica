@@ -11,7 +11,6 @@ import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 @Entity
-@NoArgsConstructor
 @Getter @Setter
 public class Notificacion extends PersistenciaID {
     // lo puse como persistencia porque en la entrega 3 dice que hay que persistir las notificaciones
@@ -19,6 +18,7 @@ public class Notificacion extends PersistenciaID {
     @JoinColumn(name = "id_usuario", referencedColumnName = "id")
     private Usuario usuario;
 
+    @Column(name = "mensaje", length = 1000)
     private String mensaje;
 
     @Enumerated(EnumType.STRING)
@@ -35,6 +35,9 @@ public class Notificacion extends PersistenciaID {
 
     public Notificacion(String mensaje) {
         this.mensaje = mensaje;
+        this.fechaHora = LocalDateTime.now();
+    }
+    public Notificacion(){
         this.fechaHora = LocalDateTime.now();
     }
 }

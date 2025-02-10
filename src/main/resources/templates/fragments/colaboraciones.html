@@ -318,7 +318,7 @@
       <label for="destinoHeladera" class="form-label">Heladera de Destino:</label>
       <select id="destinoHeladera" name="destinoHeladeraId" class="form-select" required>
         <option value="" disabled selected>Seleccione una heladera</option>
-        <option th:each="heladera : ${heladeras}" th:value="${heladera.id}" th:text="${heladera.nombre}"></option>
+        <option th:each="heladera : ${heladerasActivas}" th:value="${heladera.id}" th:text="${heladera.nombre}"></option>
       </select>
     </div>
 

@@ -218,8 +218,31 @@
     </form>
 </div>
 
-<div th:fragment="cargaMasiva">
-<!--TODO OBLIGATORIO: hacer carga masiva!! -->
+<div th:fragment="cargaMasiva" class="d-flex justify-content-center align-items-center my-3">
+    <form action="/carga-masiva" method="post" enctype="multipart/form-data" class="w-75">
+        <div class="container mt-4">
+            <div class="card shadow-sm">
+                <div class="card-header text-center bg-primary text-white">
+                    <h4 class="mb-0">Carga Masiva de Colaboraciones</h4>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="archivo">Seleccione el archivo CSV:</label>
+                        <input type="file" class="form-control-file" id="archivo" name="archivo" accept=".csv" required>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <button type="submit" class="btn btn-success">Subir Archivo</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div th:if="${successMessage}" class="alert alert-success mt-3" role="alert">
+        <span th:text="${successMessage}"></span>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger mt-3" role="alert">
+        <span th:text="${errorMessage}"></span>
+    </div>
 </div>
 
 <div th:fragment="reportes">
@@ -320,6 +343,49 @@
             </div>
         </div>
     </div>
+</div>
+
+<div th:fragment="registrarTecnico">
+    <style>
+        .menu-item-miperfil {
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .menu-item-miperfil.active-miperfil {
+            background-color: #007bff;
+            color: white;
+        }
+        .menu-item-miperfil:hover {
+            background-color: #dedcff;
+        }
+        .content-section-miperfil {
+            display: none;
+        }
+        .content-section-miperfil.active-miperfil {
+            display: block;
+        }
+    </style>
+    <form action="/tecnico/alta" method="post" id="multiStepForm">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3 sidebar">
+                    <h4 class="text-center">Registrar Técnico</h4>
+                    <ul class="nav flex-column">
+                        <li class="menu-item-miperfil active-miperfil" data-target="info" onclick="cambiarContenido('info')">Datos Personales</li>
+                        <li class="menu-item-miperfil" data-target="contactos" onclick="cambiarContenido('contactos')">Contacto</li>
+                        <li class="menu-item-miperfil" data-target="direccion" onclick="cambiarContenido('direccion')">Dirección</li>
+                    </ul>
+                    <button type="submit" class="btn btn-success w-100 mt-3">Guardar cambios</button>
+                </div>
+                <div class="col-md-9 content p-4">
+                    <div id="info" class="content-section-miperfil active-miperfil" th:insert="~{fragments/configuracion :: contenedor-datos-tecnico}"></div>
+                    <div id="contactos" class="content-section-miperfil" th:insert="~{fragments/configuracion :: contenedor-contactos}"></div>
+                    <div id="direccion" class="content-section-miperfil" th:insert="~{fragments/configuracion :: contenedor-direccion}"></div>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
 
 </body>

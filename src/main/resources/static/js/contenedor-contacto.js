@@ -40,8 +40,8 @@ function eliminarFila(btn) {
     fila.remove();
     [...tablaContactos.children].forEach((row, newIndex) => {
         const inputs = row.querySelectorAll("input[type='hidden']");
-        inputs[0].setAttribute("name", `contactos.medio`);
-        inputs[1].setAttribute("name", `contactos.contacto`);
+        inputs[0].setAttribute("name", `contactos[${newIndex}].medio`);
+        inputs[1].setAttribute("name", `contactos[${newIndex}].contacto`);
     });
 }
 

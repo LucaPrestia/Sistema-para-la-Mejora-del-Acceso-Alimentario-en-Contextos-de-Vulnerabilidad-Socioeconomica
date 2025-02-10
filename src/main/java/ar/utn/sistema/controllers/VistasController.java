@@ -5,6 +5,7 @@ import ar.utn.sistema.entities.Direccion;
 import ar.utn.sistema.entities.colaboracion.OfertaCanje;
 import ar.utn.sistema.entities.colaboracion.RubroServicio;
 import ar.utn.sistema.entities.colaboracion.TipoFrecuencia;
+import ar.utn.sistema.entities.heladera.EstadoHeladera;
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.heladera.ServicioDeUbicacionHeladera;
 import ar.utn.sistema.entities.notificacion.MedioNotificacion;
@@ -128,7 +129,7 @@ public class VistasController {
     @GetMapping("/donacionVianda")
     public String cargarPaginaDonacionVianda(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException
     {
-        List<Heladera> heladeras = heladeraRepository.findAll();
+        List<Heladera> heladeras = heladeraRepository.findByEstado(EstadoHeladera.ACTIVA);
         model.addAttribute("heladeraList", heladeras);
 
 
@@ -160,7 +161,9 @@ public class VistasController {
     @GetMapping("/distribuirVianda")
     public String cargaDistribuirVianda(Model model){
         List<Heladera> heladeras = heladeraRepository.findAll();
+        List<Heladera> heladerasActivas = heladeraRepository.findByEstado(EstadoHeladera.ACTIVA);
         model.addAttribute("heladeras", heladeras);
+        model.addAttribute("heladerasActivas", heladerasActivas);
         return "fragments/colaboraciones :: distribuirVianda";
     }
     @GetMapping("/canjearPuntos")
@@ -220,7 +223,6 @@ public class VistasController {
 
     @GetMapping("/cargaMasiva")
     public String cargaCargaMasiva(Model model){
-        // TODO OBLIGATORIO: hacer carga masiva!!
         return "fragments/administrador :: cargaMasiva";
     }
 
@@ -231,6 +233,14 @@ public class VistasController {
         model.addAttribute("reporteViandasHeladera", rReporteViandasHeladera.findAll());
         return "fragments/administrador :: reportes";
     }
+
+    @GetMapping("/registrarTecnico")
+    public String cargaRegistroTecnico(Model model){
+        model.addAttribute("tipoDocumento", TipoDocumento.values());
+        model.addAttribute("tipoContacto", MedioNotificacion.values());
+        return "fragments/administrador :: registrarTecnico";
+    }
+
     @GetMapping("/reportesIncidentesVer")
     public String cargaReportesIncidentesVer(Model model){
         // TODO: OBTENER HELADERAS A LAS QUE ESTAS SUSCRIPTAS
@@ -241,7 +251,7 @@ public class VistasController {
     @GetMapping("/reportesIncidentesReportar")
     public String cargaReportesIncidentesReportar(Model model){
 
-        model.addAttribute("heladeraList", heladeraRepository.findAll());
+        model.addAttribute("heladeraList", heladeraRepository.findByEstado(EstadoHeladera.ACTIVA));
 
         return "fragments/reportes :: reportesIncidentesReportar";
     }

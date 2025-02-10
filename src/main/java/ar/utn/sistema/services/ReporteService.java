@@ -53,11 +53,12 @@ public class ReporteService {
     private void generarReporteViandasPorColaborador() {
         List<Colaborador> colaboradores = rColaborador.findAll();
         for (Colaborador colaborador : colaboradores) {
-            Long viandasDonadas = rColaborador.getTotalViandasPorColaborador(colaborador.getId());
+            Long viandasDonadas = rColaborador.getTotalViandasPorColaborador(colaborador.getId(), LocalDate.now().minusWeeks(1), LocalDate.now());
 
-            ReporteViandasColaborador reporte = new ReporteViandasColaborador(colaborador,viandasDonadas);
-
-            rReporteViandasColaborador.save(reporte);
+            if (viandasDonadas != null) {
+                ReporteViandasColaborador reporte = new ReporteViandasColaborador(colaborador, viandasDonadas);
+                rReporteViandasColaborador.save(reporte);
+            }
         }
     }
 

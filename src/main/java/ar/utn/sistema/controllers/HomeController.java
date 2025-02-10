@@ -1,5 +1,6 @@
 package ar.utn.sistema.controllers;
 
+import ar.utn.sistema.dto.CambioContraseniaDTO;
 import ar.utn.sistema.entities.notificacion.MedioNotificacion;
 import ar.utn.sistema.entities.usuarios.ColaboradorFisico;
 import ar.utn.sistema.entities.usuarios.ColaboradorJuridico;
@@ -10,7 +11,6 @@ import ar.utn.sistema.repositories.ColaboradorRepository;
 import ar.utn.sistema.repositories.configuracion.TipoColaboracionRepository;
 import ar.utn.sistema.services.UsuarioSesionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -68,12 +68,15 @@ public class HomeController {
                 model.addAttribute("action", "colaborador/configuracion/juridico");
                 model.addAttribute("colaborador", (ColaboradorJuridico) rColaborador.findById(usuario.getUsuario().getId()).get());
                 break;
-            /*case "TECNICO": => todo: al técnico lo registra un admin! hacer opción registrar tecnico para el rol admin
-                model.addAttribute("tipoDocumento", TipoDocumento.values());
-                model.addAttribute("action", "tecnico/configuracion");
-                break;*/
             default: break;
         }
         return "onboarding";
+    }
+
+    @GetMapping("/cambioContrasenia")
+    public String cambiarContrasenia(Model model) {
+        model.addAttribute("usernameLog", sesion.obtenerUsuarioAutenticado().getUsername());
+        model.addAttribute("cambioContraseniaDTO", new CambioContraseniaDTO());
+        return "cambioContrasenia";
     }
 }

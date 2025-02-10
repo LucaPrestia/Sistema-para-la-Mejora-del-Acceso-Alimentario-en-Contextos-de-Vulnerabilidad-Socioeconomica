@@ -1,5 +1,7 @@
 package ar.utn.sistema.config;
 
+import ar.utn.sistema.entities.usuarios.Usuario;
+import ar.utn.sistema.model.UsuarioSesionDetalle;
 import ar.utn.sistema.services.UsuarioSesionService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,9 +20,12 @@ public class AuthenticationSuccessHandlerConfig implements AuthenticationSuccess
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        if(sesion.obtenerUsuarioAutenticado().getNuevoUsuario() == 1)
+        UsuarioSesionDetalle usuarioAutenticado = sesion.obtenerUsuarioAutenticado();
+        if(usuarioAutenticado.getNuevoUsuario() == 1)
             response.sendRedirect("/onboarding");
-        else
+        else if (usuarioAutenticado.getNuevoUsuario() == 2) {
+            response.sendRedirect("/cambioContrasenia");
+        } else
             response.sendRedirect("/home");
     }
 }
