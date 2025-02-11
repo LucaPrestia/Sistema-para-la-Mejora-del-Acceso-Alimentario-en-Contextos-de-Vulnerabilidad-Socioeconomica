@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -73,8 +72,6 @@ public class VistasController {
 
     @Autowired
     private IncidenteRepository incidenteRepository;
-    @Autowired
-    private IncidenteAlertaRepository incidenteAlertaRepository;
 
     // para las vistas estáticas que no necesitan mucho pasaje de parámetro (una función carga muchas vistas estáticas, por su parámetro opcion que se carga de forma dinámica)
     @GetMapping("/{opcion}")

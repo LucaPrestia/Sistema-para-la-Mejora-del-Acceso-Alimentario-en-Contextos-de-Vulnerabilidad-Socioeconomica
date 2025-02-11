@@ -9,16 +9,13 @@ import ar.utn.sistema.entities.notificacion.PreferenciaNotificacion;
 import ar.utn.sistema.entities.usuarios.Suscriptor;
 import ar.utn.sistema.model.MensajeTemperatura;
 import ar.utn.sistema.repositories.HeladeraRepository;
-import ar.utn.sistema.repositories.IncidenteAlertaRepository;
 import ar.utn.sistema.repositories.IncidenteRepository;
 import ar.utn.sistema.repositories.NotificacionRepository;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

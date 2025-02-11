@@ -13,7 +13,7 @@
       <div class="col-md-4 mb-4" th:each="incidente : ${incidentesFallas}">
         <div class="card h-100">
           <div th:if="${incidente.foto != null}">
-            <img th:src="'data:image/jpeg;base64,' + ${incidente.foto}" class="card-img-top" alt="Foto del incidente">
+            <img th:src="@{'/imagenes/incidente/' + ${incidente.id}}" class="card-img-top" alt="Imagen del incidente">
           </div>
 
           <div class="card-body">

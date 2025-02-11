@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface IncidenteRepository extends JpaRepository<Incidente, Integer> {
@@ -28,4 +29,7 @@ public interface IncidenteRepository extends JpaRepository<Incidente, Integer> {
             "JOIN h.suscriptores s " +
             "WHERE s.id = :idColaborador")
     List<IncidenteAlerta> findAlertasBySuscriptor(@Param("idColaborador") Integer idColaborador);
+
+    @Query("SELECT i FROM IncidenteFallaTecnica i WHERE i.id = :id")
+    Optional<IncidenteFallaTecnica> findFallaTecnicaById(@Param("id") Integer id);
 }
