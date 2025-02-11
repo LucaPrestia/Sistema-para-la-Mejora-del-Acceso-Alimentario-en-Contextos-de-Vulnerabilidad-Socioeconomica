@@ -172,24 +172,27 @@
   <!-- Datos Personales -->
     <div class="persona-vulnerable-item border rounded-lg p-4 space-y-4 mb-4">
       <h3 class="text-lg font-medium">Persona Vulnerable</h3>
-
-
       <div class="card-body">
         <div class="mb-3">
           <label class="form-label">Nombre</label>
           <input type="text" class="form-control nombre mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
         </div>
-
         <div class="mb-3">
           <label class="form-label">Fecha de Nacimiento</label>
           <input type="date" class="form-control fechaNacimiento mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
         </div>
-
         <div class="mb-3">
           <label class="form-label">Fecha de Registro</label>
           <input type="date" class="form-control fechaRegistro mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
         </div>
-
+        <div class="mb-3">
+          <label for="documento" class="form-label">Documento</label>
+          <input type="text" class="form-control documento" id="documento" name="documento" required>
+        </div>
+        <div class="mb-3">
+          <label for="menoresACargo" class="form-label">Menores a Cargo</label>
+          <input type="number" class="form-control menoresACargo" id="menoresACargo" name="menoresACargo" value=0 required>
+        </div>
         <div class="mb-3 flex items-center">
           <input type="checkbox" class="form-check-input situacionDeCalle rounded border-gray-300 shadow-sm sm:text-sm">
           <label class="form-label ml-2">Situación de Calle</label>

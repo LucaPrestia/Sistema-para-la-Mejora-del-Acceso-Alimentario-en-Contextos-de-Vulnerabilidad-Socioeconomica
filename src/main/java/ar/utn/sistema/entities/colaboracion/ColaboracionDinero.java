@@ -29,10 +29,6 @@ public class ColaboracionDinero extends Colaboracion {
         this.setFechaColaboracion(fechaCargaMasiva);
     }
 
-    public void donarDinero(){
-        // TODO
-    }
-
     @Override
     public double sumarPuntos() {
         return this.monto * this.getCoeficientePuntos() ;

@@ -6,6 +6,7 @@ import ar.utn.sistema.entities.usuarios.Usuario;
 import ar.utn.sistema.services.UsuarioSesionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,6 +30,7 @@ public class RegisterController {
     }
 
     @PostMapping("/register")
+    @Transactional
     public String registerUser(@ModelAttribute("registerDTO") RegisterDto registerDTO, RedirectAttributes redirectAttributes){
         try {
             servicio.registrarUsuario(registerDTO.getUsername(), registerDTO.getPassword(), registerDTO.getTipoColaborador());

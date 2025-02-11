@@ -1,6 +1,7 @@
 package ar.utn.sistema.controllers;
 
 import ar.utn.sistema.dto.CambioContraseniaDTO;
+import ar.utn.sistema.entities.configuracion.TipoColaboracion;
 import ar.utn.sistema.entities.notificacion.MedioNotificacion;
 import ar.utn.sistema.entities.usuarios.ColaboradorFisico;
 import ar.utn.sistema.entities.usuarios.ColaboradorJuridico;
@@ -16,6 +17,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 public class HomeController {
 
@@ -30,11 +34,25 @@ public class HomeController {
 
     @GetMapping("/home")
     public String loadHome(@RequestParam(value = "success", required = false)Boolean succes,@RequestParam(value = "error", required = false) Boolean error ,Model model){
+        String rol = sesion.obtenerUsuarioAutenticado().getRol();
         model.addAttribute("username", sesion.obtenerUsuarioAutenticado().getUsername());
-        model.addAttribute("rol", sesion.obtenerUsuarioAutenticado().getRol());
+        model.addAttribute("rol", rol);
         model.addAttribute("success", succes);
         model.addAttribute("error", error);
-        System.out.println(sesion.obtenerUsuarioAutenticado().getRol());
+
+        List<TipoColaboracion> colaboracionesHabilitadas = new ArrayList<>();
+        if ("COLABORADOR_FISICO".equals(rol)) {
+            colaboracionesHabilitadas = rTipoColaboracion.findByTipoColaborador("PERSONA_HUMANA");
+        } else if ("COLABORADOR_JURIDICO".equals(rol)) {
+            colaboracionesHabilitadas = rTipoColaboracion.findByTipoColaborador("PERSONA_JURIDICA");
+        }
+
+        boolean tieneGestionHeladera = colaboracionesHabilitadas.stream()
+                .anyMatch(colaboracion -> "GESTION_HELADERA".equals(colaboracion.getCodigo()));
+
+        model.addAttribute("colaboracionesHabilitadas", colaboracionesHabilitadas);
+        model.addAttribute("tieneGestionHeladera", tieneGestionHeladera);
+
         double lat = -34.6597832;
         double lon = -58.4680729;
         model.addAttribute("lat", lat);

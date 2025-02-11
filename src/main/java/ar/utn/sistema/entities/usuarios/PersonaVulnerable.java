@@ -21,10 +21,6 @@ public class PersonaVulnerable extends Rol {
 
     @Enumerated(EnumType.STRING)
     private TipoDocumento tipoDocumento;
-
     private String documento;
     private Integer menoresACargo;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    private TarjetaPersonaVulnerable tarjeta;
 }

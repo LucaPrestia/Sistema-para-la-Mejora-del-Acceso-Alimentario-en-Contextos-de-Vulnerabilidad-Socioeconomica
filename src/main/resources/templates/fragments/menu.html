@@ -81,52 +81,35 @@
 
         <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
             <ul class="navbar-nav d-flex flex-row gap-3">
-                <li class="nav-item dropdown" th:if="${rol == 'COLABORADOR_FISICO'}">
+                <li class="nav-item dropdown" th:if="${not #lists.isEmpty(colaboracionesHabilitadas)}">
                     <a class="nav-link dropdown-toggle" href="#" id="colaborarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Colaborar
                     </a>
                     <div class="dropdown-menu" aria-labelledby="colaborarDropdown">
-                        <a class="dropdown-item" href="#" onclick="cargarVista('colocarHeladera')">Colocar Heladera</a>
-                        <a class="dropdown-item" href="#" onclick="cargarVista('hacerseCargoHeladera')">Hacerse Cargo Heladera</a>
-                        <a class="dropdown-item" href="#" onclick="cargarVista('donacionDinero')">Donación Dinero</a>
-                        <a class="dropdown-item" href="#" onclick="cargarVista('donacionVianda')">Donación Vianda</a>
-                        <a class="dropdown-item" href="#" onclick="cargarVista('agregarPersonaVulnerable')">Inscribir persona vulnerable</a>
-                        <a class="dropdown-item" href="#" onclick="cargarVista('distribuirVianda')">Distribuir una Vianda</a>
-
+                        <a class="dropdown-item" href="#" onclick="cargarVista('hacerseCargoHeladera')" th:if="${tieneGestionHeladera}">
+                            Hacerse Cargo Heladera
+                        </a>
+                        <a class="dropdown-item" th:each="colaboracion : ${colaboracionesHabilitadas}"
+                           th:text="${colaboracion.nombre}"
+                           th:attr="onclick='cargarVista(\'' + ${colaboracion.codigo} + '\')'">
+                        </a>
                     </div>
-
-
                 </li>
                 <li class="nav-item dropdown" th:if="${rol == 'COLABORADOR_FISICO' || rol == 'COLABORADOR_JURIDICO'}">
                     <a class="nav-link dropdown-toggle" href="#" id="reportesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Reportes Incidentes
+                        Incidentes
                     </a>
                     <div class="dropdown-menu" aria-labelledby="reportesDropdown">
-                            <a class="nav-link" href="#" onclick="cargarVista('reportesIncidentesVer')">Ver Incidentes</a>
-                            <a class="nav-link" href="#" onclick="cargarVista('reportesIncidentesReportar')">Reportar Incidente</a>
+                        <a class="nav-link" href="#" onclick="cargarVista('reportesIncidentesReportar')">Reportar Falla Técnica</a>
+                        <a class="nav-link" href="#" onclick="cargarVista('reportesIncidentesVer')">Reportes Fallas Técnicas</a>
+                        <a class="nav-link" href="#" onclick="cargarVista('reportesAlerta')">Reportes de Alertas</a>
                     </div>
                 </li>
-                <li class="nav-item dropdown" th:if="${rol == 'COLABORADOR_FISICO' || rol == 'COLABORADOR_JURIDICO'}">
-                     <a class="nav-link" href="#" onclick="cargarVista('reportesAlerta')">Reportes de Alertas</a>
-                </li>
-
-
                 <li class="nav-item dropdown" th:if="${rol == 'COLABORADOR_FISICO'}">
                     <a class="dropdown-item" href="#" onclick="cargarVista('suscripcion')">Suscribir a Heladera</a>
                 </li>
-                <li class="nav-item dropdown" >
+                <li class="nav-item dropdown" th:if="${rol == 'COLABORADOR_FISICO'}">
                     <a class="dropdown-item" href="#" onclick="cargarVista('canjearPuntos')">Canjea tus Puntos</a>
-                </li>
-                <li class="nav-item dropdown" th:if="${rol == 'COLABORADOR_JURIDICO'}">
-                    <a class="nav-link dropdown-toggle" href="#" id="colaborarFisicoDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Colaborar
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="colaborarDropdown">
-                        <a class="dropdown-item" href="#" onclick="cargarVista('ofrecerServicio')">Ofrecer Servicio</a>
-                    </div>
-                </li>
-                <li class="nav-item me-3" th:if="${rol == 'TECNICO'}">
-                    <a class="nav-link" th:href="@{/tecnico/dashboard}">Dashboard Técnico</a>
                 </li>
                 <a th:if="${rol == 'ADMIN'}" class="nav-link" href="#" onclick="cargarVista('configSistema')">Configuracion Sistema</a>
                 <a th:if="${rol == 'ADMIN'}" class="nav-link" href="#" onclick="cargarVista('cargaMasiva')">Carga Masiva</a>

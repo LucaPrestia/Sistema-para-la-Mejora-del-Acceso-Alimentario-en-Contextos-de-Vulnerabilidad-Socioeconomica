@@ -1,5 +1,6 @@
 package ar.utn.sistema.entities.incidente;
 
+import ar.utn.sistema.entities.heladera.EstadoHeladera;
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.usuarios.Colaborador;
 import jakarta.persistence.*;
@@ -22,6 +23,7 @@ public class IncidenteFallaTecnica extends Incidente{
 
     public IncidenteFallaTecnica(LocalDateTime fechaHora, Heladera heladera, Colaborador notificador, String descripcion, byte[] foto,String zona) {
         super(fechaHora, heladera, "falla_tecnica");
+        heladera.setEstado(EstadoHeladera.INACTIVA); // luego de generar la falla, queda inactiva hasta que el técnico resuelva el problema
         this.notificador = notificador;
         this.descripcion = descripcion;
         this.foto = foto;

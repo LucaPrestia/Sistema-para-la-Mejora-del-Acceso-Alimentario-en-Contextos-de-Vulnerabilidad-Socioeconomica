@@ -9,21 +9,23 @@
 </head>
 <header>
     <div th:insert="~{fragments/menu :: menuprincipal(${username})}"></div>
-    <div class="text-center mt-3">
-        <div th:if="${success}" class="alert alert-success text-center" style="width:600px;margin:auto;">
-            <p th:text="${successMessage != null ? successMessage : 'Operación Realizada Correctamente'}"></p>
-        </div>
-        <div th:if="${error}" class="alert alert-danger text-center" style="width:600px;margin:auto;">
-            <p th:text="${errorMessage != null ? errorMessage : 'Operación no realizada. Consultar con sistemas'}"></p>
-        </div>
-    </div>
 </header>
 <body>
     <div class="container mt-5" id="sector_central_vistas">
+        <div class="text-center mt-3">
+            <div th:if="${success}" class="alert alert-success text-center" style="width:600px;margin:auto;">
+                <p th:text="${successMessage != null ? successMessage : 'Operación Realizada Correctamente'}"></p>
+            </div>
+            <div th:if="${error}" class="alert alert-danger text-center" style="width:600px;margin:auto;">
+                <p th:text="${errorMessage != null ? errorMessage : 'Operación no realizada. Consultar con sistemas'}"></p>
+            </div>
+        </div>
+
         <div th:if="${sectorCentral != null}">
             <div th:insert="~{${sectorCentral}}"></div>
         </div>
         <div th:unless="${sectorCentral != null}">
+            <br>
             <h1 class="text-center">Bienvenido/a al Sistema de Gestión de Alimentos</h1>
             <p class="text-center mt-3">Seleccione una opción del menú para ver su contenido</p>
             <h2></h2>
@@ -86,27 +88,27 @@
         }
 
     </script>
-    <script>
-        function cargarVista(opcion) {
-            // URL del endpoint que devuelve la opcion seleccionada con los parámetros ya cargados para su renderizacion
-            const url = `/vistas/${opcion}`; // Responde el controller VistasController.java
+<script>
+    function cargarVista(opcion) {
+        // URL del endpoint que devuelve la opcion seleccionada con los parámetros ya cargados para su renderizacion
+        const url = `/vistas/${opcion}`; // Responde el controller VistasController.java
 
-            // Realiza la solicitud fetch
-            fetch(url, { method: 'GET' })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Error al cargar la vista: ${response.statusText}`);
-                    }
-                    return response.text(); // Obtiene el HTML como texto
-                })
-                .then(html => {
-                    // Inserta el contenido en el contenedor
-                    document.getElementById("sector_central_vistas").innerHTML = html;
-                })
-                .catch(error => {
-                    console.error('Error al cargar la vista:', error);
-                });
-        }
+        // Realiza la solicitud fetch
+        fetch(url, { method: 'GET' })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error al cargar la vista: ${response.statusText}`);
+                }
+                return response.text(); // Obtiene el HTML como texto
+            })
+            .then(html => {
+                // Inserta el contenido en el contenedor
+                document.getElementById("sector_central_vistas").innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error al cargar la vista: ', error);
+            });
+    }
 
     function cambiarContenido(targetId) {
         console.log("Estas ok");
@@ -120,26 +122,9 @@
         document.querySelector(`[onclick="cambiarContenido('${targetId}')"]`).classList.add("active-miperfil");
         document.getElementById(targetId).classList.add("active-miperfil");
     }
-    </script>
+</script>
 </body>
 </html>
-
-<!-- analizar
-    opcion 1:
-    function loadContent(url) {
-        fetch(url)
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById("dynamic-content").innerHTML = data;
-            })
-            .catch(error => console.error('Error al cargar el contenido:', error));
-    }
-
-    // opcion 2:
-    function cargarFragmento(nombreFragmento) {
-        window.location.href = '/home?fragmento=' + nombreFragmento;
-    }
--->
 <script>
     function fetchViandas() {
         const origenHeladeraId = document.getElementById('origenHeladera').value;
@@ -245,32 +230,6 @@
     }
 </script>
 <script>
-    function cargarVista(opcion) {
-        // URL del endpoint que devuelve la opcion seleccionada con los parámetros ya cargados para su renderizacion
-        const url = `/vistas/${opcion}`; // Responde el controller VistasController.java
-
-        // Realiza la solicitud fetch
-        fetch(url, { method: 'GET' })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Error al cargar la vista: ${response.statusText}`);
-                }
-                return response.text(); // Obtiene el HTML como texto
-            })
-            .then(html => {
-                // Inserta el contenido en el contenedor
-                document.getElementById("sector_central_vistas").innerHTML = html;
-            })
-            .catch(error => {
-                console.error('Error al cargar la vista:', error);
-            });
-    }
-
-</script>
-
-
-
-<script>
     function agregarPersonaVulnerable() {
         const container = document.getElementById("personaVulnerableContainer");
         const personaVulnerableHTML = `
@@ -287,6 +246,14 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700">Fecha de Registro</label>
                 <input type="date" class="fechaRegistro mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" required>
+            </div>
+            <div class="mb-3">
+              <label for="documento" class="form-label">Documento</label>
+              <input type="text" class="form-control" id="documento" name="documento">
+            </div>
+            <div class="mb-3">
+              <label for="menoresACargo" class="form-label">Menores a Cargo</label>
+              <input type="number" class="form-control" id="menoresACargo" name="menoresACargo" value=0 required>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Situación de Calle</label>
@@ -343,6 +310,9 @@
             const nombre = persona.querySelector(".nombre").value;
             const fechaNacimiento = persona.querySelector(".fechaNacimiento").value;
             const fechaRegistro = persona.querySelector(".fechaRegistro").value;
+            const tipoDocumento = persona.querySelector(".tipoDocumento").value;
+            const documento = persona.querySelector(".documento").value;
+            const menoresACargo = persona.querySelector(".menoresACargo").value;
             const situacionDeCalle = persona.querySelector(".situacionDeCalle").checked;
             const pais = persona.querySelector(".pais").value;
             const provincia = persona.querySelector(".provincia").value;
@@ -352,8 +322,9 @@
             const departamento = persona.querySelector(".departamento").value;
             const codigoPostal = persona.querySelector(".codigo_postal").value;
 
-            if (nombre && fechaNacimiento && fechaRegistro && pais && provincia && localidad && calle && numero && departamento && codigoPostal !== "") {
-                personaVulnerable.push({ nombre, fechaNacimiento, fechaRegistro, situacionDeCalle, pais, provincia, localidad, calle, numero, departamento, codigoPostal });
+            // puede como no tener una dirección (pais && provincia && localidad && calle && numero && departamento && codigoPostal)
+            if (nombre && fechaNacimiento && fechaRegistro && menoresACargo !== "") {
+                personaVulnerable.push({ nombre, fechaNacimiento, fechaRegistro, tipoDocumento, documento, menoresACargo, situacionDeCalle, pais, provincia, localidad, calle, numero, departamento, codigoPostal });
             }
         });
 

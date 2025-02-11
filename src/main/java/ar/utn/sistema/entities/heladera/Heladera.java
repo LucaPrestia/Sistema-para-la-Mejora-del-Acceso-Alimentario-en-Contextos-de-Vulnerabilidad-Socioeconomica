@@ -86,5 +86,9 @@ public class Heladera extends PersistenciaID {
         this.suscriptores.add(colaborador);
     }
 
+    public int espacioDisponibleViandas(){
+        return this.maxViandas - this.viandas.size();
+    }
+
 
 }

@@ -99,7 +99,7 @@ public abstract class Colaborador extends Suscriptor{
             notificacion.setUsuario(this.usuario);
             contacto.notificar(notificacion);
             System.out.println(contacto.getMedio().getValue());
-
+            break; // notifica sólo al primer medio de contacto cargado
         }
     }
 

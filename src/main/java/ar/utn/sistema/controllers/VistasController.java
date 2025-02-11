@@ -28,11 +28,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/vistas")
@@ -68,8 +70,9 @@ public class VistasController {
     private ReporteFallasHeladeraRepository rReporteFallasHeladera;
     @Autowired
     private ReporteViandasHeladeraRepository rReporteViandasHeladera;
+
     @Autowired
-    private IncidenteFallaTecnicaRepository incidenteFallaTecnicaRepository;
+    private IncidenteRepository incidenteRepository;
     @Autowired
     private IncidenteAlertaRepository incidenteAlertaRepository;
 
@@ -91,7 +94,7 @@ public class VistasController {
 
         return "fragments/vistas :: opcion3" ;
     }
-    @GetMapping("/colocarHeladera")
+    @GetMapping("/GESTION_HELADERA")
     public String vistaColocarHeladera(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException {
         List<Direccion> direccionesSugeridas = ServicioDeUbicacionHeladera.instancia().listadoPosicionesHeladera(new Coordenadas(), 2);
         direccionesSugeridas = direccionRepository.saveAll(direccionesSugeridas);
@@ -114,7 +117,7 @@ public class VistasController {
         }
         return "fragments/colaboraciones :: hacerseCargoHeladera";
     }
-    @GetMapping("/donacionDinero")
+    @GetMapping("/DINERO")
     public String cargarPaginaHacerDonacionDinero(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException
     {
         List<TipoFrecuencia> frecuenciaList = List.of(TipoFrecuencia.values());
@@ -126,7 +129,7 @@ public class VistasController {
         return "fragments/colaboraciones :: donacionDinero";
 
     }
-    @GetMapping("/donacionVianda")
+    @GetMapping("/DONACION_VIANDAS")
     public String cargarPaginaDonacionVianda(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException
     {
         List<Heladera> heladeras = heladeraRepository.findByEstado(EstadoHeladera.ACTIVA);
@@ -138,15 +141,23 @@ public class VistasController {
         }
         return "fragments/colaboraciones :: donacionVianda";
     }
-    @GetMapping("/agregarPersonaVulnerable")
-    public String agregarPersonaVulnerable(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException
-    {
-        if (success != null && success) {
-            model.addAttribute("success", true);
+    @GetMapping("/ENTREGA_TARJETAS")
+    public String agregarPersonaVulnerable(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException {
+        System.out.println("busca por id: " + sesion.obtenerUsuarioAutenticado().getUsuario().getId() + " y por rol: " + sesion.obtenerUsuarioAutenticado().getRol());
+        Optional<Colaborador> colaborador = colaboradorRepository.findById(sesion.obtenerUsuarioAutenticado().getUsuario().getId());
+        System.out.println(colaborador.get());
+        if (colaborador.isPresent()) {
+            if (colaborador.get().getDireccion() == null) {
+                model.addAttribute("errorMessage", "Debe tener cargada una dirección para poder recibir las tarjetas a repartir. Por favor, dirigirse a Mi Perfil y actualizar los datos");
+                return "fragments/error :: errorDiv";
+            }
+        } else {
+            model.addAttribute("errorMessage", "Colaborador no encontrado");
+            return "fragments/error :: errorDiv";
         }
         return "fragments/colaboraciones :: agregarPersonaVulnerable";
     }
-    @GetMapping("/ofrecerServicio")
+    @GetMapping("/OFERTA_SERVICIO")
     public String cargarPaginaOfrecerServicio(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException
     {
         List<RubroServicio> rubroServicios = Arrays.stream(RubroServicio.values()).toList();
@@ -158,7 +169,7 @@ public class VistasController {
         }
         return "fragments/colaboraciones :: ofrecerServicio";
     }
-    @GetMapping("/distribuirVianda")
+    @GetMapping("/REDISTRIBUCION_VIANDAS")
     public String cargaDistribuirVianda(Model model){
         List<Heladera> heladeras = heladeraRepository.findAll();
         List<Heladera> heladerasActivas = heladeraRepository.findByEstado(EstadoHeladera.ACTIVA);
@@ -170,20 +181,24 @@ public class VistasController {
     public String cargarcanjearPuntos(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException
     {
         Colaborador colaborador = colaboradorRepository.findByUsuario_Id(sesion.obtenerUsuarioAutenticado().getId()).get();
-        //model.addAttribute("colaborador", );
         DecimalFormat df = new DecimalFormat("#.##");
 
         if (colaborador != null) {
             model.addAttribute("puntosDisponibles",  df.format(colaborador.getPuntosDisponibles()));
+            model.addAttribute("puntosDisponiblesDouble", colaborador.getPuntosDisponibles());
+            List<OfertaCanje> ofertas = ofertaCanjeRepository.findAll();
+            model.addAttribute("ofertasCanje", ofertas);
+
+            if (success != null && success) {
+                model.addAttribute("success", true);
+            }
+            return "fragments/canjePuntos :: canjearPuntos";
+        } else {
+            model.addAttribute("errorMessage", "Colaborador no encontrado");
+            return "redirect:/home?error=true";
         }
 
-        List<OfertaCanje> ofertas = ofertaCanjeRepository.findAll();
-        model.addAttribute("ofertasCanje", ofertas);
 
-        if (success != null && success) {
-            model.addAttribute("success", true);
-        }
-        return "fragments/canjePuntos :: canjearPuntos";
     }
     @GetMapping("/miperfil")
     public String cargarPaginaMiPerfil(@RequestParam(value = "success", required = false) Boolean success, Model model){
@@ -243,23 +258,23 @@ public class VistasController {
 
     @GetMapping("/reportesIncidentesVer")
     public String cargaReportesIncidentesVer(Model model){
-        // TODO: OBTENER HELADERAS A LAS QUE ESTAS SUSCRIPTAS
-        //model.addAttribute("reporteFallas", incidenteFallaTecnicaRepository.findAllByHeladeraIsIn(new Heladera()));//FALTA PONER LAS HELADERAS CORRECTAS
-
+        model.addAttribute("incidentesFallas", incidenteRepository.findFallasBySuscriptor(
+                sesion.obtenerUsuarioAutenticado().getUsuario().getId()
+        ));
         return "fragments/reportes :: reportesIncidentesVer";
     }
+
     @GetMapping("/reportesIncidentesReportar")
     public String cargaReportesIncidentesReportar(Model model){
-
         model.addAttribute("heladeraList", heladeraRepository.findByEstado(EstadoHeladera.ACTIVA));
-
         return "fragments/reportes :: reportesIncidentesReportar";
     }
+
     @GetMapping("/reportesAlerta")
     public String menuReportesAlertas(Model model){
-        // TODO: OBTENER HELADERAS A LAS QUE ESTAS SUSCRIPTAS
-
-        //model.addAttribute("reporteFallas", incidenteAlertaRepository.findAllByHeladeraIsIn(new Heladera()));//FALTA PONER LAS HELADERAS CORRECTAS
+        model.addAttribute("incidentesAlerta", incidenteRepository.findAlertasBySuscriptor(
+                sesion.obtenerUsuarioAutenticado().getUsuario().getId()
+        ));
         return "fragments/reportes :: reportesAlerta";
     }
     @GetMapping("/suscripcion")

@@ -2,10 +2,8 @@ package ar.utn.sistema.controllers;
 
 import ar.utn.sistema.entities.colaboracion.Colaboracion;
 import ar.utn.sistema.services.CargaColaboracionesMasivas;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +19,6 @@ public class CargaMasivaController {
 
 
     @PostMapping("/carga-masiva")
-    @Transactional
     public String cargarArchivo(@RequestParam("archivo") MultipartFile archivo, RedirectAttributes redirectAttributes) {
 
         if (archivo.isEmpty()) {

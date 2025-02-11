@@ -2,6 +2,7 @@ package ar.utn.sistema.controllers;
 
 import ar.utn.sistema.entities.colaboracion.ColaboracionGestionHeladera;
 import ar.utn.sistema.entities.colaboracion.TipoColaboracionEnum;
+import ar.utn.sistema.entities.heladera.EstadoHeladera;
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.heladera.Vianda;
 import ar.utn.sistema.entities.incidente.IncidenteFallaTecnica;
@@ -15,6 +16,7 @@ import ar.utn.sistema.services.ColaboracionService;
 import ar.utn.sistema.services.UsuarioSesionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,6 +53,7 @@ public class ReporteController {
         return colaborador;
     }
     @PostMapping("/incidenteAlta")
+    @Transactional
     public String buscarViandasDeHeladera(@RequestParam("heladeraId") int idHeladera, @RequestParam("descripcion") String descripcion,@RequestParam("foto") MultipartFile imagen, Model model) {
         try {
             Heladera heladera = heladeraRepository.findById(idHeladera).get();

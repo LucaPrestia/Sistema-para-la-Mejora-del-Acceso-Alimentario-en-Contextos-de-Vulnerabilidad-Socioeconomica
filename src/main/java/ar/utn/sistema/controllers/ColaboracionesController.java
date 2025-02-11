@@ -21,9 +21,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mapping.model.CamelCaseAbbreviatingFieldNamingStrategy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -72,6 +74,7 @@ public class ColaboracionesController {
         return colaborador;
     }
     @PostMapping("/colocarHeladera")
+    @Transactional
     public String guardarHeladeraColocar(
             @RequestParam("nombre") String nombre,
             @RequestParam("tempMin") double tempMin,
@@ -105,6 +108,7 @@ public class ColaboracionesController {
 
 
     @PostMapping("/hacerseCargoHeladera")
+    @Transactional
     public String guardarHacerseCargoHeladera(@RequestParam("direccionSeleccionada") Integer heladeraId, Model model) {
         try {
             Heladera heladera = heladeraRepository.findById(heladeraId).get();
@@ -130,6 +134,7 @@ public class ColaboracionesController {
     }
 
     @PostMapping("/donacionDinero")
+    @Transactional
     public String guardarHacerDonacionDinero(
             @RequestParam("dinero") double dinero,
             @RequestParam("frecuenciaSeleccionada") String id_frecuencia, Model model) {
@@ -153,26 +158,34 @@ public class ColaboracionesController {
         }
     }
     @PostMapping("/donacionVianda")
-    public String recibirDonacion(@RequestBody DonacionViandaDTO donacion, Model model) {
-        // todo: verificar que hay espacio suficiente para guardar las viandas
-        System.out.println("Heladera Seleccionada: " + donacion.getHeladeraSeleccionada());
-        for (ViandaDTO vianda : donacion.getViandas()) {
-            System.out.println("Comida: " + vianda.getComida());
-            System.out.println("Fecha Caducidad: " + vianda.getFechaCaducidad());
-            System.out.println("Calorías: " + vianda.getCalorias());
-            System.out.println("Peso: " + vianda.getPeso());
-        }
+    public String recibirDonacion(@RequestBody DonacionViandaDTO donacion, RedirectAttributes redirectAttributes) {
         try {
-            // Lógica de procesamiento como la que ya tienes
+            Heladera heladera = heladeraRepository.findById(donacion.getHeladeraSeleccionada())
+                    .orElseThrow(() -> new RuntimeException("Heladera no encontrada"));
+
+            int espacioDisponible = heladera.espacioDisponibleViandas();
+            if(espacioDisponible < donacion.getViandas().size()){
+                redirectAttributes.addFlashAttribute("errorMessage", "Sólo queda espacio para " + espacioDisponible + " viandas en la Heladera '" + heladera.getNombre());
+                return "redirect:/home?error=true";
+            }
+
+            System.out.println("Heladera Seleccionada: " + donacion.getHeladeraSeleccionada());
+            for (ViandaDTO vianda : donacion.getViandas()) {
+                System.out.println("Comida: " + vianda.getComida());
+                System.out.println("Fecha Caducidad: " + vianda.getFechaCaducidad());
+                System.out.println("Calorías: " + vianda.getCalorias());
+                System.out.println("Peso: " + vianda.getPeso());
+            }
+
             Double coeficientePuntos = coeficientesColaboracionService.obtenerCoeficiente(TipoColaboracionEnum.DONACION_VIANDAS.name());
             System.out.println(coeficientePuntos);
 
             List<Vianda> viandasNuevas = new ArrayList<>();
-            Heladera heladera = heladeraRepository.findById(donacion.getHeladeraSeleccionada()).get();
             for (ViandaDTO vianda : donacion.getViandas()) {
                 Vianda nuevaVianda = new Vianda(vianda.getComida(), vianda.getFechaCaducidad(), heladera, vianda.getCalorias(), vianda.getPeso());
                 viandasNuevas.add(nuevaVianda);
             }
+
             heladeraService.agregarViandas(heladera, viandasNuevas);
             // viandaRepository.saveAll(viandasNuevas); // ya se graba desde la línea anterior, en agregarViandas, por relación cascada
             ColaboracionVianda colaboracionVianda = new ColaboracionVianda(viandasNuevas, viandasNuevas.size(), coeficientePuntos);
@@ -182,25 +195,23 @@ public class ColaboracionesController {
             colaborador.agregarColaboracion(colaboracionVianda);
             colaboradorRepository.save(colaborador);
 
-            model.addAttribute("success", true);
             return "redirect:/home?success=true";
         } catch (Exception e) {
-            model.addAttribute("error", true);
             return "redirect:/home?error=true";
         }
     }
     @PostMapping("/donacionPersonaVulnerable")
+    @Transactional
     public String recibirDonacion(@RequestBody DonacionPersonaVulnerableDTO donacion,Model model) {
         for (PersonaVulnerableDTO personaVulnerableDTO : donacion.getPersonaVulnerable()) {
             System.out.println("Nombre: " + personaVulnerableDTO.getNombre());
             System.out.println("Fecha Nacimiento: " + personaVulnerableDTO.getFechaNacimiento());
             System.out.println("Fecha Registro: " + personaVulnerableDTO.getFechaRegistro());
             System.out.println("Situación de Calle: " + personaVulnerableDTO.getSituacionDeCalle());
-            System.out.println("Dirección: " + personaVulnerableDTO.getCalle() + " " + personaVulnerableDTO.getNumero() + ", " + personaVulnerableDTO.getLocalidad() + ", " + personaVulnerableDTO.getProvincia() + ", " + personaVulnerableDTO.getPais() + " - Código Postal: " + personaVulnerableDTO.getCodigoPostal());
+            // System.out.println("Dirección: " + personaVulnerableDTO.getCalle() + " " + personaVulnerableDTO.getNumero() + ", " + personaVulnerableDTO.getLocalidad() + ", " + personaVulnerableDTO.getProvincia() + ", " + personaVulnerableDTO.getPais() + " - Código Postal: " + personaVulnerableDTO.getCodigoPostal());
         }
 
         try {
-            // Aquí va la lógica de procesamiento como guardado en la base de datos
             List<PersonaVulnerable> personaVulnerableList = new ArrayList<>();
             Double coeficientePuntos = coeficientesColaboracionService.obtenerCoeficiente(TipoColaboracionEnum.ENTREGA_TARJETAS.name());
             ColaboracionTarjeta colaboracionTarjeta = new ColaboracionTarjeta(donacion.getPersonaVulnerable().size(),coeficientePuntos);
@@ -211,16 +222,20 @@ public class ColaboracionesController {
                 personaVulnerable.setFechaNacimiento(LocalDate.parse(dto.getFechaNacimiento()));
                 personaVulnerable.setFechaRegistro(LocalDate.parse(dto.getFechaRegistro()));
                 personaVulnerable.setSituacionDeCalle(dto.getSituacionDeCalle());
-                Direccion direccion = new Direccion();
-                direccion.setPais(dto.getPais());
-                direccion.setProvincia(dto.getProvincia());
-                direccion.setLocalidad(dto.getLocalidad());
-                direccion.setCalle(dto.getCalle());
-                direccion.setNumero(dto.getNumero());
-                direccion.setDepartamento(dto.getDepartamento());
-                direccion.setCodigo_postal(dto.getCodigoPostal());
-                personaVulnerable.setDireccion(direccion);
-                direccionRepository.save(direccion);
+                personaVulnerable.setMenoresACargo(dto.getMenoresACargo());
+                personaVulnerable.setDocumento(dto.getDocumento());
+                if(dto.getCodigoPostal() != null) {
+                    Direccion direccion = new Direccion();
+                    direccion.setPais(dto.getPais());
+                    direccion.setProvincia(dto.getProvincia());
+                    direccion.setLocalidad(dto.getLocalidad());
+                    direccion.setCalle(dto.getCalle());
+                    direccion.setNumero(dto.getNumero());
+                    direccion.setDepartamento(dto.getDepartamento());
+                    direccion.setCodigo_postal(dto.getCodigoPostal());
+                    personaVulnerable.setDireccion(direccion);
+                    direccionRepository.save(direccion);
+                }
                 personaVulnerableList.add(personaVulnerable);
                 colaboracionTarjeta.registrarPersonaVulnerable(personaVulnerable, colaborador);
             }
@@ -238,6 +253,7 @@ public class ColaboracionesController {
 
 
     @PostMapping("/ofrecerServicio")
+    @Transactional
     public String procesarFormulario(
             @RequestParam("nombreServicio") String nombre,
             @RequestParam("rubro") RubroServicio rubro,
@@ -272,20 +288,29 @@ public class ColaboracionesController {
     }
     }
     @PostMapping("/distribuirVianda")
+    @Transactional
     public String distribuirViandas(
             @RequestParam("origenHeladeraId") Integer origenHeladeraId,
             @RequestParam("destinoHeladeraId") Integer destinoHeladeraId,
             @RequestParam("viandasIds") List<Integer> viandasIds,
-            @RequestParam("motivoDistribucion") String motivoDistribucion, Model model
+            @RequestParam("motivoDistribucion") String motivoDistribucion, RedirectAttributes redirectAttributes
     ) {
         try {
             Heladera heladeraOrigen = heladeraRepository.findById(origenHeladeraId).orElseThrow(() -> new RuntimeException("Origen de heladera no encontrado"));
             Heladera heladeraDestino = heladeraRepository.findById(destinoHeladeraId).orElseThrow(() -> new RuntimeException("Origen de heladera no encontrado"));
+
             List<Vianda> viandasList = new ArrayList<>();
             for (Integer id : viandasIds) {
                 Vianda vianda = viandaRepository.findById(id).orElseThrow(() -> new RuntimeException("Vianda no encontrado"));
                 viandasList.add(vianda);
             }
+
+            int espacioDisponible = heladeraDestino.espacioDisponibleViandas();
+            if(espacioDisponible < viandasList.size()){
+                redirectAttributes.addFlashAttribute("errorMessage", "Sólo queda espacio para " + espacioDisponible + " viandas en la Heladera '" + heladeraDestino.getNombre());
+                return "redirect:/home?error=true";
+            }
+
             Double coeficientePuntos = coeficientesColaboracionService.obtenerCoeficiente(TipoColaboracionEnum.REDISTRIBUCION_VIANDAS.name());
 
             Colaborador colaborador = colaboradorRepository.findByUsuario_Id(sesion.obtenerUsuarioAutenticado().getId()).orElseThrow(
@@ -300,9 +325,9 @@ public class ColaboracionesController {
             /*viandaRepository.saveAll(viandasList);
             heladeraRepository.save(heladeraOrigen);
             heladeraRepository.save(heladeraDestino);*/ // ya se guardan con las funciones de sacarviandas y agregarviandas
+            redirectAttributes.addFlashAttribute("Redistribucion realizada correctamente");
             return "redirect:/home?success=true";
         } catch (Exception e) {
-            model.addAttribute("error", true);
             return "redirect:/home?error=true";
         }
     }

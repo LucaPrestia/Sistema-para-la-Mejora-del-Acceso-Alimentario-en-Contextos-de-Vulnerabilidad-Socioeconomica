@@ -34,7 +34,7 @@
             <form th:action="@{/canjear}" method="post">
               <input type="hidden" name="idOferta" th:value="${oferta.id}">
               <button type="submit" class="btn btn-primary"
-                      th:disabled="${puntosDisponibles < oferta.puntosRequeridos}">
+                      th:disabled="${puntosDisponiblesDouble < oferta.puntosRequeridos}">
                 Canjear
               </button>
             </form>

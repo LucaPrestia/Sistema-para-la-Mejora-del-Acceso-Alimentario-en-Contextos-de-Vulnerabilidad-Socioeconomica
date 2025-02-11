@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,6 +50,7 @@ public class ColaboradorController {
     @Autowired
     private HeladeraRepository heladeraRepository;
     @PostMapping("/configuracion/humano")
+    @Transactional
     public String cargarConfiguracionPersonaHumana(@ModelAttribute PerfilColaboradorDto datos,
                                                    @RequestParam("tiposColaboracionIds") List<Integer> tiposColaboracionIds,
                                                    Model model){
@@ -76,11 +78,12 @@ public class ColaboradorController {
             usuario.setNuevoUsuario(0);
             sesion.actualizarUsuarioAutenticado(usuario);
 
-            return "redirect:/home";
+            return "redirect:/home?success=true";
         } else return "redirect/:login";
     }
 
     @PostMapping("/configuracion/juridico")
+    @Transactional
     public String cargarConfiguracionPersonaJuridica(@ModelAttribute PerfilColaboradorDto datos,
                                                      @RequestParam List<Integer> tiposColaboracionIds,
                                                    Model model){
@@ -117,6 +120,7 @@ public class ColaboradorController {
     }
 
     @PostMapping("/suscripcion")
+    @Transactional
     public String suscribirHeladera(@RequestParam("heladeras") List<Integer> heladeras,
                                     @RequestParam(name = "preferencias", required = false) List<PreferenciaNotificacion> preferencias,
                                     @RequestParam(name = "cantidad_POCAS_VIANDAS", required = false) Integer pocasViandas,

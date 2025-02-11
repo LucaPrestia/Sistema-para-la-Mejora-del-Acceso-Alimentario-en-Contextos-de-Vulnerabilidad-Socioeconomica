@@ -61,10 +61,6 @@ public class ColaboracionDistribucionViandas extends Colaboracion {
         */
     }
 
-    public void realizarDistribucion(){
-        // TODO
-    }
-
     @Override
     public double sumarPuntos() {
         return this.cantidad * this.getCoeficientePuntos();

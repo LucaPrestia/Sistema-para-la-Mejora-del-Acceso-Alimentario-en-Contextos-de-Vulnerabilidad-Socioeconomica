@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class CanjeaPuntosController {
         return colaborador;
     }
     @PostMapping("/canjear")
-    public String canjearPuntos(@RequestParam int idOferta, Model model) {
+    public String canjearPuntos(@RequestParam int idOferta, RedirectAttributes redirectAttributes) {
         // Obtener colaborador autenticado
         Colaborador colaborador = colaboradorRepository.findByUsuario_Id(sesion.obtenerUsuarioAutenticado().getId()).orElse(null);
 
@@ -60,14 +61,17 @@ public class CanjeaPuntosController {
                 if (colaborador.getPuntosDisponibles() >= oferta.getPuntosRequeridos()) {
                     colaborador.setPuntosDisponibles(colaborador.getPuntosDisponibles() - oferta.getPuntosRequeridos());
                     colaboradorRepository.save(colaborador);
-                    model.addAttribute("success", "Canje realizado con éxito");
+                    redirectAttributes.addFlashAttribute("successMessage", "Canje realizado con éxito");
+                    return "redirect:/home?success=true";
                 } else {
-                    model.addAttribute("error", "No tienes suficientes puntos para canjear esta oferta.");
+                    redirectAttributes.addFlashAttribute("errorMessage", "No tienes suficientes puntos para canjear esta oferta.");
+                    return "redirect:/home?error=true";
                 }
         } else {
-            model.addAttribute("error", "Oferta no encontrada.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Oferta no encontrada.");
+            return "redirect:/home?error=true";
         }
-        return "redirect:/home";
+        return null;
     }
 
 

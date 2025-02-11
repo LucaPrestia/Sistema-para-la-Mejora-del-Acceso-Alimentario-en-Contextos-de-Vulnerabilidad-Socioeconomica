@@ -10,10 +10,10 @@
     <h1 class="text-center">Lista de Incidentes</h1>
 
     <div class="row">
-      <div class="col-md-4 mb-4" th:each="incidente : ${incidentes}">
+      <div class="col-md-4 mb-4" th:each="incidente : ${incidentesFallas}">
         <div class="card h-100">
-          <div th:if="${incidente.fotoBase64 != null}">
-            <img th:src="'data:image/jpeg;base64,' + ${incidente.fotoBase64}" class="card-img-top" alt="Foto del incidente">
+          <div th:if="${incidente.foto != null}">
+            <img th:src="'data:image/jpeg;base64,' + ${incidente.foto}" class="card-img-top" alt="Foto del incidente">
           </div>
 
           <div class="card-body">
