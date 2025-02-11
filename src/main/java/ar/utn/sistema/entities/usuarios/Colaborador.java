@@ -92,7 +92,6 @@ public abstract class Colaborador extends Suscriptor{
     public void agregarContacto(Contacto contacto) {this.contactos.add(contacto);}
 
     public void notificar(Notificacion notificacion) throws IOException {
-        contactos.forEach(x->x.llenarContacto());
         for (Contacto contacto : this.contactos) {
             notificacion.setMedio(contacto.getMedio());
             notificacion.setContacto(contacto.getContacto());

@@ -30,6 +30,7 @@ public class TemperaturaSensorService {
 
             try {
                 // rabbitTemplate.convertAndSend("heladera.exchange", "temperatura.heladera", mensaje);
+                service.registrarTemperatura(mensaje);
                 System.out.println("Enviando mensaje: " + mensaje);
             } catch (Exception e) {
                 System.err.println("Error al enviar el mensaje: " + e.getMessage());
@@ -38,8 +39,8 @@ public class TemperaturaSensorService {
     }
 
     public static double obtenerTemperaturaDeHeladera(Heladera heladera) {
-        double minExtendido = heladera.getTempMin() - 1;
-        double maxExtendido = heladera.getTempMax() + 1;
+        double minExtendido = heladera.getTempMin() - 2;
+        double maxExtendido = heladera.getTempMax() + 2;
 
         return minExtendido + (maxExtendido - minExtendido) * random.nextDouble();
     }

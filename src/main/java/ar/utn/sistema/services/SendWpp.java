@@ -1,19 +1,26 @@
 package ar.utn.sistema.services;
 
+import ar.utn.sistema.config.SendGridConfig;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
+import org.springframework.stereotype.Service;
 
-
+@Service
 public class SendWpp  {
     // Find your Account Sid and Token at twilio.com/console
-    public static final String ACCOUNT_SID = "AC1f7fa7f69c1884f10d15e5522aa53cf4";
-    public static final String AUTH_TOKEN = "b92ecff1c5c9219ca984e1bc0fcafc3c";
+    private final String account_sid;
+    private final String auth_token;
+
+    public SendWpp(SendGridConfig sendGridConfig) {
+        this.account_sid = sendGridConfig.getAcountSid();
+        this.auth_token = sendGridConfig.getAuthToken();
+    }
     public void enviarAPersona(String telefono, String mensaje){
         enviarWpp(telefono,mensaje);
     }
     public void enviarWpp(String EnviarA, String mensaje) {
         try {
-            Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+            Twilio.init(account_sid, auth_token);
             Message message = Message.creator(
                             new com.twilio.type.PhoneNumber("whatsapp:"+EnviarA),
                             new com.twilio.type.PhoneNumber("whatsapp:+14155238886"),

@@ -13,6 +13,7 @@ import ar.utn.sistema.entities.usuarios.Tecnico;
 import ar.utn.sistema.entities.usuarios.Usuario;
 import ar.utn.sistema.repositories.*;
 import ar.utn.sistema.services.ColaboracionService;
+import ar.utn.sistema.services.ContactoService;
 import ar.utn.sistema.services.UsuarioSesionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,6 +47,12 @@ public class ReporteController {
     @Autowired
     private TecnicoRepository tecnicoRepository;
 
+    @Autowired
+    private NotificacionRepository notificacionRepository;
+
+    @Autowired
+    private ContactoService contactoService;
+
     private Colaborador obtenerColaborador(){
         Colaborador colaborador = colaboradorRepository.findByUsuario_Id(sesion.obtenerUsuarioAutenticado().getId()).orElseThrow(
                 () -> new RuntimeException("Colaborador no encontrado")
@@ -74,8 +81,10 @@ public class ReporteController {
 
                 if(c.correspondeVerificar(PreferenciaNotificacion.DESPERFECTO,0)){
                     System.out.println("antes");
-
-                    c.notificar(new Notificacion(mensaje));
+                    contactoService.inicializarMediosDeContacto(c.getContactos());
+                    Notificacion notificacion = new Notificacion(mensaje);
+                    c.notificar(notificacion);
+                    notificacionRepository.save(notificacion);
                     System.out.println(mensaje);
                 }
             }

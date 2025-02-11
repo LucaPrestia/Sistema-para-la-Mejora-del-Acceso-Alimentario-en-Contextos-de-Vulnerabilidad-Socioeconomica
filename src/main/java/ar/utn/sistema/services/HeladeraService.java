@@ -6,6 +6,7 @@ import ar.utn.sistema.entities.incidente.IncidenteAlerta;
 import ar.utn.sistema.entities.incidente.TipoAlerta;
 import ar.utn.sistema.entities.notificacion.Notificacion;
 import ar.utn.sistema.entities.notificacion.PreferenciaNotificacion;
+import ar.utn.sistema.entities.usuarios.Colaborador;
 import ar.utn.sistema.entities.usuarios.Suscriptor;
 import ar.utn.sistema.model.MensajeTemperatura;
 import ar.utn.sistema.repositories.HeladeraRepository;
@@ -29,6 +30,9 @@ public class HeladeraService {
 
     @Autowired
     private NotificacionRepository notificacionRepository;
+
+    @Autowired
+    private ContactoService contactoService;
 
     public List<Heladera> obtenerTodasLasHeladeras() {
        return heladeraRepository.findByEstado(EstadoHeladera.ACTIVA);
@@ -64,11 +68,9 @@ public class HeladeraService {
     private void registrarAlerta(Heladera heladera, TipoAlerta motivo, String mensajeNotif) throws IOException {
         heladera.setEstado(EstadoHeladera.INACTIVA);
         Incidente incidente = new IncidenteAlerta(LocalDateTime.now(), heladera, motivo);
-        Notificacion notificacion = new Notificacion(mensajeNotif);
-        notificarDesperfecto(heladera, notificacion);
+        notificarDesperfecto(heladera, mensajeNotif);
         incidenteRepository.save(incidente);
         heladeraRepository.save(heladera);
-        notificacionRepository.save(notificacion);
     }
 
     public void agregarViandas(Heladera heladera, List<Vianda> viandasNuevas) throws IOException {
@@ -83,8 +85,7 @@ public class HeladeraService {
                 .append("' ubicada en la dirección ")
                 .append(heladera.getDireccion().obtenerCadenaDireccion())
                 .append(".");
-        Notificacion notificacion = new Notificacion(mensaje.toString());
-        notificarSuscriptor(heladera, notificacion, PreferenciaNotificacion.HELADERA_LLENA, espacioViandasDisponibles);
+        notificarSuscriptor(heladera, mensaje.toString(), PreferenciaNotificacion.HELADERA_LLENA, espacioViandasDisponibles);
         heladeraRepository.save(heladera); // guarda heladera y viandas registradas
     }
 
@@ -100,8 +101,7 @@ public class HeladeraService {
                 .append("' ubicada en la dirección ")
                 .append(heladera.getDireccion().obtenerCadenaDireccion())
                 .append(".");
-        Notificacion notificacion = new Notificacion(mensaje.toString());
-        notificarSuscriptor(heladera, notificacion, PreferenciaNotificacion.POCAS_VIANDAS, cantidadViandasDisponibles);
+        notificarSuscriptor(heladera, mensaje.toString(), PreferenciaNotificacion.POCAS_VIANDAS, cantidadViandasDisponibles);
         heladeraRepository.save(heladera);
     }
 
@@ -111,16 +111,19 @@ public class HeladeraService {
         sacarViandas(heladera, List.of(vianda));
     }
 
-    public void notificarDesperfecto(Heladera heladera, Notificacion notificacion) throws IOException {
-        notificarSuscriptor(heladera, notificacion, PreferenciaNotificacion.DESPERFECTO, 0);
+    public void notificarDesperfecto(Heladera heladera, String mensaje) throws IOException {
+        notificarSuscriptor(heladera, mensaje, PreferenciaNotificacion.DESPERFECTO, 0);
     }
 
-    private void notificarSuscriptor(Heladera heladera, Notificacion notificacion, PreferenciaNotificacion pref, int cantidadViandas) throws IOException {
+    private void notificarSuscriptor(Heladera heladera, String mensaje, PreferenciaNotificacion pref, int cantidadViandas) throws IOException {
         for (Suscriptor s: heladera.getSuscriptores()){
             if (s.correspondeVerificar(pref, cantidadViandas)){
-                // todo: agregar el medio de seleccion de preferencia para las notificaciones (falta hacerlo y agregarlo a la vista de suscripcion)
-                s.notificar(notificacion);
-                notificacionRepository.save(notificacion);
+                if (s instanceof Colaborador colaborador) {
+                    Notificacion notificacion = new Notificacion(mensaje);
+                    contactoService.inicializarMediosDeContacto(colaborador.getContactos());
+                    s.notificar(notificacion);
+                    notificacionRepository.save(notificacion);
+                }
             }
         }
     }

@@ -1,6 +1,7 @@
 package ar.utn.sistema.entities.notificacion;
 
 import ar.utn.sistema.entities.PersistenciaID;
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import ar.utn.sistema.utils.medioNotificacion.MedioContactoEmail;
 import ar.utn.sistema.utils.medioNotificacion.MedioContactoWhatsApp;
 import ar.utn.sistema.utils.medioNotificacion.adapters.AdapterEmail;
 import ar.utn.sistema.utils.medioNotificacion.adapters.AdapterWhatsApp;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 
@@ -19,46 +21,17 @@ public class Contacto extends PersistenciaID {
     @Enumerated(EnumType.STRING)
     private MedioNotificacion medio;
     private String contacto;
+
     @Transient
     private IMedioDeContacto medioDeContacto;
-
     public Contacto(MedioNotificacion medio, String contacto) {
         this.medio = medio;
         this.contacto = contacto;
     }
-
     public void notificar(Notificacion notificacion) throws IOException {
-        medioDeContacto.notificar(notificacion);
-    }
-
-    // @PostLoad
-    public void postLoad() {
-        initializarMedioDeContacto();
-    }
-
-    // @PostUpdate
-    public void postUpdate() {
-        initializarMedioDeContacto();
-    }
-
-    public void initializarMedioDeContacto() {
-        switch (this.medio) {
-            case EMAIL:
-                this.medioDeContacto = new MedioContactoEmail(new AdapterEmail());
-                break;
-            case TELEFONO: WHATSAPP:
-                this.medioDeContacto = new MedioContactoWhatsApp(new AdapterWhatsApp());
-                break;
+        if (medioDeContacto != null) {
+            medioDeContacto.notificar(notificacion);
         }
     }
-    public void llenarContacto() {
-        switch (this.medio) {
-            case EMAIL:
-                this.medioDeContacto = new MedioContactoEmail(new AdapterEmail());
-                break;
-            case TELEFONO: WHATSAPP:
-                this.medioDeContacto = new MedioContactoWhatsApp(new AdapterWhatsApp());
-                break;
-        }
-    }
+
 }

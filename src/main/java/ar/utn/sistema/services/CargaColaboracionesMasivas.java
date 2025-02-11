@@ -38,6 +38,8 @@ public class CargaColaboracionesMasivas {
     private UsuarioRepository rUsuario;
     @Autowired
     private NotificacionRepository notificacionRepository;
+    @Autowired
+    private ContactoService contactoService;
 
     public CargaColaboracionesMasivas(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
@@ -103,6 +105,7 @@ public class CargaColaboracionesMasivas {
                     if (nuevoUsuario.get() == 1){
                         Notificacion notificacion = new Notificacion();
                         notificacion.setMensaje(mensaje.toString());
+                        contactoService.inicializarMediosDeContacto(colaborador.getContactos());
                         colaborador.notificar(notificacion);
                         notificacion.setMensaje("Carga Masiva creacion de usuario");
                         notificacionRepository.save(notificacion);
