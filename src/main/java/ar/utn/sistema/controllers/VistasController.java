@@ -280,4 +280,12 @@ public class VistasController {
         model.addAttribute("preferenciasNoficacion", PreferenciaNotificacion.values());
         return "fragments/vistas :: suscripcion";
     }
+    @GetMapping("/mapa")
+    public String energiaModelo(Model model){
+        double lat = -34.6597832;
+        double lon = -58.4680729;
+        model.addAttribute("lat", lat);
+        model.addAttribute("lon", lon);
+        return "fragments/map";
+    }
 }

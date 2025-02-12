@@ -3,30 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenStreetMap</title>
+    <title>Sistema de Gestión de Alimentos</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        #map {
-            height: 400px; /* Ajusta la altura del mapa */
-            width: 100%; /* El mapa ocupará todo el ancho del contenedor */
-        }
-        .map-container {
-            max-width: 800px; /* Ajusta el ancho máximo del contenedor del mapa */
-            margin: 0 auto; /* Centrando el contenedor */
-        }
-    </style>
 </head>
 <body>
-<div th:fragment="mapBody(lat, lon)">
-    <div class="container mt-5">
-        <h1 class="text-center">Ubicación del Mapa</h1>
-        <div class="map-container">
-            <div id="map" style="height: 400px; width: 100%;"></div> <!-- Añadiendo estilos directamente aquí -->
-        </div>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="nav-item" href="#" id="updateLocationBtn">Actualizar Ubicación</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="btn btn-primary" href="/home">Volver</a>
+            </li>
+        </ul>
     </div>
+</nav>
+
+<!-- Título fuera de la navbar -->
+<div class="container text-center mt-4">
+    <h1>Heladeras Cercanas</h1>
+    <!-- Mensaje de información para el usuario -->
+    <p class="lead">En esta pantalla, puedes ver las heladeras cercanas a tu ubicación actual. Si deseas actualizar tu ubicación, haz clic en "Actualizar Ubicación".</p>
 </div>
+
+<div class="container mt-4">
+    <div id="map" style="height: 500px;"></div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener("DOMContentLoaded", function() {
+        // Inicializar el mapa sin ubicación, el centro se actualizará después
+        var map = L.map('map').setView([0, 0], 13);  // Coordenadas iniciales temporales
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Lista de coordenadas con JSON seguro desde Thymeleaf
+        var coordenadas = /*[[${coordenadas != null ? coordenadas : '[]'}]]*/ '[]';
+
+        try {
+            coordenadas = JSON.parse(coordenadas);
+        } catch (error) {
+            console.error("Error parseando coordenadas:", error);
+            coordenadas = []; // Si hay error, se usa array vacío
+        }
+
+        // Crear un icono personalizado para los marcadores de heladeras (rojo)
+        var heladeraIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', // URL de icono rojo
+            iconSize: [25, 41],  // Tamaño del icono
+            iconAnchor: [12, 41],  // Ancla del icono
+            popupAnchor: [1, -34],  // Ubicación del popup
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+            shadowSize: [41, 41]
+        });
+
+        // Añadir los marcadores con el nuevo icono rojo
+        coordenadas.forEach(function(coord) {
+            if (coord.lat !== undefined && coord.lon !== undefined) {
+                L.marker([coord.lat, coord.lon], { icon: heladeraIcon }).addTo(map)
+                    .bindPopup('Marcador en ' + coord.lat + ', ' + coord.lon);
+            }
+        });
+
+        // Función para obtener la ubicación actual
+        function obtenerUbicacion() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    // Obtiene la latitud y longitud del dispositivo
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+
+                    // Actualiza el centro del mapa con la nueva ubicación
+                    map.setView([lat, lon], 13);
+
+                    // Añadir un marcador en la nueva ubicación (usando el marcador predeterminado)
+                    L.marker([lat, lon]).addTo(map)
+                        .bindPopup('Ubicación actual: ' + lat + ', ' + lon);
+                }, function(error) {
+                    console.error("Error al obtener la ubicación: ", error);
+                });
+            } else {
+                console.error("La geolocalización no está soportada en este navegador.");
+            }
+        }
+
+        // Obtener la ubicación automáticamente al cargar la página
+        obtenerUbicacion();
+
+        // Event listener para el botón de actualizar ubicación
+        document.getElementById("updateLocationBtn").addEventListener("click", obtenerUbicacion);
+    });
+    /*]]>*/
+</script>
 
 <!-- Leaflet.js y Bootstrap JS -->
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
@@ -34,25 +110,5 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Variables de latitud y longitud pasadas desde el controlador
-        var lat = [[${lat}]]; // Latitud del mapa
-        var lon = [[${lon}]]; // Longitud del mapa
-
-        // Verificar si existe el div del mapa
-        var mapElement = document.getElementById('map');
-        if (mapElement) {
-            // Crear el mapa centrado en las coordenadas
-            var map = L.map('map').setView([lat, lon], 13);
-
-            // Cargar los tiles de OpenStreetMap
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; OpenStreetMap contributors'
-            }).addTo(map);
-        }
-    });
-</script>
 </body>
 </html>

@@ -1,7 +1,10 @@
 package ar.utn.sistema.controllers;
 
 import ar.utn.sistema.dto.CambioContraseniaDTO;
+import ar.utn.sistema.dto.DTOCoordenadas;
+import ar.utn.sistema.entities.Coordenadas;
 import ar.utn.sistema.entities.configuracion.TipoColaboracion;
+import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.notificacion.MedioNotificacion;
 import ar.utn.sistema.entities.usuarios.ColaboradorFisico;
 import ar.utn.sistema.entities.usuarios.ColaboradorJuridico;
@@ -9,8 +12,11 @@ import ar.utn.sistema.entities.usuarios.TipoDocumento;
 import ar.utn.sistema.entities.usuarios.TipoJuridico;
 import ar.utn.sistema.model.UsuarioSesionDetalle;
 import ar.utn.sistema.repositories.ColaboradorRepository;
+import ar.utn.sistema.repositories.HeladeraRepository;
 import ar.utn.sistema.repositories.configuracion.TipoColaboracionRepository;
 import ar.utn.sistema.services.UsuarioSesionService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +37,8 @@ public class HomeController {
 
     @Autowired
     private ColaboradorRepository rColaborador;
+    @Autowired
+    private HeladeraRepository heladeraRepository;
 
     @GetMapping("/home")
     public String loadHome(@RequestParam(value = "success", required = false)Boolean succes,@RequestParam(value = "error", required = false) Boolean error ,Model model){
@@ -53,10 +61,7 @@ public class HomeController {
         model.addAttribute("colaboracionesHabilitadas", colaboracionesHabilitadas);
         model.addAttribute("tieneGestionHeladera", tieneGestionHeladera);
 
-        double lat = -34.6597832;
-        double lon = -58.4680729;
-        model.addAttribute("lat", lat);
-        model.addAttribute("lon", lon);
+
         return "home";
     }
 
@@ -97,4 +102,33 @@ public class HomeController {
         model.addAttribute("cambioContraseniaDTO", new CambioContraseniaDTO());
         return "cambioContrasenia";
     }
+    @GetMapping("/mapa")
+    public String energiaModelo(Model model) throws JsonProcessingException {
+
+        double lat = -34.6597832;
+        double lon = -58.4680729;
+        List<Heladera> heladeras = heladeraRepository.findAll();
+        List<Coordenadas> coord_hela = heladeras.stream().map(x->x.getDireccion().getCoordenadas()).toList();
+        List<DTOCoordenadas> coordMandar = new ArrayList();
+        for (Coordenadas coordenada : coord_hela) {
+            if(coordenada!=null) {
+                DTOCoordenadas dtoCoordenadas = new DTOCoordenadas();
+                dtoCoordenadas.setLat(coordenada.getLatitud());
+                dtoCoordenadas.setLon(coordenada.getLongitud());
+                coordMandar.add(dtoCoordenadas);
+            }
+        }
+        // Usar ObjectMapper para convertir la lista de coordenadas en una cadena JSON
+        ObjectMapper objectMapper = new ObjectMapper();
+        String coordenadasJson = objectMapper.writeValueAsString(coordMandar);
+        System.out.println("Hay : "+ coordMandar.size());
+        model.addAttribute("coordenadas", coordenadasJson);
+        model.addAttribute("centroLat", lat);
+        model.addAttribute("centroLon", lon);
+        return "fragments/map";
+    }
+   /*
+          console.log(`Latitud : ${crd.latitude}`);
+  console.log(`Longitud: ${crd.longitude}`);
+        */
 }

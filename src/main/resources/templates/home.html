@@ -88,6 +88,7 @@
         }
 
     </script>
+
 <script>
     function cargarVista(opcion) {
         // URL del endpoint que devuelve la opcion seleccionada con los parámetros ya cargados para su renderizacion
@@ -125,6 +126,16 @@
 </script>
 </body>
 </html>
+<style>
+    #map {
+        height: 400px; /* Ajusta la altura del mapa */
+        width: 100%; /* El mapa ocupará todo el ancho del contenedor */
+    }
+    .map-container {
+        max-width: 800px; /* Ajusta el ancho máximo del contenedor del mapa */
+        margin: 0 auto; /* Centrando el contenedor */
+    }
+</style>
 <script>
     function fetchViandas() {
         const origenHeladeraId = document.getElementById('origenHeladera').value;
