@@ -80,27 +80,39 @@ public class ColaboracionesController {
             @RequestParam("tempMin") double tempMin,
             @RequestParam("tempMax") double tempMax,
             @RequestParam("maxViandas") int maxViandas,
+            @RequestParam(value = "direccionColaborador", required = false) Boolean direccionColaborador,
+            @RequestParam(value = "latitud", required = false) Double latitud,
+            @RequestParam(value = "longitud", required = false) Double longitud,
             @RequestParam("direccionSeleccionada") Integer direccionId,
-            Model model) {
+            RedirectAttributes redirectAttributes) {
         try {
-            Direccion direccion = direccionRepository.findById(direccionId).get();
-            System.out.println(direccion.getCalle());
-            System.out.println(direccion.getId());
+            Colaborador colaborador = obtenerColaborador();
+            Direccion direccion;
+            if (direccionColaborador != null && direccionColaborador) {
+                direccion = colaborador.getDireccion();
+                if(direccion == null){
+                    redirectAttributes.addFlashAttribute("errorMessage", "Debe ingresar una dirección en 'Mi Perfil'");
+                    return "redirect:/home?error=true";
+                }
+                Coordenadas coordenadas = new Coordenadas(latitud, longitud);
+                direccion.setCoordenadas(coordenadas);
+            } else {
+                direccion = direccionRepository.findById(direccionId).get();
+            }
+
             Usuario owner  = usuarioRepository.findById(sesion.obtenerUsuarioAutenticado().getId()).get();
-            System.out.println(owner.getId());
             Heladera nuevaHeladera = new Heladera(nombre, owner, direccion, tempMax, tempMin, maxViandas);
-            heladeraRepository.save(nuevaHeladera);
             Double coeficientePuntos = coeficientesColaboracionService.obtenerCoeficiente(TipoColaboracionEnum.GESTION_HELADERA.name());
             ColaboracionGestionHeladera colaboracionGestionHeladera = new ColaboracionGestionHeladera(nuevaHeladera,coeficientePuntos);
             colaboracionRepository.save(colaboracionGestionHeladera);
-            Colaborador colaborador = obtenerColaborador();
             colaborador.agregarColaboracion(colaboracionGestionHeladera);
-            colaboradorRepository.save(colaborador);
+            colaborador.setHeladera(nuevaHeladera);
+            colaboradorRepository.save(colaborador); // acá ya se persiste: heladeraRepository.save(nuevaHeladera);
 
-            model.addAttribute("success", true);
+            redirectAttributes.addAttribute("success", true);
             return "redirect:/home?success=true";
         } catch (Exception e) {
-            model.addAttribute("error", true);
+            redirectAttributes.addAttribute("error", true);
 
             return "redirect:/home?error=true";
         }

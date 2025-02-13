@@ -32,4 +32,18 @@ public interface IncidenteRepository extends JpaRepository<Incidente, Integer> {
 
     @Query("SELECT i FROM IncidenteFallaTecnica i WHERE i.id = :id")
     Optional<IncidenteFallaTecnica> findFallaTecnicaById(@Param("id") Integer id);
+
+    @Query("SELECT i FROM IncidenteFallaTecnica i " +
+            "WHERE i.heladera = :heladera")
+    List<IncidenteFallaTecnica> findFallasByHeladera(@Param("heladera") Heladera heladera);
+
+    @Query("SELECT i FROM IncidenteAlerta i " +
+            "WHERE i.heladera = :heladera")
+    List<IncidenteAlerta> findAlertaByHeladera(@Param("heladera") Heladera heladera);
+
+    @Query("SELECT i FROM IncidenteFallaTecnica i")
+    List<IncidenteFallaTecnica> findAllFallasTecnicas();
+
+    @Query("SELECT i FROM IncidenteAlerta i")
+    List<IncidenteAlerta> findAllAlertas();
 }

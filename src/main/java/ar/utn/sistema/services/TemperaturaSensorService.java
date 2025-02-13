@@ -21,7 +21,7 @@ public class TemperaturaSensorService {
 
     private static final Random random = new Random();
 
-    @Scheduled(fixedRate = 300000) // every 5 minutes
+    @Scheduled(fixedRate = 100000) // every 5 minutes
     public void enviarTemperaturas() {
         List<Heladera> heladeras = service.obtenerTodasLasHeladeras();
         for (Heladera heladera : heladeras) {
@@ -31,9 +31,9 @@ public class TemperaturaSensorService {
             try {
                 // rabbitTemplate.convertAndSend("heladera.exchange", "temperatura.heladera", mensaje);
                 service.registrarTemperatura(mensaje);
-                System.out.println("Enviando mensaje: " + mensaje);
+                System.out.println("Enviando mensaje temperatura");
             } catch (Exception e) {
-                System.err.println("Error al enviar el mensaje: " + e.getMessage());
+                System.err.println("Error al enviar mensaje temperatura: " + e.getMessage());
             }
         }
     }

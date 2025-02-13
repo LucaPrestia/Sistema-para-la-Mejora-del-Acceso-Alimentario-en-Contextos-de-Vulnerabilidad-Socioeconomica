@@ -65,7 +65,9 @@ public class ReporteController {
         try {
             Heladera heladera = heladeraRepository.findById(idHeladera).get();
             Colaborador colaborador = obtenerColaborador();
+
             IncidenteFallaTecnica incidenteFallaTecnica = new IncidenteFallaTecnica(LocalDateTime.now(),heladera,colaborador,descripcion,imagen.getBytes(),heladera.getDireccion().getLocalidad());
+
             List<Tecnico> tecnicos = tecnicoRepository.findAllByAreaCoberturaEqualsIgnoreCase(heladera.getDireccion().getLocalidad());
             if(tecnicos==null ){
                 tecnicos = tecnicoRepository.findAll();
@@ -73,19 +75,19 @@ public class ReporteController {
                 tecnicos = tecnicoRepository.findAll();
             }
             colaborador.registrarFalla(incidenteFallaTecnica,tecnicos);
+
             String mensaje = "Un colaborador ha registrado una falla técnica en la heladera de nombre '" +
                     incidenteFallaTecnica.getHeladera().getNombre() + "' ubicada en la dirección " +
                     incidenteFallaTecnica.getHeladera().getDireccion().obtenerCadenaDireccion() + " indicando lo siguiente: " +  incidenteFallaTecnica.getDescripcion();
+
             List<Colaborador> colaboradores = heladera.getSuscriptores();
             for (Colaborador c : colaboradores) {
 
                 if(c.correspondeVerificar(PreferenciaNotificacion.DESPERFECTO,0)){
-                    System.out.println("antes");
                     contactoService.inicializarMediosDeContacto(c.getContactos());
                     Notificacion notificacion = new Notificacion(mensaje);
                     c.notificar(notificacion);
                     notificacionRepository.save(notificacion);
-                    System.out.println(mensaje);
                 }
             }
             incidenteRepository.save(incidenteFallaTecnica);

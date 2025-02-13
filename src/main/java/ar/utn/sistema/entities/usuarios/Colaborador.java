@@ -49,6 +49,10 @@ public abstract class Colaborador extends Suscriptor{
     @Column(name = "puntos_disponibles", precision = 3)
     private double puntosDisponibles;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinColumn(name = "id_heladera")
+    private Heladera heladera;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "id_colaborador")
     private List<OfertaCanje> serviciosCanjeados = new ArrayList<OfertaCanje>();

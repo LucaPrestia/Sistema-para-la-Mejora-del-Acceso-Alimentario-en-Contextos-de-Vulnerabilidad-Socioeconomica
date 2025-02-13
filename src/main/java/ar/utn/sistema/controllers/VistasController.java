@@ -8,6 +8,8 @@ import ar.utn.sistema.entities.colaboracion.TipoFrecuencia;
 import ar.utn.sistema.entities.heladera.EstadoHeladera;
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.heladera.ServicioDeUbicacionHeladera;
+import ar.utn.sistema.entities.incidente.IncidenteAlerta;
+import ar.utn.sistema.entities.incidente.IncidenteFallaTecnica;
 import ar.utn.sistema.entities.notificacion.MedioNotificacion;
 import ar.utn.sistema.entities.notificacion.PreferenciaNotificacion;
 import ar.utn.sistema.entities.usuarios.*;
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -127,22 +130,26 @@ public class VistasController {
 
     }
     @GetMapping("/DONACION_VIANDAS")
-    public String cargarPaginaDonacionVianda(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException
-    {
+    public String cargarPaginaDonacionVianda(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException {
+        Optional<Colaborador> colaborador = colaboradorRepository.findById(sesion.obtenerUsuarioAutenticado().getUsuario().getId());
+        if (colaborador.isPresent()) {
+            if (colaborador.get().getDireccion() == null) {
+                model.addAttribute("errorMessage", "Debe tener cargada una dirección, donde recibirá una tarjeta para poder abrir heladeras y realizar colaboraciones de viandas. Por favor, dirigirse a 'Mi Perfil' y actualizar los datos");
+                return "fragments/error :: errorDiv";
+            }
+        } else {
+            model.addAttribute("errorMessage", "Colaborador no encontrado");
+            return "fragments/error :: errorDiv";
+        }
+
         List<Heladera> heladeras = heladeraRepository.findByEstado(EstadoHeladera.ACTIVA);
         model.addAttribute("heladeraList", heladeras);
 
-
-        if (success != null && success) {
-            model.addAttribute("success", true);
-        }
         return "fragments/colaboraciones :: donacionVianda";
     }
     @GetMapping("/ENTREGA_TARJETAS")
     public String agregarPersonaVulnerable(@RequestParam(value = "success", required = false) Boolean success, Model model) throws IOException {
-        System.out.println("busca por id: " + sesion.obtenerUsuarioAutenticado().getUsuario().getId() + " y por rol: " + sesion.obtenerUsuarioAutenticado().getRol());
         Optional<Colaborador> colaborador = colaboradorRepository.findById(sesion.obtenerUsuarioAutenticado().getUsuario().getId());
-        System.out.println(colaborador.get());
         if (colaborador.isPresent()) {
             if (colaborador.get().getDireccion() == null) {
                 model.addAttribute("errorMessage", "Debe tener cargada una dirección para poder recibir las tarjetas a repartir. Por favor, dirigirse a Mi Perfil y actualizar los datos");
@@ -168,6 +175,16 @@ public class VistasController {
     }
     @GetMapping("/REDISTRIBUCION_VIANDAS")
     public String cargaDistribuirVianda(Model model){
+        Optional<Colaborador> colaborador = colaboradorRepository.findById(sesion.obtenerUsuarioAutenticado().getUsuario().getId());
+        if (colaborador.isPresent()) {
+            if (colaborador.get().getDireccion() == null) {
+                model.addAttribute("errorMessage", "Debe tener cargada una dirección, donde recibirá una tarjeta para poder abrir heladeras y realizar colaboraciones de viandas. Por favor, dirigirse a 'Mi Perfil' y actualizar los datos");
+                return "fragments/error :: errorDiv";
+            }
+        } else {
+            model.addAttribute("errorMessage", "Colaborador no encontrado");
+            return "fragments/error :: errorDiv";
+        }
         List<Heladera> heladeras = heladeraRepository.findAll();
         List<Heladera> heladerasActivas = heladeraRepository.findByEstado(EstadoHeladera.ACTIVA);
         model.addAttribute("heladeras", heladeras);
@@ -255,9 +272,33 @@ public class VistasController {
 
     @GetMapping("/reportesIncidentesVer")
     public String cargaReportesIncidentesVer(Model model){
-        model.addAttribute("incidentesFallas", incidenteRepository.findFallasBySuscriptor(
-                sesion.obtenerUsuarioAutenticado().getUsuario().getId()
-        ));
+        Integer usuario = sesion.obtenerUsuarioAutenticado().getUsuario().getId();
+        String rol = sesion.obtenerUsuarioAutenticado().getRol();
+
+        List<IncidenteFallaTecnica> incidentesFallas;
+
+        switch (rol) {
+            case "COLABORADOR_FISICO":
+                incidentesFallas = incidenteRepository.findFallasBySuscriptor(usuario);
+                break;
+
+            case "COLABORADOR_JURIDICO":
+                Colaborador colaborador = colaboradorRepository.findById(usuario).orElse(null);
+                Heladera heladera = (colaborador != null) ? colaborador.getHeladera() : null;
+                incidentesFallas = (heladera != null)
+                        ? incidenteRepository.findFallasByHeladera(heladera)
+                        : Collections.emptyList();
+                break;
+
+            case "ADMIN":
+                incidentesFallas = incidenteRepository.findAllFallasTecnicas();
+                break;
+
+            default:
+                incidentesFallas = Collections.emptyList();
+        }
+
+        model.addAttribute("incidentesFallas", incidentesFallas);
         return "fragments/reportes :: reportesIncidentesVer";
     }
 
@@ -269,9 +310,33 @@ public class VistasController {
 
     @GetMapping("/reportesAlerta")
     public String menuReportesAlertas(Model model){
-        model.addAttribute("incidentesAlerta", incidenteRepository.findAlertasBySuscriptor(
-                sesion.obtenerUsuarioAutenticado().getUsuario().getId()
-        ));
+        Integer usuario = sesion.obtenerUsuarioAutenticado().getUsuario().getId();
+        String rol = sesion.obtenerUsuarioAutenticado().getRol();
+
+        List<IncidenteAlerta> incidenteAlertas;
+
+        switch (rol) {
+            case "COLABORADOR_FISICO":
+                incidenteAlertas = incidenteRepository.findAlertasBySuscriptor(usuario);
+                break;
+
+            case "COLABORADOR_JURIDICO":
+                Colaborador colaborador = colaboradorRepository.findById(usuario).orElse(null);
+                Heladera heladera = (colaborador != null) ? colaborador.getHeladera() : null;
+                incidenteAlertas = (heladera != null)
+                        ? incidenteRepository.findAlertaByHeladera(heladera)
+                        : Collections.emptyList();
+                break;
+
+            case "ADMIN":
+                incidenteAlertas = incidenteRepository.findAllAlertas();
+                break;
+
+            default:
+                incidenteAlertas = Collections.emptyList();
+        }
+
+        model.addAttribute("incidentesAlerta", incidenteAlertas);
         return "fragments/reportes :: reportesAlerta";
     }
     @GetMapping("/suscripcion")

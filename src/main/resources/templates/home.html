@@ -123,6 +123,19 @@
         document.querySelector(`[onclick="cambiarContenido('${targetId}')"]`).classList.add("active-miperfil");
         document.getElementById(targetId).classList.add("active-miperfil");
     }
+
+    function verificarFormGestionHeladera(event) {
+    var direccionColaborador = document.getElementById('direccionColaborador');
+    var latitud = document.getElementById('latitud');
+    var longitud = document.getElementById('longitud');
+
+    if (direccionColaborador.checked) {
+      if (latitud.value === '' || longitud.value === '') {
+        alert("Por favor, ingrese la latitud y longitud.");
+        event.preventDefault();
+      }
+    }
+  }
 </script>
 </body>
 </html>

@@ -84,7 +84,7 @@ public class ColaboradorController {
     @PostMapping("/configuracion/juridico")
     @Transactional
     public String cargarConfiguracionPersonaJuridica(@ModelAttribute PerfilColaboradorDto datos,
-                                                     @RequestParam List<Integer> tiposColaboracionIds,
+                                                     @RequestParam("tiposColaboracionIds") List<Integer> tiposColaboracionIds,
                                                    Model model){
         try {
             UsuarioSesionDetalle usuario = sesion.obtenerUsuarioAutenticado();

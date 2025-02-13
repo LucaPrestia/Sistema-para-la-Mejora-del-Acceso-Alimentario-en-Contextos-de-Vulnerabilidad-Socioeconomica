@@ -14,6 +14,7 @@ import ar.utn.sistema.repositories.IncidenteRepository;
 import ar.utn.sistema.repositories.NotificacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -40,8 +41,9 @@ public class HeladeraService {
 
     // Receive temperature sensor messages
     // @RabbitListener(queues = "temperatura.heladera")
+    @Transactional
     public void registrarTemperatura(MensajeTemperatura mensaje) throws IOException {
-        Heladera heladera = heladeraRepository.findById(mensaje.getHeladeraId()).get();
+        Heladera heladera = heladeraRepository.findWithSuscriptoresById(mensaje.getHeladeraId()).get();
         double temperatura = mensaje.getTemperatura();
         heladera.setUltTempRegs(temperatura);
 
@@ -50,7 +52,8 @@ public class HeladeraService {
             String mensajeNotificacion = "Alerta de temperatura " + temperaturaStr +
                     " ( " + temperatura + "°C) en la heladera '" + heladera.getNombre() +
                     "' ubicada en la dirección " + heladera.getDireccion().obtenerCadenaDireccion() + ".";
-            registrarAlerta(heladera, TipoAlerta.TEMPERATURA, mensajeNotificacion);
+            System.out.println("pasaste direccion");
+            registrarAlerta(heladera, TipoAlerta.TEMPERATURA, mensajeNotificacion, 1);
         } else {
             heladeraRepository.save(heladera); // registra última temperatura registrada
         }
@@ -58,17 +61,26 @@ public class HeladeraService {
 
     // Receive movement sensor messages
     // @RabbitListener(queues = "movimiento.heladera", priority = "10") // higher priority
+    @Transactional
     public void registrarMovimiento(Integer heladeraId) throws IOException {
-        Heladera heladera = heladeraRepository.findById(heladeraId).get();
+        Heladera heladera = heladeraRepository.findWithSuscriptoresById(heladeraId).get();
         String mensajeNotificacion = "Alerta de movimiento, posible fraude en la heladera '" + heladera.getNombre() +
                 "' ubicada en la dirección " + heladera.getDireccion().obtenerCadenaDireccion() + ".";
-        registrarAlerta(heladera, TipoAlerta.FRAUDE, mensajeNotificacion);
+        registrarAlerta(heladera, TipoAlerta.FRAUDE, mensajeNotificacion, 0);
     }
 
-    private void registrarAlerta(Heladera heladera, TipoAlerta motivo, String mensajeNotif) throws IOException {
+    @Transactional
+    public void registrarFalloConexion(Integer heladeraId) throws IOException {
+        Heladera heladera = heladeraRepository.findWithSuscriptoresById(heladeraId).get();
+        String mensajeNotificacion = "Alerta por fallo de conexión en la heladera '" + heladera.getNombre() + "' ubicada en la dirección " + heladera.getDireccion().obtenerCadenaDireccion() + ".";
+        registrarAlerta(heladera, TipoAlerta.CONEXION, mensajeNotificacion, 1);
+    }
+
+    private void registrarAlerta(Heladera heladera, TipoAlerta motivo, String mensajeNotif, int correspondeNotificarTecnico) throws IOException {
         heladera.setEstado(EstadoHeladera.INACTIVA);
         Incidente incidente = new IncidenteAlerta(LocalDateTime.now(), heladera, motivo);
-        notificarDesperfecto(heladera, mensajeNotif);
+        System.out.println("create alerta pero todavía no notificaste");
+        notificarDesperfecto(heladera, mensajeNotif, correspondeNotificarTecnico);
         incidenteRepository.save(incidente);
         heladeraRepository.save(heladera);
     }
@@ -111,8 +123,13 @@ public class HeladeraService {
         sacarViandas(heladera, List.of(vianda));
     }
 
-    public void notificarDesperfecto(Heladera heladera, String mensaje) throws IOException {
+    public void notificarDesperfecto(Heladera heladera, String mensaje, int correspondeNotificarTecnico) throws IOException {
         notificarSuscriptor(heladera, mensaje, PreferenciaNotificacion.DESPERFECTO, 0);
+        System.out.println("notificaste suscriptores");
+        if(correspondeNotificarTecnico == 1) {
+            // todo: notificar tecnico más cercano!!
+            System.out.println("notificaste tecnicos");
+        }
     }
 
     private void notificarSuscriptor(Heladera heladera, String mensaje, PreferenciaNotificacion pref, int cantidadViandas) throws IOException {

@@ -31,6 +31,7 @@ public abstract class Incidente extends PersistenciaID {
     public Incidente(LocalDateTime fechaHora, Heladera heladera, String tipoIncidente) {
         this.fechaHora = fechaHora;
         this.heladera = heladera;
+        this.zona = heladera.getDireccion().getLocalidad();
         this.estado = "PENDIENTE";
     }
 
