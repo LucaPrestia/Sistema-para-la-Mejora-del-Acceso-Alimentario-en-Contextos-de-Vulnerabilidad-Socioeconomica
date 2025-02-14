@@ -5,7 +5,7 @@
 - Lenguaje de Programación: Java 17
 - Framework: [SpringBoot](https://spring.io/projects/spring-boot)
 - ORM: Hibernate con [SpringDataJPA](https://spring.io/projects/spring-data-jpa)
-- Base de Datos: [MySQL](https://www.mysql.com/)/[MaríaDB](https://mariadb.org/)
+- Base de Datos: [SQL Server](https://www.microsoft.com/es-ar/sql-server/sql-server-downloads)
 - Template Engine: [Thymeleaf](https://www.thymeleaf.org/doc/tutorials/3.0/thymeleafspring.html)
 - Soporte Web:
     - Modelado de interfaces con [Spring MVC](https://spring.io/guides/gs/serving-web-content) integrado a handlebars
