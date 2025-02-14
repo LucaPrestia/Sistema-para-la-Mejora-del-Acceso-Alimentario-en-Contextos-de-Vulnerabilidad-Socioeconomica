@@ -10,7 +10,7 @@ import lombok.Setter;
 public class DTOCoordenadas extends PersistenciaID {
     private double lat;
     private double lon;
-
+    private String nombre;
     public DTOCoordenadas(double v, double v1) {
         lat = v;
         lon = v1;

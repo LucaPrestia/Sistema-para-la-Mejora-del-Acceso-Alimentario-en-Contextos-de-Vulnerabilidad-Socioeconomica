@@ -108,13 +108,14 @@ public class HomeController {
         double lat = -34.6597832;
         double lon = -58.4680729;
         List<Heladera> heladeras = heladeraRepository.findAll();
-        List<Coordenadas> coord_hela = heladeras.stream().map(x->x.getDireccion().getCoordenadas()).toList();
         List<DTOCoordenadas> coordMandar = new ArrayList();
-        for (Coordenadas coordenada : coord_hela) {
+        for (Heladera heladera : heladeras) {
+            Coordenadas coordenada = heladera.getDireccion().getCoordenadas();
             if(coordenada!=null) {
                 DTOCoordenadas dtoCoordenadas = new DTOCoordenadas();
                 dtoCoordenadas.setLat(coordenada.getLatitud());
                 dtoCoordenadas.setLon(coordenada.getLongitud());
+                dtoCoordenadas.setNombre(heladera.getNombre());
                 coordMandar.add(dtoCoordenadas);
             }
         }
@@ -122,6 +123,7 @@ public class HomeController {
         ObjectMapper objectMapper = new ObjectMapper();
         String coordenadasJson = objectMapper.writeValueAsString(coordMandar);
         System.out.println("Hay : "+ coordMandar.size());
+
         model.addAttribute("coordenadas", coordenadasJson);
         model.addAttribute("centroLat", lat);
         model.addAttribute("centroLon", lon);

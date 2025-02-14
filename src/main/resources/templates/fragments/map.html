@@ -50,6 +50,7 @@
 
         try {
             coordenadas = JSON.parse(coordenadas);
+            console.log(coordenadas)
         } catch (error) {
             console.error("Error parseando coordenadas:", error);
             coordenadas = []; // Si hay error, se usa array vacío
@@ -62,14 +63,16 @@
             iconAnchor: [12, 41],  // Ancla del icono
             popupAnchor: [1, -34],  // Ubicación del popup
             shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-            shadowSize: [41, 41]
+            shadowSize: [41, 41],
+
+
         });
 
         // Añadir los marcadores con el nuevo icono rojo
         coordenadas.forEach(function(coord) {
             if (coord.lat !== undefined && coord.lon !== undefined) {
                 L.marker([coord.lat, coord.lon], { icon: heladeraIcon }).addTo(map)
-                    .bindPopup('Marcador en ' + coord.lat + ', ' + coord.lon);
+                    .bindPopup(coord.nombre +' en ' + coord.lat + ', ' + coord.lon);
             }
         });
 

@@ -1,5 +1,6 @@
 package ar.utn.sistema.config;
 
+import ar.utn.sistema.entities.Coordenadas;
 import ar.utn.sistema.entities.Direccion;
 import ar.utn.sistema.entities.colaboracion.TipoColaboracionEnum;
 import ar.utn.sistema.entities.configuracion.CoeficientesColaboracion;
@@ -64,7 +65,7 @@ public class InsertsIniciales {
     private ReporteService reporteService;
 
     @Bean
-    public CommandLineRunner initData(HeladeraRepository heladeraRepository, DireccionRepository direccionRepository, IncidenteRepository incidenteRepository) {
+    public CommandLineRunner initData(HeladeraRepository heladeraRepository, DireccionRepository direccionRepository, IncidenteRepository incidenteRepository, CoordenadasRepository coordenadasRepository) {
         return (args) -> {
             // solo ejecutamos la inserción de datos si ddl-auto es create o create-drop (esto para evitar la duplicacion de datos)
             if ("create".equalsIgnoreCase(ddlAuto) || "create-drop".equalsIgnoreCase(ddlAuto)) {
@@ -135,7 +136,8 @@ public class InsertsIniciales {
                 direccionHeladera.setNumero(1231);
                 direccionHeladera.setLocalidad("Springfield");
                 direccionHeladera.setCodigo_postal(123123);
-
+                Coordenadas coord = new Coordenadas(-34.597695, -58.420818);
+                direccionHeladera.setCoordenadas(coord);
                 // Crear un usuario dueño de la heladera
                 Usuario owner = new Usuario();
                 owner.setUsuario("Homer Simpson");
