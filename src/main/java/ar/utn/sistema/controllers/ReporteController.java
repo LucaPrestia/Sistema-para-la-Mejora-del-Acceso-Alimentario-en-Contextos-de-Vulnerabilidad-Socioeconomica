@@ -85,6 +85,7 @@ public class ReporteController {
 
                 if(c.correspondeVerificar(PreferenciaNotificacion.DESPERFECTO,0)){
                     contactoService.inicializarMediosDeContacto(c.getContactos());
+                    System.out.println("Tiene tantos contactos : "+ c.getContactos().size());
                     Notificacion notificacion = new Notificacion(mensaje);
                     c.notificar(notificacion);
                     notificacionRepository.save(notificacion);

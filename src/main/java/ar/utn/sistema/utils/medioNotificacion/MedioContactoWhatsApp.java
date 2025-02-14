@@ -7,6 +7,8 @@ import ar.utn.sistema.utils.medioNotificacion.adapters.AdapterWhatsApp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+
 @Getter @Setter @Component
 public class MedioContactoWhatsApp implements IMedioDeContacto{
     private AdapterWhatsApp adapter;
@@ -16,7 +18,9 @@ public class MedioContactoWhatsApp implements IMedioDeContacto{
     }
 
     @Override
-    public void notificar(Notificacion notificacion) {
+    public void notificar(Notificacion notificacion) throws IOException {
+        System.out.println("llege al mediocontecto");
+
         this.adapter.enviar(notificacion);
     }
 }

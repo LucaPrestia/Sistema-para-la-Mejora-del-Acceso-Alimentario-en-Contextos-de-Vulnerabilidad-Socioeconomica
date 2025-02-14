@@ -26,6 +26,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -54,6 +55,7 @@ public class TelegramBotController implements TelegramMvcController {
         // Asegurate de usar tu token correcto aquí
 
         telegramBot = new TelegramBot("7713772704:AAEfTB0uHPBWjx9NkclJjnK1UrmxzlGiUGE");
+        instancia=this;
 
     }
     public static TelegramBotController getInstance() {
@@ -63,24 +65,47 @@ public class TelegramBotController implements TelegramMvcController {
         return instancia;
     }
     public void enviarMensaje(Integer id_usuario, String mensaje) {
-        long chat_id = 0L;
-        for(DTOSesionTelegram dto :loggedInUsers.values()){
-            if(dto.id_telegram== id_usuario){
-                chat_id = dto.chat_id;
-            }
-        }
-        telegramBot.execute(new SendMessage(chat_id, mensaje));
 
+        long chat_id = 0L;
+        DTOSesionTelegram dto = obtenerSesionConUsuario(id_usuario);
+        loggedInUsers.forEach(x->System.out.println(x.id_usuario));
+        System.out.println(id_usuario);
+        if(dto!=null) {
+            chat_id = dto.getChat_id();
+        }
+        System.out.println("finalize con el tecnico para mandar, chat : "+ chat_id + "total logged in: "+ loggedInUsers.size() );
+
+        telegramBot.execute(new SendMessage(chat_id, mensaje));
+        System.out.println("Mensaje enviado a tecnico: " + mensaje);
 
     }
+
     // Lista para almacenar las sesiones activas de los usuarios
     private List<DTOEsperaSesionIncidenteFoto> esperandoFoto = new ArrayList<>();
-    private Map<Long, DTOSesionTelegram> loggedInUsers = new HashMap<>();
+    private List<DTOSesionTelegram> loggedInUsers = new ArrayList<>();
     private Map<Long, Long> lastActiveTimes = new HashMap<>();  // Mapa de actividad del usuario
     private static final long INACTIVITY_TIMEOUT = 5 * 60 * 1000;  // 5 minutos en milisegundos
+
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    public DTOSesionTelegram obtenerSesionConTelegram(long id_usuario) {
+        for( DTOSesionTelegram dto : loggedInUsers){
+            if(dto.id_telegram== id_usuario){
+                return dto;
+            }
+        }
+        return null;
+    }
+    public DTOSesionTelegram obtenerSesionConUsuario(long id_usuario) {
+        for( DTOSesionTelegram dto : loggedInUsers){
+            if(dto.id_usuario== id_usuario){
+                return dto;
+            }
+        }
+        return null;
+    }
     @Override
     public String getToken() {
         return token;
@@ -97,12 +122,13 @@ public class TelegramBotController implements TelegramMvcController {
                                   User user,
                                   Chat chat) {
 
-        if (!loggedInUsers.containsKey(user.id())) {
+        DTOSesionTelegram dto = this.obtenerSesionConTelegram(user.id());
+        if (dto==null) {
             return "Debe iniciar sesión primero enviando el siguiente mensaje: 'Iniciar sesion usuario contraseña'";
         }
 
         try {
-            int usuarioMio_id = getIdUsuarioByTelegramId(user.id());
+            int usuarioMio_id = dto.getId_usuario();
             Usuario usuarioMio = usuarioRepository.findById(usuarioMio_id).orElse(null);
 
             if (usuarioMio == null) {
@@ -120,128 +146,21 @@ public class TelegramBotController implements TelegramMvcController {
             }
 
             Incidente incidente = incidenteOpt.get();
-            DTOEsperaSesionIncidenteFoto dto = new DTOEsperaSesionIncidenteFoto();
-            dto.setDescripcion(descripcionTrabajo);
-            dto.setId_telegram(user.id());
-            dto.setChat_id(chat.id());
-            dto.setIncidente(incidente);
-            dto.setTecnico(tecnicoMio);
-            dto.setSolucionado(solucionado.compareToIgnoreCase("si")==1);
-            esperandoFoto.add(dto);
+            DTOEsperaSesionIncidenteFoto dto2 = new DTOEsperaSesionIncidenteFoto();
+            dto2.setDescripcion(descripcionTrabajo);
+            dto2.setId_telegram(user.id());
+            dto2.setChat_id(chat.id());
+            dto2.setIncidente(incidente);
+            dto2.setTecnico(tecnicoMio);
+            System.out.println(solucionado);
+            dto2.setSolucionado(solucionado.compareToIgnoreCase("si")==0);
+            esperandoFoto.add(dto2);
 
-            return "Por favor, envíe una foto con el prefijo /foto con la evidencia del trabajo realizado.";
+            return "Por favor, envíe una foto con la evidencia del trabajo realizado.";
 
         } catch (Exception e) {
             e.printStackTrace();
             return "Error al registrar la visita: " + e.getMessage();
-        }
-    }
-
-
-    @MessageRequest("Cambiar zona de trabajo {zona:[a-zA-Z0-9]+}")
-    public String cambiarZonaTrabajo(@BotPathVariable("zona") String zona, User user) {
-
-        if (loggedInUsers.containsKey(user.id())) {
-            System.out.println(zona);
-            try {
-                int usuarioMio_id = getIdUsuarioByTelegramId(user.id());
-                Usuario usuarioMio = usuarioRepository.findById(usuarioMio_id).get();
-                System.out.println(usuarioMio.getUsuario());
-                if (usuarioMio != null) {
-                    Tecnico tecnicoMio = tecnicoRepository.findByUsuario(usuarioMio).get();
-                    System.out.println(tecnicoMio.getUsuario() + "");
-                    tecnicoMio.setAreaCobertura(zona) ;
-                    tecnicoRepository.save(tecnicoMio);
-                    return "Zona de trabajo actualizada correctamente";
-                } else return "No se pudo actualizar la zona";
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                return "No se pudo actualizar la zona";
-            }
-        }
-        else{
-            return  "Debe enviar primero el siguiente mensaje: iniciar sesion 'usuario' 'contraseña'";
-        }
-    }
-    @MessageRequest("Listar incidentes de mi zona")
-    public String listarIncidentes(User user) {
-        if (loggedInUsers.containsKey(user.id())) {
-            try {
-                int usuarioMio_id = getIdUsuarioByTelegramId(user.id());
-                Usuario usuarioMio = usuarioRepository.findById(usuarioMio_id).get();
-                if (usuarioMio != null) {
-                    Tecnico tecnicoMio = tecnicoRepository.findByUsuario(usuarioMio).get();
-                    List<Incidente> incidentes = incidenteRepository.findAllByZona(tecnicoMio.getAreaCobertura());
-                    String respuesta = "";
-                    for (Incidente incidente : incidentes) {
-                        respuesta = respuesta.concat(incidente.getTexto() + "\n");
-                    }
-                    if(respuesta.length()>1){
-                        return respuesta;
-                    }
-                    else return "No hay incidentes en tu zona";
-                } else return "No se pudo devolver lista";
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                return "No se pudo devolver lista";
-            }
-        }
-        else{
-            return  "Debe enviar primero el siguiente mensaje: iniciar sesion 'usuario' 'contraseña'";
-        }
-    }
-
-
-    @BotRequest(value = "/start", type = {MessageType.CALLBACK_QUERY, MessageType.MESSAGE})
-    public BaseRequest start(User user, Chat chat) {
-        // Verificar si el usuario está logueado
-        if (loggedInUsers.containsKey(user.id())) {
-            updateLastActiveTime(user.id());  // Actualiza el tiempo de la última actividad
-            return new SendMessage(chat.id(), "Bienvenido nuevamente, " + user.firstName() + ". ¿Qué deseas hacer?");
-        }
-
-        // Si no está logueado
-        return new SendMessage(chat.id(), "Hola, para continuar necesitas hacer login. Envíame tu nombre de usuario.");
-    }
-
-    @MessageRequest("Listar acciones")  // Captura cualquier mensaje
-    public BaseRequest loginOrAction(User user, Chat chat, String message) {
-        // Verificar si el usuario está logueado
-        if (loggedInUsers.containsKey(user.id())) {
-            return new SendMessage(chat.id(), "Puedes realizar las siguientes acciones:\n" +
-                    "● Cambiar zona de trabajo 'ZonaDeTrabajoNueva'\n" +
-                    "● Registrar una visita a una heladera 'incidenteID' solucionado: 'si/no' descripcion de trabajo: 'descripcion' \n" +
-                    "● Listar incidentes de mi zona");
-        }
-        else return new SendMessage(chat.id(),  "Debe enviar primero el siguiente mensaje: iniciar sesion 'usuario' 'contraseña'");
-    }
-    @MessageRequest("Iniciar sesion {usuario:[a-zA-Z0-9]+} {contrasena:[a-zA-Z0-9]+}")
-    public String iniciarSesion(@BotPathVariable("usuario") String usuario,@BotPathVariable("contrasena") String contrasena, User user,Chat chat) {
-
-        String username = usuario;
-        String password =contrasena;
-        System.out.println(username+password);
-        System.out.println(passwordEncoder.encode(password));
-        // Verifica si las credenciales son correctas
-        Optional<List<Usuario>> usuarioOpt = usuarioRepository.findAllByUsuario(username );
-
-        if (usuarioOpt.isPresent()) {
-            List<Usuario> usuarioList = usuarioOpt.get();
-            for (Usuario usuario1 : usuarioList) {
-                if(passwordEncoder.matches(password,usuario1.getContrasena())){
-                    DTOSesionTelegram sesion = new DTOSesionTelegram();
-                    sesion.setId_telegram(user.id());
-                    sesion.setId_usuario(usuario1.getId());
-                    sesion.setChat_id(chat.id());
-                    loggedInUsers.put(user.id(), sesion);  // Guarda la sesión en el mapa
-                    updateLastActiveTime(user.id());
-                    return "Login exitoso. Bienvenido, " + username + ". ¿Qué deseas hacer?";
-                }
-            }
-            return "Usuario o contraseña incorrectos. Intenta de nuevo.";
-
-        } else {
-            return "Usuario o contraseña incorrectos. Intenta de nuevo.";
         }
     }
 
@@ -284,9 +203,127 @@ public class TelegramBotController implements TelegramMvcController {
 
         visitaIncidenteRepository.save(visitaIncidente);
         esperandoFoto.remove(dtoMio); // Remueve la entrada después de guardar
-
+        if(dtoMio.getSolucionado()){
+            dtoMio.getIncidente().setEstado("RESUELTO");
+        }
+        incidenteRepository.save(dtoMio.getIncidente());
         return new SendMessage(chat.id(), "Visita registrada correctamente con la foto.");
     }
+    @MessageRequest("Cambiar zona de trabajo {zona:[a-zA-Z0-9]+}")
+    public String cambiarZonaTrabajo(@BotPathVariable("zona") String zona, User user) {
+        DTOSesionTelegram dto = this.obtenerSesionConTelegram(user.id());
+
+        if (dto!=null) {
+            System.out.println(zona);
+            try {
+                int usuarioMio_id = dto.getId_usuario();
+                Usuario usuarioMio = usuarioRepository.findById(usuarioMio_id).get();
+                System.out.println(usuarioMio.getUsuario());
+                if (usuarioMio != null) {
+                    Tecnico tecnicoMio = tecnicoRepository.findByUsuario(usuarioMio).get();
+                    System.out.println(tecnicoMio.getUsuario() + "");
+                    tecnicoMio.setAreaCobertura(zona) ;
+                    tecnicoRepository.save(tecnicoMio);
+                    return "Zona de trabajo actualizada correctamente";
+                } else return "No se pudo actualizar la zona";
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                return "No se pudo actualizar la zona";
+            }
+        }
+        else{
+            return  "Debe enviar primero el siguiente mensaje: iniciar sesion 'usuario' 'contraseña'";
+        }
+    }
+    @MessageRequest("Listar incidentes de mi zona")
+    public String listarIncidentes(User user) {
+        DTOSesionTelegram dto = this.obtenerSesionConTelegram(user.id());
+        if (dto!=null) {
+            try {
+                int usuarioMio_id = dto.getId_usuario();
+                Usuario usuarioMio = usuarioRepository.findById(usuarioMio_id).get();
+                if (usuarioMio != null) {
+                    Tecnico tecnicoMio = tecnicoRepository.findByUsuario(usuarioMio).get();
+                    List<Incidente> incidentes = incidenteRepository.findAllByZona(tecnicoMio.getAreaCobertura());
+                    String respuesta = "";
+                    for (Incidente incidente : incidentes) {
+                        respuesta = respuesta.concat(incidente.getTexto() + "\n");
+                    }
+                    if(respuesta.length()>1){
+                        return respuesta;
+                    }
+                    else return "No hay incidentes en tu zona";
+                } else return "No se pudo devolver lista";
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                return "No se pudo devolver lista";
+            }
+        }
+        else{
+            return  "Debe enviar primero el siguiente mensaje: iniciar sesion 'usuario' 'contraseña'";
+        }
+    }
+
+
+    @BotRequest(value = "/start", type = {MessageType.CALLBACK_QUERY, MessageType.MESSAGE})
+    public BaseRequest start(User user, Chat chat) {
+        // Verificar si el usuario está logueado
+        DTOSesionTelegram dto = this.obtenerSesionConTelegram(user.id());
+
+        if (dto!=null) {
+            updateLastActiveTime(user.id());  // Actualiza el tiempo de la última actividad
+            return new SendMessage(chat.id(), "Bienvenido nuevamente, " + user.firstName() + ". ¿Qué deseas hacer?");
+        }
+
+        // Si no está logueado
+        return new SendMessage(chat.id(), "Hola, para continuar necesitas hacer login. Envíame tu nombre de usuario.");
+    }
+
+    @MessageRequest("Listar acciones")  // Captura cualquier mensaje
+    public BaseRequest loginOrAction(User user, Chat chat, String message) {
+        // Verificar si el usuario está logueado
+        DTOSesionTelegram dto = this.obtenerSesionConTelegram(user.id());
+
+        if (dto!=null) {
+            return new SendMessage(chat.id(), "Puedes realizar las siguientes acciones:\n" +
+                    "● Cambiar zona de trabajo 'ZonaDeTrabajoNueva'\n" +
+                    "● Registrar una visita a una heladera 'incidenteID' solucionado: 'si/no' descripcion de trabajo: 'descripcion' \n" +
+                    "● Listar incidentes de mi zona");
+        }
+        else return new SendMessage(chat.id(),  "Debe enviar primero el siguiente mensaje: iniciar sesion 'usuario' 'contraseña'");
+    }
+    @MessageRequest("Iniciar sesion {usuario:[a-zA-Z0-9]+} {contrasena:[a-zA-Z0-9]+}")
+    public String iniciarSesion(@BotPathVariable("usuario") String usuario,@BotPathVariable("contrasena") String contrasena, User user,Chat chat) {
+        DTOSesionTelegram dto = this.obtenerSesionConTelegram(user.id());
+
+        String username = usuario;
+        String password =contrasena;
+        System.out.println(username+password);
+        System.out.println(passwordEncoder.encode(password));
+        // Verifica si las credenciales son correctas
+        Optional<List<Usuario>> usuarioOpt = usuarioRepository.findAllByUsuario(username );
+
+        if (usuarioOpt.isPresent()) {
+            List<Usuario> usuarioList = usuarioOpt.get();
+            for (Usuario usuario1 : usuarioList) {
+                if(passwordEncoder.matches(password,usuario1.getContrasena())){
+                    DTOSesionTelegram sesion = new DTOSesionTelegram();
+                    sesion.setId_telegram(user.id());
+                    sesion.setId_usuario(usuario1.getId());
+                    sesion.setChat_id(chat.id());
+                    loggedInUsers.add(sesion);  // Guarda la sesión en el mapa
+                    System.out.println("tamaño:"+loggedInUsers.size());
+                    return "Login exitoso. Bienvenido, " + username + ". ¿Qué deseas hacer?";
+                }
+            }
+            return "Usuario o contraseña incorrectos. Intenta de nuevo.";
+
+        } else {
+            return "Usuario o contraseña incorrectos. Intenta de nuevo.";
+        }
+    }
+
+
     private byte[] descargarFotoTelegram(String fileId) {
         try {
             GetFile getFile = new GetFile(fileId);
@@ -317,21 +354,6 @@ public class TelegramBotController implements TelegramMvcController {
     private void updateLastActiveTime(Long userId) {
         lastActiveTimes.put(userId, System.currentTimeMillis());
     }
-    public int getIdUsuarioByTelegramId(long idTelegram) {
-        DTOSesionTelegram sesion = loggedInUsers.get(idTelegram);
-        if (sesion != null) {
-            return sesion.getId_usuario();  // Devuelve el id_usuario del DTO
-        } else {
-            // Retorna un valor predeterminado o lanza una excepción si no se encuentra el usuario
-            throw new IllegalArgumentException("Usuario no encontrado para el id de Telegram: " + idTelegram);
-        }
-    }
-    public long getTelegramIdByUsuarioId(int usuarioId) {
-        for (Map.Entry<Long, DTOSesionTelegram> entry : loggedInUsers.entrySet()) {
-            if (entry.getValue().getId_usuario() == usuarioId) {
-                return entry.getKey();  // Retorna el id de Telegram asociado al usuario
-            }
-        }
-        throw new IllegalArgumentException("Telegram ID no encontrado para el usuario ID: " + usuarioId);
-    }
+
+
 }

@@ -17,30 +17,23 @@ public class ContactoService {
     @Autowired
     private MedioContactoWhatsApp medioContactoWhatsApp;
 
-    public void inicializarMedioDeContacto(Contacto contacto) {
-        switch (contacto.getMedio()) {
-            case EMAIL:
-                contacto.setMedioDeContacto(medioContactoEmail);
-                break;
-            case TELEFONO:
-            case WHATSAPP:
-                contacto.setMedioDeContacto(medioContactoWhatsApp);
-                break;
-        }
-    }
+
 
     public void inicializarMediosDeContacto(List<Contacto> contactos) {
         for (Contacto contacto : contactos) {
             switch (contacto.getMedio()) {
                 case EMAIL:
+                    System.out.println("meti mail");
                     contacto.setMedioDeContacto(medioContactoEmail);
                     break;
                 case TELEFONO:
                 case WHATSAPP:
+                    System.out.println("meti wp");
                     contacto.setMedioDeContacto(medioContactoWhatsApp);
                     break;
             }
         }
+
     }
 
 
