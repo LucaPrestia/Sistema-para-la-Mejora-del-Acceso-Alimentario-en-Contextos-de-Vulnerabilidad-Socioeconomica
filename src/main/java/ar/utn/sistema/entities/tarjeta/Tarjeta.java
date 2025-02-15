@@ -22,6 +22,7 @@ public abstract class Tarjeta extends PersistenciaID {
     private LocalDate fechaActivada;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinColumn(name = "id_tarjeta", nullable = true)
     private List<MovimientoTarjeta> movimientos;
 
     public Tarjeta(String codigo) {
@@ -35,8 +36,8 @@ public abstract class Tarjeta extends PersistenciaID {
     }
 
     protected void autorizarAperturaHeladera(Heladera heladera){
-        // todo: enviar autorización apertura de esta tarjeta a la heladera
+        heladera.setPermisoApertura(1);
     }
 
-    public abstract boolean usarTarjeta(Heladera heladera);
+    public abstract boolean usarTarjeta(Heladera heladera, MotivoMovimientoTarjeta motivo);
 }

@@ -116,6 +116,10 @@ public class HomeController {
                 dtoCoordenadas.setLat(coordenada.getLatitud());
                 dtoCoordenadas.setLon(coordenada.getLongitud());
                 dtoCoordenadas.setNombre(heladera.getNombre());
+                dtoCoordenadas.setDireccion(heladera.getDireccion().getCalle() + " " + heladera.getDireccion().getNumero());
+                dtoCoordenadas.setEstado(heladera.getEstado().name());
+                dtoCoordenadas.setStockViandas(heladera.getViandas().size());
+                dtoCoordenadas.setEspacioDisponible(heladera.espacioDisponibleViandas());
                 coordMandar.add(dtoCoordenadas);
             }
         }

@@ -20,14 +20,19 @@ public class TarjetaColaborador extends Tarjeta{
     @JoinColumn(name = "id_colaborador", nullable = true)
     private Colaborador colaborador;
 
+    public TarjetaColaborador(String codigo, Colaborador colaborador){
+        super(codigo);
+        this.colaborador = colaborador;
+    }
+
     @Override
-    public boolean usarTarjeta(Heladera heladera) {
-        MovimientoTarjeta movimientoPendiente = buscarMovimiento(heladera);
+    public boolean usarTarjeta(Heladera heladera, MotivoMovimientoTarjeta motivo) {
+        MovimientoTarjeta movimientoPendiente = buscarMovimiento(heladera, motivo);
         if (movimientoPendiente != null){
             movimientoPendiente.setFechaApertura(LocalDateTime.now());
             this.autorizarAperturaHeladera(heladera);
             return true;
-        } else return false; // todo: ver si se maneja el motivo de rechazo desde acá o desde el controller
+        } else return false;
     }
 
     // el pedido de apertura lo estamos guardando como un movimiento pendiente en la tarjeta: todavía no tiene cargada una fecha de apertura!
@@ -37,10 +42,10 @@ public class TarjetaColaborador extends Tarjeta{
         this.agregarMovimiento(pedidoMovimiento);
     }
 
-    private MovimientoTarjeta buscarMovimiento(Heladera heladera){
+    private MovimientoTarjeta buscarMovimiento(Heladera heladera, MotivoMovimientoTarjeta motivo){
         MovimientoTarjeta movimientoTarjeta = this.getMovimientos().stream()
                 .filter(p -> p.getHeladera().equals(heladera)
-                        // && p.getMotivo().equals(motivo) ANALIZAR SI EL MOTIVO TMB SE DEBE INDICAR EN LA APERTURA O NO
+                         && p.getMotivo().equals(motivo)
                         && p.getFechaApertura() == null  // la apertura aún no se realizó
                         && p.getFechaPedidoMovimiento() != null // hay una fecha de pedido registrada para dicho movimiento
                         && Duration.between(p.getFechaPedidoMovimiento(), LocalDateTime.now()).toHours() <= tiempoMovimientoApertura)

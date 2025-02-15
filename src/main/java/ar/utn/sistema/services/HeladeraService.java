@@ -85,36 +85,42 @@ public class HeladeraService {
         heladeraRepository.save(heladera);
     }
 
-    public void agregarViandas(Heladera heladera, List<Vianda> viandasNuevas) throws IOException {
-        // todo: ¿¿ chequea si hay autorizacion de apertura ??
-        heladera.getViandas().addAll(viandasNuevas);
-        int espacioViandasDisponibles = heladera.getMaxViandas() - heladera.getViandas().size();
-        StringBuilder mensaje = new StringBuilder();
-        mensaje.append("Queda espacio para ")
-                .append(espacioViandasDisponibles)
-                .append(" vianda/s en la heladera de nombre '")
-                .append(heladera.getNombre())
-                .append("' ubicada en la dirección ")
-                .append(heladera.getDireccion().obtenerCadenaDireccion())
-                .append(".");
-        notificarSuscriptor(heladera, mensaje.toString(), PreferenciaNotificacion.HELADERA_LLENA, espacioViandasDisponibles);
-        heladeraRepository.save(heladera); // guarda heladera y viandas registradas
+    public boolean agregarViandas(Heladera heladera, List<Vianda> viandasNuevas) throws IOException {
+        if (heladera.getPermisoApertura() == 1) {
+            heladera.getViandas().addAll(viandasNuevas);
+            int espacioViandasDisponibles = heladera.getMaxViandas() - heladera.getViandas().size();
+            StringBuilder mensaje = new StringBuilder();
+            mensaje.append("Queda espacio para ")
+                    .append(espacioViandasDisponibles)
+                    .append(" vianda/s en la heladera de nombre '")
+                    .append(heladera.getNombre())
+                    .append("' ubicada en la dirección ")
+                    .append(heladera.getDireccion().obtenerCadenaDireccion())
+                    .append(".");
+            notificarSuscriptor(heladera, mensaje.toString(), PreferenciaNotificacion.HELADERA_LLENA, espacioViandasDisponibles);
+            heladera.setPermisoApertura(0);
+            heladeraRepository.save(heladera); // guarda heladera y viandas registradas
+            return true;
+        } else return false;
     }
 
-    public void sacarViandas(Heladera heladera, List<Vianda> viandas) throws IOException {
-        // todo: ¿¿ chequea si hay autorizacion de apertura ??
-        heladera.getViandas().removeAll(viandas);
-        int cantidadViandasDisponibles = heladera.getViandas().size();
-        StringBuilder mensaje = new StringBuilder();
-        mensaje.append("Queda/n solamente ")
-                .append(cantidadViandasDisponibles)
-                .append(" vianda/s disponible/s en la heladera de nombre '")
-                .append(heladera.getNombre())
-                .append("' ubicada en la dirección ")
-                .append(heladera.getDireccion().obtenerCadenaDireccion())
-                .append(".");
-        notificarSuscriptor(heladera, mensaje.toString(), PreferenciaNotificacion.POCAS_VIANDAS, cantidadViandasDisponibles);
-        heladeraRepository.save(heladera);
+    public boolean sacarViandas(Heladera heladera, List<Vianda> viandas) throws IOException {
+        if (heladera.getPermisoApertura() == 1) {
+            heladera.getViandas().removeAll(viandas);
+            int cantidadViandasDisponibles = heladera.getViandas().size();
+            StringBuilder mensaje = new StringBuilder();
+            mensaje.append("Queda/n solamente ")
+                    .append(cantidadViandasDisponibles)
+                    .append(" vianda/s disponible/s en la heladera de nombre '")
+                    .append(heladera.getNombre())
+                    .append("' ubicada en la dirección ")
+                    .append(heladera.getDireccion().obtenerCadenaDireccion())
+                    .append(".");
+            notificarSuscriptor(heladera, mensaje.toString(), PreferenciaNotificacion.POCAS_VIANDAS, cantidadViandasDisponibles);
+            heladera.setPermisoApertura(0);
+            heladeraRepository.save(heladera);
+            return true;
+        } else return false;
     }
 
     public void consumirVianda(Heladera heladera, Vianda vianda) throws IOException {

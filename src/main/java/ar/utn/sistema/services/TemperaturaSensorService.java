@@ -21,7 +21,7 @@ public class TemperaturaSensorService {
 
     private static final Random random = new Random();
 
-    @Scheduled(fixedRate = 100000) // every 5 minutes
+    @Scheduled(fixedRate = 300000) // every 5 minutes
     public void enviarTemperaturas() {
         List<Heladera> heladeras = service.obtenerTodasLasHeladeras();
         for (Heladera heladera : heladeras) {

@@ -49,6 +49,7 @@ public class Heladera extends PersistenciaID {
             inverseJoinColumns = @JoinColumn(name = "id_suscriptor") // Columna que referencia a la entidad relacionada
     )
     private List<Colaborador> suscriptores;
+    private Integer permisoApertura; // 1: si, 0: no
 
     // Constructor
     public Heladera(String nombre, Usuario owner, Direccion direccion, double tempMax, double tempMin, int maxViandas) {
@@ -60,6 +61,7 @@ public class Heladera extends PersistenciaID {
         this.tempMin = tempMin;
         this.maxViandas = maxViandas;
         this.estado = EstadoHeladera.ACTIVA;
+        this.permisoApertura = 0;
     }
 
     // Métodos

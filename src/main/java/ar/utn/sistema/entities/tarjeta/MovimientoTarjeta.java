@@ -27,5 +27,6 @@ public class MovimientoTarjeta extends PersistenciaID {
     public MovimientoTarjeta(Heladera heladera, MotivoMovimientoTarjeta motivo, int cantidadViandas) {
         this.heladera = heladera;
         this.motivo = motivo;
+        this.cantidadViandas = cantidadViandas;
     }
 }

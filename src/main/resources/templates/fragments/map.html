@@ -72,7 +72,14 @@
         coordenadas.forEach(function(coord) {
             if (coord.lat !== undefined && coord.lon !== undefined) {
                 L.marker([coord.lat, coord.lon], { icon: heladeraIcon }).addTo(map)
-                    .bindPopup(coord.nombre +' en ' + coord.lat + ', ' + coord.lon);
+                   .bindPopup(
+                        `<b>${coord.nombre}</b><br>` +
+                        `📍 ${coord.direccion}<br>` +
+                        `🟢 Estado: ${coord.estado}<br>` +
+                        `📦 Stock: ${coord.stockViandas}<br>` +
+                        `⬜ Espacio Disponible: ${coord.espacioDisponible}<br>` +
+                        `🌍 Lat: ${coord.lat}, Lon: ${coord.lon}`
+                   );
             }
         });
 

@@ -8,6 +8,9 @@ import ar.utn.sistema.entities.configuracion.TipoColaboracion;
 import ar.utn.sistema.entities.heladera.Heladera;
 import ar.utn.sistema.entities.heladera.ServicioDeUbicacionHeladera;
 import ar.utn.sistema.entities.heladera.Vianda;
+import ar.utn.sistema.entities.tarjeta.MotivoMovimientoTarjeta;
+import ar.utn.sistema.entities.tarjeta.Tarjeta;
+import ar.utn.sistema.entities.tarjeta.TarjetaColaborador;
 import ar.utn.sistema.entities.tarjeta.TarjetaPersonaVulnerable;
 import ar.utn.sistema.entities.usuarios.*;
 import ar.utn.sistema.repositories.*;
@@ -16,6 +19,7 @@ import ar.utn.sistema.repositories.configuracion.TipoColaboracionRepository;
 import ar.utn.sistema.services.CoeficientesColaboracionService;
 import ar.utn.sistema.services.HeladeraService;
 import ar.utn.sistema.services.UsuarioSesionService;
+import ar.utn.sistema.utils.CodigoGenerador;
 import org.hibernate.event.internal.EvictVisitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mapping.model.CamelCaseAbbreviatingFieldNamingStrategy;
@@ -32,6 +36,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Controller()
 @RequestMapping("/colaboracion")
@@ -63,6 +68,8 @@ public class ColaboracionesController {
     private PersonaVulnerableRespository personaVulnerableRespository;
     @Autowired
     private ColaboradorRepository colaboradorRepository;
+    @Autowired
+    private TarjetaRepository tarjetaRepository;
 
     @Autowired
     private HeladeraService heladeraService;
@@ -83,7 +90,7 @@ public class ColaboracionesController {
             @RequestParam(value = "direccionColaborador", required = false) Boolean direccionColaborador,
             @RequestParam(value = "latitud", required = false) Double latitud,
             @RequestParam(value = "longitud", required = false) Double longitud,
-            @RequestParam("direccionSeleccionada") Integer direccionId,
+            @RequestParam(value = "direccionSeleccionada", required = false) Integer direccionId,
             RedirectAttributes redirectAttributes) {
         try {
             Colaborador colaborador = obtenerColaborador();
@@ -181,13 +188,25 @@ public class ColaboracionesController {
                 return "redirect:/home?error=true";
             }
 
-            System.out.println("Heladera Seleccionada: " + donacion.getHeladeraSeleccionada());
+            Colaborador colaborador = obtenerColaborador();
+
+            // registra pedido de apertura
+            Optional<TarjetaColaborador> tarjetaRegistrada = tarjetaRepository.findByColaborador(colaborador);
+            TarjetaColaborador tarjeta = tarjetaRegistrada.orElseGet(() -> {
+                TarjetaColaborador tarjetaColaborador = new TarjetaColaborador(CodigoGenerador.generarCodigoUnico(), colaborador);
+                return tarjetaColaborador;
+            });
+
+            tarjeta.registrarPedido(heladera, MotivoMovimientoTarjeta.DONACION_VIANDA, donacion.getViandas().size());
+            tarjetaRepository.save(tarjeta);
+
+            /*System.out.println("Heladera Seleccionada: " + donacion.getHeladeraSeleccionada());
             for (ViandaDTO vianda : donacion.getViandas()) {
                 System.out.println("Comida: " + vianda.getComida());
                 System.out.println("Fecha Caducidad: " + vianda.getFechaCaducidad());
                 System.out.println("Calorías: " + vianda.getCalorias());
                 System.out.println("Peso: " + vianda.getPeso());
-            }
+            }*/
 
             Double coeficientePuntos = coeficientesColaboracionService.obtenerCoeficiente(TipoColaboracionEnum.DONACION_VIANDAS.name());
             System.out.println(coeficientePuntos);
@@ -198,16 +217,24 @@ public class ColaboracionesController {
                 viandasNuevas.add(nuevaVianda);
             }
 
-            heladeraService.agregarViandas(heladera, viandasNuevas);
-            // viandaRepository.saveAll(viandasNuevas); // ya se graba desde la línea anterior, en agregarViandas, por relación cascada
-            ColaboracionVianda colaboracionVianda = new ColaboracionVianda(viandasNuevas, viandasNuevas.size(), coeficientePuntos);
-            System.out.println(colaboracionVianda);
-            colaboracionRepository.save(colaboracionVianda);
-            Colaborador colaborador = obtenerColaborador();
-            colaborador.agregarColaboracion(colaboracionVianda);
-            colaboradorRepository.save(colaborador);
+            // simular apertura de heladera con chequeo de autorización:
+            boolean apertura = false;
+            if(tarjeta.usarTarjeta(heladera, MotivoMovimientoTarjeta.DONACION_VIANDA)){
+                if(heladeraService.agregarViandas(heladera, viandasNuevas)) {
+                    apertura = true;
+                    ColaboracionVianda colaboracionVianda = new ColaboracionVianda(viandasNuevas, viandasNuevas.size(), coeficientePuntos);
 
-            return "redirect:/home?success=true";
+                    colaboracionRepository.save(colaboracionVianda);
+                    colaborador.agregarColaboracion(colaboracionVianda);
+                    colaboradorRepository.save(colaborador);
+                }
+            }
+            if(apertura){
+                return "redirect:/home?success=true";
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "No tiene un pedido de apertura registrado para realizar la donación de la/s vianda/s");
+                return "redirect:/home?error=true";
+            }
         } catch (Exception e) {
             return "redirect:/home?error=true";
         }
@@ -323,22 +350,41 @@ public class ColaboracionesController {
                 return "redirect:/home?error=true";
             }
 
+            Colaborador colaborador = obtenerColaborador();
+
+            // registra pedido de apertura
+            Optional<TarjetaColaborador> tarjetaRegistrada = tarjetaRepository.findByColaborador(colaborador);
+            TarjetaColaborador tarjeta = tarjetaRegistrada.orElseGet(() -> {
+                TarjetaColaborador tarjetaColaborador = new TarjetaColaborador(CodigoGenerador.generarCodigoUnico(), colaborador);
+                return tarjetaColaborador;
+            });
+
+            tarjeta.registrarPedido(heladeraOrigen, MotivoMovimientoTarjeta.EGRESO_TRASLADO_VIANDA, viandasIds.size());
+            tarjeta.registrarPedido(heladeraDestino, MotivoMovimientoTarjeta.INGRESO_TRASLADO_VIANDA, viandasIds.size());
+            tarjetaRepository.save(tarjeta);
+
             Double coeficientePuntos = coeficientesColaboracionService.obtenerCoeficiente(TipoColaboracionEnum.REDISTRIBUCION_VIANDAS.name());
 
-            Colaborador colaborador = colaboradorRepository.findByUsuario_Id(sesion.obtenerUsuarioAutenticado().getId()).orElseThrow(
-                    () -> new RuntimeException("Colaborador no encontrado")
-            );
-            ColaboracionDistribucionViandas nuevaColaboracion = new ColaboracionDistribucionViandas(heladeraOrigen, heladeraDestino, viandasList, motivoDistribucion, coeficientePuntos);
-            heladeraService.sacarViandas(heladeraOrigen, viandasList);
-            heladeraService.agregarViandas(heladeraDestino, viandasList);
-            colaboracionRepository.save(nuevaColaboracion);
-            colaborador.agregarColaboracion(nuevaColaboracion);
-            colaboradorRepository.save(colaborador);
-            /*viandaRepository.saveAll(viandasList);
-            heladeraRepository.save(heladeraOrigen);
-            heladeraRepository.save(heladeraDestino);*/ // ya se guardan con las funciones de sacarviandas y agregarviandas
-            redirectAttributes.addFlashAttribute("Redistribucion realizada correctamente");
-            return "redirect:/home?success=true";
+            // simular apertura de heladera con chequeo de autorización:
+            if(tarjeta.usarTarjeta(heladeraOrigen, MotivoMovimientoTarjeta.EGRESO_TRASLADO_VIANDA) &&
+                    heladeraService.sacarViandas(heladeraOrigen, viandasList) &&
+                    tarjeta.usarTarjeta(heladeraDestino, MotivoMovimientoTarjeta.INGRESO_TRASLADO_VIANDA) &&
+                    heladeraService.agregarViandas(heladeraDestino, viandasList)
+            ){
+                ColaboracionDistribucionViandas nuevaColaboracion = new ColaboracionDistribucionViandas(heladeraOrigen, heladeraDestino, viandasList, motivoDistribucion, coeficientePuntos);
+
+                colaboracionRepository.save(nuevaColaboracion);
+                colaborador.agregarColaboracion(nuevaColaboracion);
+                colaboradorRepository.save(colaborador);
+                /*viandaRepository.saveAll(viandasList);
+                heladeraRepository.save(heladeraOrigen);
+                heladeraRepository.save(heladeraDestino);*/ // ya se guardan con las funciones de sacarviandas y agregarviandas
+                redirectAttributes.addFlashAttribute("successMessage","Redistribucion realizada correctamente");
+                return "redirect:/home?success=true";
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "No tiene un pedido de apertura registrado para realizar la redistribución de la/s vianda/s");
+                return "redirect:/home?error=true";
+            }
         } catch (Exception e) {
             return "redirect:/home?error=true";
         }

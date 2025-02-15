@@ -36,7 +36,7 @@ public class TarjetaPersonaVulnerable extends Tarjeta{
     }
 
     @Override
-    public boolean usarTarjeta(Heladera heladera) {
+    public boolean usarTarjeta(Heladera heladera, MotivoMovimientoTarjeta motivo) {
         if (puedeUsarTarjeta()){
             MovimientoTarjeta movimiento = new MovimientoTarjeta(heladera, MotivoMovimientoTarjeta.CONSUMO_VIANDA, 1);
             // según el enunciado: una vianda por uso de tarjeta!

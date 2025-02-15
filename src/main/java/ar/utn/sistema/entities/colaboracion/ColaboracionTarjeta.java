@@ -57,7 +57,7 @@ public class ColaboracionTarjeta extends Colaboracion {
         tarjeta.setPersonaVulnerable(persona);
         tarjeta.setRegistrador(colaborador);
         colaborador.actualizarPuntos(this.getCoeficientePuntos());
-        return tarjeta; // TODO: se debe persistir en la base todos los cambios!!!
+        return tarjeta;
     }
 
 }
