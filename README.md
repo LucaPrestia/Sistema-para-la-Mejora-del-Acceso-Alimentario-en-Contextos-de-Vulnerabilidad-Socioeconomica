@@ -47,3 +47,4 @@ nombre: admin_dds, nombre usuario seleccionar el anteriormente creado, y en defa
   tildar en server authentication la opción SQL SERVER AND WINDOWS AUTHENTICATION MODE
   reiniciar el servicios desde Servicios
 - DESDE SECURITY LOGIN USER ADMIN_DDS: ir a Server Roles y MARCAR TODO, e ir a Securables y marcar TODOS los grants en explicits
+- hice unos cambios en clases de tarjeta, para que todo salga bien, hacer un create-drop, bajar el sistema y si no se eliminaron las tablas, hacer un drop table de tarjeta_movimientos y de movimiento_tarjeta, levantar con create primero, bajar el sistema, y después levantar con update
